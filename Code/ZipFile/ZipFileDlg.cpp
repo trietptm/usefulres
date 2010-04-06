@@ -64,6 +64,7 @@ BEGIN_MESSAGE_MAP(CZipFileDlg, CDialog)
 	ON_WM_QUERYDRAGICON()
 	//}}AFX_MSG_MAP
 	ON_BN_CLICKED(IDC_BUTTON_SEL_FILE, OnBnClickedButtonSelFile)
+	ON_BN_CLICKED(IDC_BUTTON_ZIP, OnBnClickedButtonZip)
 END_MESSAGE_MAP()
 
 
@@ -176,4 +177,30 @@ void CZipFileDlg::OnBnClickedButtonSelFile()
 		return;
 
 	m_edtFile.SetWindowText(szFile);
+}
+void CZipFileDlg::OnBnClickedButtonZip()
+{
+	CString s;
+
+	CString sFile;
+	m_edtFile.GetWindowText(sFile);
+	if(sFile.IsEmpty())
+		return;
+
+	Ptr data;
+	ULONG fSize = 0;
+	UCHAR* pData = File::LoadFile(sFile,data,fSize);
+	if(!pData)
+		return;
+
+	UCHAR* pZipBuf = (UCHAR*)::malloc(fSize);
+	Ptr data1(pZipBuf);
+	ULONG zipLen = fSize;
+	compress(pZipBuf,&zipLen,pData,fSize);
+
+	s.Format("%s.z",sFile);
+	if(File::WriteToFile(s,pZipBuf,zipLen))
+	{
+		AfxMessageBox("Zip success!");
+	}
 }
