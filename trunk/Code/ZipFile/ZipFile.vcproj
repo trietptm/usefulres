@@ -33,6 +33,8 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="..\..\Dev\zlib\zlibMfcStaticD.lib"
+				OutputFile="$(ProjectName).exe"
 				LinkIncremental="2"
 				GenerateDebugInformation="TRUE"
 				SubSystem="2"
@@ -84,6 +86,8 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="..\..\Dev\zlib\zlibMfcStatic.lib"
+				OutputFile="$(ProjectName).exe"
 				LinkIncremental="1"
 				GenerateDebugInformation="TRUE"
 				SubSystem="2"
@@ -175,6 +179,19 @@
 			</File>
 			<File
 				RelativePath=".\res\ZipFile.rc2">
+			</File>
+		</Filter>
+		<Filter
+			Name="Ctrl"
+			Filter="">
+			<File
+				RelativePath="..\..\..\aman.softbox\trunk\Ctrl\File.hpp">
+			</File>
+			<File
+				RelativePath="..\..\..\aman.softbox\trunk\Ctrl\Ptr.hpp">
+			</File>
+			<File
+				RelativePath="..\..\Dev\zlib\zlib.h">
 			</File>
 		</Filter>
 		<File

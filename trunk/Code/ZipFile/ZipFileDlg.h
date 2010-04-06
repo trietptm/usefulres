@@ -32,4 +32,5 @@ protected:
 public:
 	afx_msg void OnBnClickedButtonSelFile();
 	CEdit m_edtFile;
+	afx_msg void OnBnClickedButtonZip();
 };
