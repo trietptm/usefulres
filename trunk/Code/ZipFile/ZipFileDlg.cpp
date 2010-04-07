@@ -65,6 +65,7 @@ BEGIN_MESSAGE_MAP(CZipFileDlg, CDialog)
 	//}}AFX_MSG_MAP
 	ON_BN_CLICKED(IDC_BUTTON_SEL_FILE, OnBnClickedButtonSelFile)
 	ON_BN_CLICKED(IDC_BUTTON_ZIP, OnBnClickedButtonZip)
+	ON_BN_CLICKED(IDC_UN_ZIP, OnBnClickedUnZip)
 END_MESSAGE_MAP()
 
 
@@ -193,14 +194,52 @@ void CZipFileDlg::OnBnClickedButtonZip()
 	if(!pData)
 		return;
 
-	UCHAR* pZipBuf = (UCHAR*)::malloc(fSize);
-	Ptr data1(pZipBuf);
 	ULONG zipLen = fSize;
-	compress(pZipBuf,&zipLen,pData,fSize);
+	UCHAR* pZipBuf = (UCHAR*)::malloc(zipLen);
+	while(true)
+	{
+		if(compress(pZipBuf,&zipLen,pData,fSize)==Z_OK)
+			break;
+
+		zipLen += 0x1000;
+		pZipBuf = (UCHAR*)::realloc(pZipBuf,zipLen);
+	}
+	Ptr data1(pZipBuf);
 
 	s.Format("%s.z",sFile);
 	if(File::WriteToFile(s,pZipBuf,zipLen))
 	{
 		AfxMessageBox("Zip success!");
+	}	
+}
+
+void CZipFileDlg::OnBnClickedUnZip()
+{
+	CString s;
+
+	CString sFile;
+	m_edtFile.GetWindowText(sFile);
+	if(sFile.IsEmpty())
+		return;
+
+	Ptr data;
+	ULONG fSize = 0;
+	UCHAR* pData = File::LoadFile(sFile,data,fSize);
+	if(!pData)
+		return;
+
+	ULONG bufLen = fSize;
+	UCHAR* pBuf = (UCHAR*)::malloc(bufLen);
+	Ptr data1(pBuf);	
+	if(uncompress(pBuf,&bufLen,pData,fSize)!=Z_OK)
+	{
+		AfxMessageBox("UnZip failed!");
+		return;
+	}
+
+	s.Format("%s.raw",sFile);
+	if(File::WriteToFile(s,pBuf,bufLen))
+	{
+		AfxMessageBox("UnZip success!");
 	}
 }
