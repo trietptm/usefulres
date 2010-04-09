@@ -50,6 +50,7 @@ CSortDlg::CSortDlg(CWnd* pParent /*=NULL*/)
 	: CDialog(CSortDlg::IDD, pParent)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+	m_bUnicode = FALSE;
 }
 
 void CSortDlg::DoDataExchange(CDataExchange* pDX)
@@ -181,6 +182,7 @@ BOOL CSortDlg::LoadFile(LPCSTR lpFile)
 {
 	m_lsData.SetRedraw(FALSE);
 	m_lsData.DeleteAllItems();
+	m_bUnicode = FALSE;
 
 	CString s;
 
@@ -208,6 +210,7 @@ BOOL CSortDlg::LoadFile(LPCSTR lpFile)
 		//unicode
 		if(*(USHORT*)p==0xFEFF)
 		{
+			m_bUnicode = TRUE;
 			p += sizeof(USHORT);
 
 			CStringW sData = (LPCWSTR)p;
@@ -281,5 +284,34 @@ void CSortDlg::OnBnClickedSort()
 
 void CSortDlg::OnBnClickedSave()
 {
+	CString sFile;
+	m_edtFile.GetWindowText(sFile);
+	if(sFile.IsEmpty())
+		return;
 
+	CString s,sw;
+
+	File f;
+	if(!f.Open(sFile,"wb"))
+	{
+		s.Format("Can not save file: %s",sFile);
+		AfxMessageBox(s);
+		return;
+	}
+
+	if(m_bUnicode)
+		::fwrite("\xFF\xFE",2,1,f);
+
+	int nCount = m_lsData.GetItemCount();
+	for(int i = 0;i<nCount;i++)
+	{
+		s = m_lsData.GetItemText(i,0);
+		if(m_bUnicode)
+		{
+			sw = s;
+			::fwrite(sw,sw.GetLength()*sizeof(WCHAR),1,f);
+		}
+	}
+
+	AfxMessageBox("Save success!");
 }
