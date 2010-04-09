@@ -289,7 +289,8 @@ void CSortDlg::OnBnClickedSave()
 	if(sFile.IsEmpty())
 		return;
 
-	CString s,sw;
+	CString s;
+	CStringW sw;
 
 	File f;
 	if(!f.Open(sFile,"wb"))
@@ -310,6 +311,7 @@ void CSortDlg::OnBnClickedSave()
 		{
 			sw = s;
 			::fwrite(sw,sw.GetLength()*sizeof(WCHAR),1,f);
+			::fwrite(L"\r\n",2*sizeof(WCHAR),1,f);
 		}
 	}
 
