@@ -35,4 +35,6 @@ public:
 	CListCtrl m_lsData;
 	CEdit m_edtFile;
 	BOOL LoadFile(LPCSTR lpFile);
+	afx_msg void OnBnClickedSort();
+	afx_msg void OnBnClickedSave();
 };

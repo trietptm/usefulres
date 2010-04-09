@@ -65,6 +65,8 @@ BEGIN_MESSAGE_MAP(CSortDlg, CDialog)
 	ON_WM_QUERYDRAGICON()
 	//}}AFX_MSG_MAP
 	ON_BN_CLICKED(IDC_SEL_FILE, OnBnClickedSelFile)
+	ON_BN_CLICKED(IDC_SORT, OnBnClickedSort)
+	ON_BN_CLICKED(IDC_SAVE, OnBnClickedSave)
 END_MESSAGE_MAP()
 
 
@@ -217,7 +219,8 @@ BOOL CSortDlg::LoadFile(LPCSTR lpFile)
 					break;
 
 				s = sLine;
-				m_lsData.InsertItem(m_lsData.GetItemCount(),s);
+				int iItem = m_lsData.InsertItem(m_lsData.GetItemCount(),s);
+				m_lsData.SetItemData(iItem,iItem);
 			}
 		}
 		else
@@ -237,4 +240,46 @@ void CSortDlg::OnBnClickedSelFile()
 	m_edtFile.SetWindowText(szFile);
 
 	LoadFile(szFile);	
+}
+
+struct MyData{
+	CListCtrl *listctrl;                 //CListCtrl控件指针
+	int isub;        //l列号
+	int seq;        //1为升序，0为降序
+};
+static int CALLBACK CompareFunc(LPARAM lParam1,LPARAM lParam2,LPARAM lParamSort)
+{
+	MyData *p=(MyData *)lParamSort;
+	CListCtrl* list =p->listctrl;
+	
+	LVFINDINFO findInfo; 
+	findInfo.flags = LVFI_PARAM; 
+	findInfo.lParam = lParam1; 
+	int iItem1 = list->FindItem(&findInfo, -1); 
+	findInfo.lParam = lParam2; 
+	int iItem2 = list->FindItem(&findInfo, -1); 
+
+	CString strItem1 =list->GetItemText(iItem1,p->isub); 
+	CString strItem2 =list->GetItemText(iItem2,p->isub);
+
+	if(p->seq)
+		return stricmp(strItem2, strItem1);
+	else
+		return -stricmp(strItem2, strItem1);	
+}
+
+void CSortDlg::OnBnClickedSort()
+{
+	static MyData tmpp = {
+		NULL,0,0
+	};
+	tmpp.listctrl = &m_lsData;
+	tmpp.isub = 0;
+	tmpp.seq = !tmpp.seq;
+	m_lsData.SortItems(CompareFunc,(LPARAM)&tmpp);
+}
+
+void CSortDlg::OnBnClickedSave()
+{
+
 }
