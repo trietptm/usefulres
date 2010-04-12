@@ -56,6 +56,7 @@
 struct KeyCheck
 {
 	UCHAR m_locator[16];
+	ULONG m_minVer;
 	ULONG m_version;
 	ULONG m_licence;
 	UCHAR m_raw[16];
