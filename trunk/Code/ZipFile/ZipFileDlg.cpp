@@ -228,7 +228,7 @@ void CZipFileDlg::OnBnClickedUnZip()
 	if(!pData)
 		return;
 
-	ULONG bufLen = fSize;
+	ULONG bufLen = fSize*10;
 	UCHAR* pBuf = (UCHAR*)::malloc(bufLen);
 	Ptr data1(pBuf);	
 	if(uncompress(pBuf,&bufLen,pData,fSize)!=Z_OK)
