@@ -4,6 +4,7 @@
 	Version="9.00"
 	Name="png"
 	ProjectGUID="{85BF4B4B-C3CE-4E1A-9D24-01419A2EFB84}"
+	RootNamespace="png"
 	Keyword="MFCProj"
 	TargetFrameworkVersion="0"
 	>
@@ -167,7 +168,7 @@
 			IntermediateDirectory=".\Release"
 			ConfigurationType="4"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
-			UseOfMFC="2"
+			UseOfMFC="1"
 			ATLMinimizesCRunTimeLibraryUsage="false"
 			>
 			<Tool
@@ -192,7 +193,7 @@
 				AdditionalIncludeDirectories="..\zlib"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE"
 				StringPooling="true"
-				RuntimeLibrary="2"
+				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
 				PrecompiledHeaderFile=".\Release/png.pch"
 				AssemblerListingLocation=".\Release/"

@@ -4,6 +4,7 @@
 	Version="9.00"
 	Name="jpeg"
 	ProjectGUID="{65622B24-00CB-4606-BBEA-D66D7B325F64}"
+	RootNamespace="jpeg"
 	Keyword="MFCProj"
 	TargetFrameworkVersion="0"
 	>
@@ -236,7 +237,7 @@
 			IntermediateDirectory=".\Release"
 			ConfigurationType="4"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
-			UseOfMFC="2"
+			UseOfMFC="1"
 			ATLMinimizesCRunTimeLibraryUsage="false"
 			>
 			<Tool
@@ -260,7 +261,7 @@
 				InlineFunctionExpansion="1"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE"
 				StringPooling="true"
-				RuntimeLibrary="2"
+				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
 				PrecompiledHeaderFile=".\Release/Jpeg.pch"
 				AssemblerListingLocation=".\Release/"

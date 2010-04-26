@@ -4,6 +4,7 @@
 	Version="9.00"
 	Name="tiff"
 	ProjectGUID="{B599A6F7-0657-4E53-9CEC-E8D8739739D3}"
+	RootNamespace="tiff"
 	Keyword="MFCProj"
 	TargetFrameworkVersion="0"
 	>
@@ -95,7 +96,7 @@
 			IntermediateDirectory=".\Release"
 			ConfigurationType="4"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
-			UseOfMFC="2"
+			UseOfMFC="1"
 			ATLMinimizesCRunTimeLibraryUsage="false"
 			>
 			<Tool
@@ -120,7 +121,7 @@
 				AdditionalIncludeDirectories="..\zlib"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE"
 				StringPooling="true"
-				RuntimeLibrary="2"
+				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
 				PrecompiledHeaderFile=".\Release/Tiff.pch"
 				AssemblerListingLocation=".\Release/"
