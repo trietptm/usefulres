@@ -4,6 +4,7 @@
 	Version="9.00"
 	Name="libdcr"
 	ProjectGUID="{5DBA9C29-14CE-4F91-82CC-EF75FB513F8C}"
+	RootNamespace="libdcr"
 	TargetFrameworkVersion="0"
 	>
 	<Platforms>
@@ -20,7 +21,7 @@
 			IntermediateDirectory=".\Release"
 			ConfigurationType="4"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
-			UseOfMFC="0"
+			UseOfMFC="1"
 			ATLMinimizesCRunTimeLibraryUsage="false"
 			>
 			<Tool
@@ -44,7 +45,7 @@
 				InlineFunctionExpansion="1"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE"
 				StringPooling="true"
-				RuntimeLibrary="2"
+				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
 				PrecompiledHeaderFile=".\Release/libdcr.pch"
 				AssemblerListingLocation=".\Release/"
