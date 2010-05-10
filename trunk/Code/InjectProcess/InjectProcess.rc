@@ -108,6 +108,7 @@ FONT 9, "宋体", 0, 0, 0x0
 BEGIN
     PUSHBUTTON      "获取模块加载地址",IDC_CRACK,32,15,122,16
     PUSHBUTTON      "获取垃圾文件数量",IDC_GET_RUBBISH_COUNT,177,16,75,16
+    PUSHBUTTON      "获取垃圾文件列表",IDC_GET_RUBBISH,32,45,83,16
 END
 
 
