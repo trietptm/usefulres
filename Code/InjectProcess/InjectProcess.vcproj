@@ -182,6 +182,16 @@
 				RelativePath=".\res\InjectProcess.rc2">
 			</File>
 		</Filter>
+		<Filter
+			Name="Ctrl"
+			Filter="">
+			<File
+				RelativePath="..\..\..\aman.softbox\trunk\Ctrl\ThisCall.cpp">
+			</File>
+			<File
+				RelativePath="..\..\..\aman.softbox\trunk\Ctrl\ThisCall.h">
+			</File>
+		</Filter>
 	</Files>
 	<Globals>
 		<Global

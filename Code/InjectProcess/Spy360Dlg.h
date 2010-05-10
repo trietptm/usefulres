@@ -7,6 +7,17 @@ public:
 	int m4_hSysSweeper;
 	void* m8_pIRubbishClean;
 };
+
+class Category
+{
+public:
+};
+
+class DObj
+{
+public:
+};
+
 // CSpy360Dlg ¶Ô»°¿ò
 
 class CSpy360Dlg : public CDialog
@@ -29,4 +40,5 @@ protected:
 public:
 	afx_msg void OnBnClickedCrack();
 	afx_msg void OnBnClickedGetRubbishCount();
+	afx_msg void OnBnClickedGetRubbish();
 };

@@ -8,6 +8,8 @@
 
 SysSweeper* gpSysSweeper;
 HRESULT (__stdcall *IRubbishClean__GetItemScanResult)(void *pThis, int nID, LONG *pfileNum, ULONGLONG *fizeSizeTotal);
+BOOL (__stdcall *IRubbishClean__GetObj)(INT nID, Category **ppCategory, DObj **ppDObj);
+
 // CSpy360Dlg 对话框
 
 IMPLEMENT_DYNAMIC(CSpy360Dlg, CDialog)
@@ -31,6 +33,7 @@ void CSpy360Dlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CSpy360Dlg, CDialog)
 	ON_BN_CLICKED(IDC_CRACK, OnBnClickedCrack)
 	ON_BN_CLICKED(IDC_GET_RUBBISH_COUNT, OnBnClickedGetRubbishCount)
+	ON_BN_CLICKED(IDC_GET_RUBBISH, OnBnClickedGetRubbish)
 END_MESSAGE_MAP()
 
 
@@ -58,6 +61,7 @@ void CSpy360Dlg::OnBnClickedCrack()
 
 	gpSysSweeper = (SysSweeper*)((ULONG)m_h360clean + 0x26828);
 	*(ULONG*)&IRubbishClean__GetItemScanResult = (ULONG)m_hSysSweeper + 0x61B2;
+	*(ULONG*)&IRubbishClean__GetObj = (ULONG)m_hSysSweeper + 0x5EEC;
 
 	AfxMessageBox("获取成功");
 }
@@ -72,4 +76,11 @@ void CSpy360Dlg::OnBnClickedGetRubbishCount()
 		s.Format("%d,%I64d",nFile,fSizeTotal);
 		AfxMessageBox(s);
 	}
+}
+void CSpy360Dlg::OnBnClickedGetRubbish()
+{
+	Category* pCategory = NULL;
+	DObj* pDObj = NULL;
+
+	ThisCall(gpSysSweeper->m8_pIRubbishClean,IRubbishClean__GetObj,1,&pCategory, &pDObj);
 }
