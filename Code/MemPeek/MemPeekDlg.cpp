@@ -164,5 +164,6 @@ void CMemPeekDlg::OnBnClickedOpenProcess()
 		return;
 	}
 
+	m_edtProcess.SetReadOnly(TRUE);
 	m_btOpenProc.EnableWindow(FALSE);
 }
