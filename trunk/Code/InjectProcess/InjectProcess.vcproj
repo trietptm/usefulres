@@ -136,6 +136,9 @@
 				RelativePath=".\InjectProcess.def">
 			</File>
 			<File
+				RelativePath=".\Spy360Dlg.cpp">
+			</File>
+			<File
 				RelativePath=".\stdafx.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
@@ -162,6 +165,9 @@
 				RelativePath=".\Resource.h">
 			</File>
 			<File
+				RelativePath=".\Spy360Dlg.h">
+			</File>
+			<File
 				RelativePath=".\stdafx.h">
 			</File>
 		</Filter>
@@ -181,5 +187,8 @@
 		</File>
 	</Files>
 	<Globals>
+		<Global
+			Name="RESOURCE_FILE"
+			Value="InjectProcess.rc"/>
 	</Globals>
 </VisualStudioProject>

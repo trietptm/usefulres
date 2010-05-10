@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "InjectProcess.h"
+#include "Spy360Dlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -66,5 +67,8 @@ BOOL CInjectProcessApp::InitInstance()
 
 void InjectInit()
 {
-	AfxMessageBox("OK");
+	AFX_MANAGE_STATE(AfxGetStaticModuleState());
+	
+	CSpy360Dlg dlg;
+	dlg.DoModal();
 }
