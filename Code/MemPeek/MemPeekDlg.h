@@ -2,6 +2,7 @@
 //
 
 #pragma once
+#include "afxwin.h"
 
 
 // CMemPeekDlg ¶Ô»°¿ò
@@ -30,4 +31,5 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnBnClickedOpenProcess();
+	CEdit m_edtProcess;
 };

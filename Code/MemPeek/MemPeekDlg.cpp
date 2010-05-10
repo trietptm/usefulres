@@ -55,6 +55,7 @@ CMemPeekDlg::CMemPeekDlg(CWnd* pParent /*=NULL*/)
 void CMemPeekDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_EDIT_PROCESS, m_edtProcess);
 }
 
 BEGIN_MESSAGE_MAP(CMemPeekDlg, CDialog)
