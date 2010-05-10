@@ -6,7 +6,8 @@
 #include "Spy360Dlg.h"
 #include ".\spy360dlg.h"
 
-
+SysSweeper* gpSysSweeper;
+HRESULT (__stdcall *IRubbishClean__GetItemScanResult)(void *pThis, int nID, LONG *pfileNum, ULONGLONG *fizeSizeTotal);
 // CSpy360Dlg 对话框
 
 IMPLEMENT_DYNAMIC(CSpy360Dlg, CDialog)
@@ -55,9 +56,20 @@ void CSpy360Dlg::OnBnClickedCrack()
 		return;
 	}
 
+	gpSysSweeper = (SysSweeper*)((ULONG)m_h360clean + 0x26828);
+	*(ULONG*)&IRubbishClean__GetItemScanResult = (ULONG)m_hSysSweeper + 0x61B2;
+
 	AfxMessageBox("获取成功");
 }
 void CSpy360Dlg::OnBnClickedGetRubbishCount()
 {
+	CString s;
 
+	LONG nFile = 0;
+	ULONGLONG fSizeTotal = 0;
+	if(IRubbishClean__GetItemScanResult(gpSysSweeper->m8_pIRubbishClean,1,&nFile,&fSizeTotal)==S_OK)
+	{
+		s.Format("%d,%I64d",nFile,fSizeTotal);
+		AfxMessageBox(s);
+	}
 }
