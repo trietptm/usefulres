@@ -56,6 +56,7 @@ void CMemPeekDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_EDIT_PROCESS, m_edtProcess);
+	DDX_Control(pDX, IDC_OPEN_PROCESS, m_btOpenProc);
 }
 
 BEGIN_MESSAGE_MAP(CMemPeekDlg, CDialog)
@@ -97,7 +98,8 @@ BOOL CMemPeekDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
 	// TODO: 在此添加额外的初始化代码
-	
+	m_edtProcess.SetWindowText("360Safe.exe");
+
 	return TRUE;  // 除非设置了控件的焦点，否则返回 TRUE
 }
 
@@ -151,5 +153,16 @@ HCURSOR CMemPeekDlg::OnQueryDragIcon()
 
 void CMemPeekDlg::OnBnClickedOpenProcess()
 {
-	
+	CString sProcess;
+	m_edtProcess.GetWindowText(sProcess);
+	if(sProcess.IsEmpty())
+		return;
+
+	if(!m_proc.AttachProcess(sProcess))
+	{
+		AfxMessageBox("Attach process failed!");
+		return;
+	}
+
+	m_btOpenProc.EnableWindow(FALSE);
 }

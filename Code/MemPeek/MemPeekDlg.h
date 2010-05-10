@@ -32,4 +32,5 @@ protected:
 public:
 	afx_msg void OnBnClickedOpenProcess();
 	CEdit m_edtProcess;
+	CButton m_btOpenProc;
 };
