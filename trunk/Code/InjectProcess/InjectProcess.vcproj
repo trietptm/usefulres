@@ -186,6 +186,12 @@
 			Name="Ctrl"
 			Filter="">
 			<File
+				RelativePath="..\..\..\aman.softbox\trunk\Ctrl\File.hpp">
+			</File>
+			<File
+				RelativePath="..\..\..\aman.softbox\trunk\Ctrl\Ptr.hpp">
+			</File>
+			<File
 				RelativePath="..\..\..\aman.softbox\trunk\Ctrl\ThisCall.cpp">
 			</File>
 			<File

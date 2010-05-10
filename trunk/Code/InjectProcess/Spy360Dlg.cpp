@@ -85,12 +85,21 @@ void CSpy360Dlg::OnBnClickedGetRubbish()
 	if(!ThisCall(gpSysSweeper->m8_pIRubbishClean,IRubbishClean__GetObj,1,&pCategory, &pDObj))
 		return;
 
+	CString s,s1;
 	if(pCategory)
 	{
+		File f;
+		if(!f.Open("C:\\Rubbish1.txt","wb"))
+			return;
+
 		VecKObj* pVecKObj = pCategory->m40_vecKObj();
 		for(ULONG i = 0;i<pVecKObj->m4_nItem;i++)
 		{
+			KObj* pKObj = pVecKObj->m0_ppItem[i];
 
+			s1 = pKObj->m8_pathFile;
+			s.Format("%s\r\n",s1);
+			::fwrite(s,s.GetLength(),1,f);
 		}
 	}
 }
