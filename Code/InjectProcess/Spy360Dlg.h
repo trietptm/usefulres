@@ -18,7 +18,7 @@ class KObj
 public:
 	void* m0_pvt;
 	int field_4;
-	CString m8_pathFile;
+	CStringW m8_pathFile;
 	int field_C;
 	ULONGLONG m10_fileSize;
 };
