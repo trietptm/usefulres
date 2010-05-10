@@ -82,5 +82,15 @@ void CSpy360Dlg::OnBnClickedGetRubbish()
 	Category* pCategory = NULL;
 	DObj* pDObj = NULL;
 
-	ThisCall(gpSysSweeper->m8_pIRubbishClean,IRubbishClean__GetObj,1,&pCategory, &pDObj);
+	if(!ThisCall(gpSysSweeper->m8_pIRubbishClean,IRubbishClean__GetObj,1,&pCategory, &pDObj))
+		return;
+
+	if(pCategory)
+	{
+		VecKObj* pVecKObj = pCategory->m40_vecKObj();
+		for(ULONG i = 0;i<pVecKObj->m4_nItem;i++)
+		{
+
+		}
+	}
 }
