@@ -182,9 +182,6 @@
 				RelativePath=".\res\InjectProcess.rc2">
 			</File>
 		</Filter>
-		<File
-			RelativePath=".\ReadMe.txt">
-		</File>
 	</Files>
 	<Globals>
 		<Global
