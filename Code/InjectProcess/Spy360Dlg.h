@@ -8,14 +8,34 @@ public:
 	void* m8_pIRubbishClean;
 };
 
-class Category
+class DObj
 {
 public:
 };
 
-class DObj
+class KObj
 {
 public:
+	void* m0_pvt;
+	int field_4;
+	CString m8_pathFile;
+	int field_C;
+	ULONGLONG m10_fileSize;
+};
+
+class VecKObj
+{
+public:
+	KObj **m0_ppItem;
+	ULONG m4_nItem;
+	ULONG m8_size;
+	ULONG mC;
+};
+
+class Category
+{
+public:
+	VecKObj* m40_vecKObj(){return (VecKObj*)((ULONG)this + 0x40);}
 };
 
 // CSpy360Dlg ¶Ô»°¿ò
