@@ -1,6 +1,12 @@
 #pragma once
 
-
+class SysSweeper
+{
+public:
+	int m0_pvt;
+	int m4_hSysSweeper;
+	void* m8_pIRubbishClean;
+};
 // CSpy360Dlg ¶Ô»°¿ò
 
 class CSpy360Dlg : public CDialog
