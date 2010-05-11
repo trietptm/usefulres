@@ -61,4 +61,5 @@ public:
 	afx_msg void OnBnClickedCrack();
 	afx_msg void OnBnClickedGetRubbishCount();
 	afx_msg void OnBnClickedGetRubbish();
+	afx_msg void OnBnClickedTest();
 };
