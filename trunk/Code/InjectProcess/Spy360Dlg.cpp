@@ -5,11 +5,15 @@
 #include "InjectProcess.h"
 #include "Spy360Dlg.h"
 #include ".\spy360dlg.h"
+#include "AnyBreak.h"
 
 SysSweeper* gpSysSweeper;
 HRESULT (__stdcall *IRubbishClean__GetItemScanResult)(void *pThis, int nID, LONG *pfileNum, ULONGLONG *fizeSizeTotal);
 BOOL (__stdcall *IRubbishClean__GetObj)(INT nID, Category **ppCategory, DObj **ppDObj);
 BOOL (*FilterStr)(LPCWSTR lpFilter, LPCWSTR lpFileName);
+ULONG gAddr_5A1E = 0x5A1E;
+ULONG gAddr_5A24 = 0x5A24;
+
 
 // CSpy360Dlg 对话框
 
@@ -36,6 +40,7 @@ BEGIN_MESSAGE_MAP(CSpy360Dlg, CDialog)
 	ON_BN_CLICKED(IDC_GET_RUBBISH_COUNT, OnBnClickedGetRubbishCount)
 	ON_BN_CLICKED(IDC_GET_RUBBISH, OnBnClickedGetRubbish)
 	ON_BN_CLICKED(IDC_TEST, OnBnClickedTest)
+	ON_BN_CLICKED(IDC_HOOK, OnBnClickedHook)
 END_MESSAGE_MAP()
 
 
@@ -65,6 +70,8 @@ void CSpy360Dlg::OnBnClickedCrack()
 	*(ULONG*)&IRubbishClean__GetItemScanResult = (ULONG)m_hSysSweeper + 0x61B2;
 	*(ULONG*)&IRubbishClean__GetObj = (ULONG)m_hSysSweeper + 0x5EEC;
 	*(ULONG*)&FilterStr = (ULONG)m_hSysSweeper + 0x1F52;
+	gAddr_5A1E += (ULONG)m_hSysSweeper;
+	gAddr_5A24 += (ULONG)m_hSysSweeper;
 
 	AfxMessageBox("获取成功");	
 }
@@ -121,4 +128,36 @@ void CSpy360Dlg::OnBnClickedTest()
 		AfxMessageBox("Yes");
 	else
 		AfxMessageBox("No");
+}
+
+void __stdcall On_5A1E(UCHAR* pFindFile)
+{
+	LPCWSTR lpPath = (LPCWSTR)(pFindFile + 0x250);
+	LPCWSTR lpFile = (LPCWSTR)(pFindFile + 0x2C);
+
+	if(wcscmp(lpFile,L"1489AFE4.TMP")==0)
+	{
+		__asm int 3
+	}
+}
+
+__declspec(naked) void Hook_5A1E()
+{
+	static ULONG oldEsp;
+	__asm{
+		mov oldEsp,esp
+
+		lea eax,[ebp-490h]
+		push eax
+		call On_5A1E
+
+		lea eax,[ebp-490h]
+		mov esp,oldEsp
+		push dword ptr [gAddr_5A24]
+		ret
+	}
+}
+void CSpy360Dlg::OnBnClickedHook()
+{
+	HookAddr(gAddr_5A1E,Hook_5A1E);
 }
