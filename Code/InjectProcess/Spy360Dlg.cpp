@@ -79,17 +79,20 @@ void CSpy360Dlg::OnBnClickedGetRubbishCount()
 }
 void CSpy360Dlg::OnBnClickedGetRubbish()
 {
+	enum{id = 9};
+
 	Category* pCategory = NULL;
 	DObj* pDObj = NULL;
 
-	if(!ThisCall(gpSysSweeper->m8_pIRubbishClean,IRubbishClean__GetObj,1,&pCategory, &pDObj))
+	if(!ThisCall(gpSysSweeper->m8_pIRubbishClean,IRubbishClean__GetObj,id,&pCategory, &pDObj))
 		return;
 
 	CString s,s1;
 	if(pCategory)
 	{
 		File f;
-		if(!f.Open("C:\\Rubbish1.txt","wb"))
+		s.Format("C:\\Rubbish%d.txt",id);
+		if(!f.Open(s,"wb"))
 			return;
 
 		VecKObj* pVecKObj = pCategory->m40_vecKObj();
