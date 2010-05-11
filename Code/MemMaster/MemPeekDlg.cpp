@@ -57,6 +57,7 @@ void CMemPeekDlg::DoDataExchange(CDataExchange* pDX)
 	CDialog::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_EDIT_PROCESS, m_edtProcess);
 	DDX_Control(pDX, IDC_OPEN_PROCESS, m_btOpenProc);
+	DDX_Control(pDX, IDC_MODIFY, m_btModify);
 }
 
 BEGIN_MESSAGE_MAP(CMemPeekDlg, CDialog)
@@ -65,6 +66,7 @@ BEGIN_MESSAGE_MAP(CMemPeekDlg, CDialog)
 	ON_WM_QUERYDRAGICON()
 	//}}AFX_MSG_MAP
 	ON_BN_CLICKED(IDC_OPEN_PROCESS, OnBnClickedOpenProcess)
+	ON_BN_CLICKED(IDC_MODIFY, OnBnClickedModify)
 END_MESSAGE_MAP()
 
 
@@ -98,6 +100,8 @@ BOOL CMemPeekDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
 	// TODO: 在此添加额外的初始化代码
+	m_btModify.EnableWindow(FALSE);
+
 	m_edtProcess.SetWindowText("360Safe.exe");
 
 	return TRUE;  // 除非设置了控件的焦点，否则返回 TRUE
@@ -166,4 +170,8 @@ void CMemPeekDlg::OnBnClickedOpenProcess()
 
 	m_edtProcess.SetReadOnly(TRUE);
 	m_btOpenProc.EnableWindow(FALSE);
+}
+void CMemPeekDlg::OnBnClickedModify()
+{
+
 }
