@@ -58,6 +58,8 @@ void CMemPeekDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT_PROCESS, m_edtProcess);
 	DDX_Control(pDX, IDC_OPEN_PROCESS, m_btOpenProc);
 	DDX_Control(pDX, IDC_MODIFY, m_btModify);
+	DDX_Control(pDX, IDC_EDIT_MODIFY_ADDR, m_edtModifyAddr);
+	DDX_Control(pDX, IDC_EDIT_MODIFY_VALUE, m_edtModifyValue);
 }
 
 BEGIN_MESSAGE_MAP(CMemPeekDlg, CDialog)
@@ -103,6 +105,8 @@ BOOL CMemPeekDlg::OnInitDialog()
 	m_btModify.EnableWindow(FALSE);
 
 	m_edtProcess.SetWindowText("360Safe.exe");
+
+	m_edtModifyValue.SetWindowText("90");
 
 	return TRUE;  // 除非设置了控件的焦点，否则返回 TRUE
 }
@@ -170,8 +174,40 @@ void CMemPeekDlg::OnBnClickedOpenProcess()
 
 	m_edtProcess.SetReadOnly(TRUE);
 	m_btOpenProc.EnableWindow(FALSE);
+	m_btModify.EnableWindow(TRUE);
 }
 void CMemPeekDlg::OnBnClickedModify()
 {
+	CString s;
+	m_edtModifyAddr.GetWindowText(s);
+	if(s.IsEmpty())
+		return;
 
+	ULONG addr;
+	int r = ::sscanf(s,"%X",&addr);
+	if(r!=1)
+		return;
+
+	CString sValue;
+	m_edtModifyValue.GetWindowText(sValue);
+	if(sValue.IsEmpty() || (sValue.GetLength()%2)!=0)
+		return;
+	
+	Bytes bytes;
+	for(int ofs = 0;ofs < s.GetLength();ofs += 2)
+	{
+		s = sValue.Mid(ofs,2);
+
+		ULONG value;
+		r = ::sscanf(s,"%X",&value);
+		if(r!=1)
+			return;
+
+		bytes.push_back(value);
+	}
+
+	if(m_proc.WriteMem(addr,&bytes[0],bytes.size()))
+	{
+		AfxMessageBox("Modify success!");
+	}
 }
