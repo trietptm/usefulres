@@ -35,4 +35,6 @@ public:
 	CButton m_btOpenProc;
 	afx_msg void OnBnClickedModify();
 	CButton m_btModify;
+	CEdit m_edtModifyAddr;
+	CEdit m_edtModifyValue;
 };
