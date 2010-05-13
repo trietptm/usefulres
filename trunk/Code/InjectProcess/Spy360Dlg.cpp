@@ -5,7 +5,6 @@
 #include "InjectProcess.h"
 #include "Spy360Dlg.h"
 #include ".\spy360dlg.h"
-#include "AnyBreak.h"
 
 SysSweeper* gpSysSweeper;
 HRESULT (__stdcall *IRubbishClean__GetItemScanResult)(void *pThis, int nID, LONG *pfileNum, ULONGLONG *fizeSizeTotal);
