@@ -130,9 +130,6 @@
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}">
 			<File
-				RelativePath=".\AnyBreak.cpp">
-			</File>
-			<File
 				RelativePath=".\InjectProcess.cpp">
 			</File>
 			<File
@@ -162,9 +159,6 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}">
 			<File
-				RelativePath=".\AnyBreak.h">
-			</File>
-			<File
 				RelativePath=".\InjectProcess.h">
 			</File>
 			<File
@@ -191,6 +185,12 @@
 		<Filter
 			Name="Ctrl"
 			Filter="">
+			<File
+				RelativePath="..\..\..\aman.softbox\trunk\Ctrl\AnyBreak.cpp">
+			</File>
+			<File
+				RelativePath="..\..\..\aman.softbox\trunk\Ctrl\AnyBreak.h">
+			</File>
 			<File
 				RelativePath="..\..\..\aman.softbox\trunk\Ctrl\File.hpp">
 			</File>

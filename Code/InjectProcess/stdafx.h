@@ -53,3 +53,4 @@
 #include "..\..\..\aman.softbox\trunk\Ctrl\ThisCall.h"
 #include "..\..\..\aman.softbox\trunk\Ctrl\Ptr.hpp"
 #include "..\..\..\aman.softbox\trunk\Ctrl\File.hpp"
+#include "..\..\..\aman.softbox\trunk\Ctrl\AnyBreak.h"
