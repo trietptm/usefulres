@@ -1,0 +1,542 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0035)http://ffmpeg.mplayerhq.hu/faq.html -->
+<HTML><HEAD><TITLE>FFmpeg FAQ</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=gb2312"><!-- Created by texi2html 1.56k from doc/faq.texi on 7 April 2008 -->
+<META content="MSHTML 6.00.2900.3020" name=GENERATOR></HEAD>
+<BODY>
+<H1>FFmpeg FAQ</H1>
+<P>
+<P>
+<HR>
+
+<P>
+<H1>Table of Contents</H1>
+<UL>
+  <LI><A href="http://ffmpeg.mplayerhq.hu/faq.html#SEC1" name=TOC1>1. General 
+  Questions</A> 
+  <UL>
+    <LI><A href="http://ffmpeg.mplayerhq.hu/faq.html#SEC2" name=TOC2>1.1 When 
+    will the next FFmpeg version be released? / Why are FFmpeg releases so few 
+    and far between?</A> 
+    <LI><A href="http://ffmpeg.mplayerhq.hu/faq.html#SEC3" name=TOC3>1.2 I have 
+    a problem with an old version of FFmpeg; where should I report it?</A> 
+    <LI><A href="http://ffmpeg.mplayerhq.hu/faq.html#SEC4" name=TOC4>1.3 Why 
+    doesn't FFmpeg support feature [xyz]?</A> 
+    <LI><A href="http://ffmpeg.mplayerhq.hu/faq.html#SEC5" name=TOC5>1.4 FFmpeg 
+    does not support codec XXX. Can you include a Windows DLL loader to support 
+    it?</A> 
+    <LI><A href="http://ffmpeg.mplayerhq.hu/faq.html#SEC6" name=TOC6>1.5 My 
+    bugreport/mail to ffmpeg-devel/user has not received any replies.</A> 
+    <LI><A href="http://ffmpeg.mplayerhq.hu/faq.html#SEC7" name=TOC7>1.6 Is 
+    there a forum for FFmpeg? I do not like mailing lists.</A> 
+    <LI><A href="http://ffmpeg.mplayerhq.hu/faq.html#SEC8" name=TOC8>1.7 I 
+    cannot read this file although this format seems to be supported by 
+    ffmpeg.</A> 
+    <LI><A href="http://ffmpeg.mplayerhq.hu/faq.html#SEC9" name=TOC9>1.8 Which 
+    codecs are supported by Windows?</A> </LI></UL>
+  <LI><A href="http://ffmpeg.mplayerhq.hu/faq.html#SEC10" name=TOC10>2. 
+  Usage</A> 
+  <UL>
+    <LI><A href="http://ffmpeg.mplayerhq.hu/faq.html#SEC11" name=TOC11>2.1 
+    ffmpeg does not work; What is wrong?</A> 
+    <LI><A href="http://ffmpeg.mplayerhq.hu/faq.html#SEC12" name=TOC12>2.2 How 
+    do I encode single pictures to movies?</A> 
+    <LI><A href="http://ffmpeg.mplayerhq.hu/faq.html#SEC13" name=TOC13>2.3 How 
+    do I encode movie to single pictures?</A> 
+    <LI><A href="http://ffmpeg.mplayerhq.hu/faq.html#SEC14" name=TOC14>2.4 I get 
+    "Unsupported codec (id=86043) for input stream #0.1". What is the 
+    problem?</A> 
+    <LI><A href="http://ffmpeg.mplayerhq.hu/faq.html#SEC15" name=TOC15>2.5 Why 
+    do I see a slight quality degradation with multithreaded MPEG* encoding?</A> 
+
+    <LI><A href="http://ffmpeg.mplayerhq.hu/faq.html#SEC16" name=TOC16>2.6 How 
+    can I read from the standard input or write to the standard output?</A> 
+    <LI><A href="http://ffmpeg.mplayerhq.hu/faq.html#SEC17" name=TOC17>2.7 Why 
+    does FFmpeg not decode audio in VOB files?</A> 
+    <LI><A href="http://ffmpeg.mplayerhq.hu/faq.html#SEC18" name=TOC18>2.8 Why 
+    does the chrominance data seem to be sampled at a different time from the 
+    luminance data on bt8x8 captures on Linux?</A> 
+    <LI><A href="http://ffmpeg.mplayerhq.hu/faq.html#SEC19" name=TOC19>2.9 How 
+    do I avoid the ugly aliasing artifacts in bt8x8 captures on Linux?</A> 
+    <LI><A href="http://ffmpeg.mplayerhq.hu/faq.html#SEC20" name=TOC20>2.10 -f 
+    jpeg doesn't work.</A> 
+    <LI><A href="http://ffmpeg.mplayerhq.hu/faq.html#SEC21" name=TOC21>2.11 Why 
+    can I not change the framerate?</A> 
+    <LI><A href="http://ffmpeg.mplayerhq.hu/faq.html#SEC22" name=TOC22>2.12 How 
+    do I encode XviD or DivX video with ffmpeg?</A> 
+    <LI><A href="http://ffmpeg.mplayerhq.hu/faq.html#SEC23" name=TOC23>2.13 How 
+    do I encode videos which play on the iPod?</A> 
+    <LI><A href="http://ffmpeg.mplayerhq.hu/faq.html#SEC24" name=TOC24>2.14 How 
+    do I encode videos which play on the PSP?</A> 
+    <LI><A href="http://ffmpeg.mplayerhq.hu/faq.html#SEC25" name=TOC25>2.15 
+    Which are good parameters for encoding high quality MPEG-4?</A> 
+    <LI><A href="http://ffmpeg.mplayerhq.hu/faq.html#SEC26" name=TOC26>2.16 
+    Which are good parameters for encoding high quality MPEG-1/MPEG-2?</A> 
+    <LI><A href="http://ffmpeg.mplayerhq.hu/faq.html#SEC27" name=TOC27>2.17 
+    Interlaced video looks very bad when encoded with ffmpeg, whats wrong?</A> 
+    <LI><A href="http://ffmpeg.mplayerhq.hu/faq.html#SEC28" name=TOC28>2.18 How 
+    can I read DirectShow files?</A> 
+    <LI><A href="http://ffmpeg.mplayerhq.hu/faq.html#SEC29" name=TOC29>2.19 How 
+    can I join video files?</A> 
+    <LI><A href="http://ffmpeg.mplayerhq.hu/faq.html#SEC30" name=TOC30>2.20 
+    FFmpeg does not adhere to the -maxrate setting, some frames are bigger than 
+    maxrate/fps.</A> 
+    <LI><A href="http://ffmpeg.mplayerhq.hu/faq.html#SEC31" name=TOC31>2.21 I 
+    want CBR, but no matter what I do frame sizes differ.</A> 
+    <LI><A href="http://ffmpeg.mplayerhq.hu/faq.html#SEC32" name=TOC32>2.22 How 
+    do I check if a stream is CBR?</A> </LI></UL>
+  <LI><A href="http://ffmpeg.mplayerhq.hu/faq.html#SEC33" name=TOC33>3. 
+  Development</A> 
+  <UL>
+    <LI><A href="http://ffmpeg.mplayerhq.hu/faq.html#SEC34" name=TOC34>3.1 Are 
+    there examples illustrating how to use the FFmpeg libraries, particularly 
+    libavcodec and libavformat?</A> 
+    <LI><A href="http://ffmpeg.mplayerhq.hu/faq.html#SEC35" name=TOC35>3.2 Can 
+    you support my C compiler XXX?</A> 
+    <LI><A href="http://ffmpeg.mplayerhq.hu/faq.html#SEC36" name=TOC36>3.3 Is 
+    Microsoft Visual C++ supported?</A> 
+    <LI><A href="http://ffmpeg.mplayerhq.hu/faq.html#SEC37" name=TOC37>3.4 Can I 
+    use FFmpeg or libavcodec under Windows?</A> 
+    <LI><A href="http://ffmpeg.mplayerhq.hu/faq.html#SEC38" name=TOC38>3.5 Can 
+    you add automake, libtool or autoconf support?</A> 
+    <LI><A href="http://ffmpeg.mplayerhq.hu/faq.html#SEC39" name=TOC39>3.6 Why 
+    not rewrite ffmpeg in object-oriented C++?</A> 
+    <LI><A href="http://ffmpeg.mplayerhq.hu/faq.html#SEC40" name=TOC40>3.7 Why 
+    are the ffmpeg programs devoid of debugging symbols?</A> 
+    <LI><A href="http://ffmpeg.mplayerhq.hu/faq.html#SEC41" name=TOC41>3.8 I do 
+    not like the LGPL, can I contribute code under the GPL instead?</A> 
+    <LI><A href="http://ffmpeg.mplayerhq.hu/faq.html#SEC42" name=TOC42>3.9 I 
+    want to compile xyz.c alone but my compiler produced many errors.</A> 
+    <LI><A href="http://ffmpeg.mplayerhq.hu/faq.html#SEC43" name=TOC43>3.10 I'm 
+    using libavcodec from within my C++ application but the linker complains 
+    about missing symbols which seem to be available.</A> 
+    <LI><A href="http://ffmpeg.mplayerhq.hu/faq.html#SEC44" name=TOC44>3.11 I 
+    have a file in memory / a API different from *open/*read/ libc how do I use 
+    it with libavformat?</A> 
+    <LI><A href="http://ffmpeg.mplayerhq.hu/faq.html#SEC45" name=TOC45>3.12 I 
+    get "No compatible shell script interpreter found." in MSys.</A> 
+    <LI><A href="http://ffmpeg.mplayerhq.hu/faq.html#SEC46" name=TOC46>3.13 I 
+    get "./configure: line &lt;xxx&gt;: pr: command not found" in MSys.</A> 
+    <LI><A href="http://ffmpeg.mplayerhq.hu/faq.html#SEC47" name=TOC47>3.14 I 
+    tried to pass RTP packets into a decoder, but it doesn't work.</A> 
+    <LI><A href="http://ffmpeg.mplayerhq.hu/faq.html#SEC48" name=TOC48>3.15 
+    Where can I find libav* headers for Pascal/Delphi?</A> 
+    <LI><A href="http://ffmpeg.mplayerhq.hu/faq.html#SEC49" name=TOC49>3.16 
+    Where is the documentation about ffv1, msmpeg4, asv1, 4xm?</A> 
+    <LI><A href="http://ffmpeg.mplayerhq.hu/faq.html#SEC50" name=TOC50>3.17 How 
+    do I feed H.263-RTP (and other codecs in RTP) to libavcodec?</A> 
+    <LI><A href="http://ffmpeg.mplayerhq.hu/faq.html#SEC51" name=TOC51>3.18 
+    AVStream.r_frame_rate is wrong, it is much larger than the framerate.</A> 
+    </LI></UL></LI></UL>
+<P>
+<HR>
+
+<P>
+<P>FFmpeg FAQ 
+<H1><A href="http://ffmpeg.mplayerhq.hu/faq.html#TOC1" name=SEC1>1. General 
+Questions</A></H1>
+<H2><A href="http://ffmpeg.mplayerhq.hu/faq.html#TOC2" name=SEC2>1.1 When will 
+the next FFmpeg version be released? / Why are FFmpeg releases so few and far 
+between?</A></H2>
+<P>Like most open source projects FFmpeg suffers from a certain lack of 
+manpower. For this reason the developers have to prioritize the work they do and 
+putting out releases is not at the top of the list, fixing bugs and reviewing 
+patches takes precedence. Please don't complain or request more timely and/or 
+frequent releases unless you are willing to help out creating them. 
+<H2><A href="http://ffmpeg.mplayerhq.hu/faq.html#TOC3" name=SEC3>1.2 I have a 
+problem with an old version of FFmpeg; where should I report it?</A></H2>
+<P>Nowhere. Upgrade to the latest release or if there is no recent release 
+upgrade to Subversion HEAD. You could also try to report it. Maybe you will get 
+lucky and become the first person in history to get an answer different from 
+"upgrade to Subversion HEAD". 
+<H2><A href="http://ffmpeg.mplayerhq.hu/faq.html#TOC4" name=SEC4>1.3 Why doesn't 
+FFmpeg support feature [xyz]?</A></H2>
+<P>Because no one has taken on that task yet. FFmpeg development is driven by 
+the tasks that are important to the individual developers. If there is a feature 
+that is important to you, the best way to get it implemented is to undertake the 
+task yourself or sponsor a developer. 
+<H2><A href="http://ffmpeg.mplayerhq.hu/faq.html#TOC5" name=SEC5>1.4 FFmpeg does 
+not support codec XXX. Can you include a Windows DLL loader to support 
+it?</A></H2>
+<P>No. Windows DLLs are not portable, bloated and often slow. Moreover FFmpeg 
+strives to support all codecs natively. A DLL loader is not conducive to that 
+goal. 
+<H2><A href="http://ffmpeg.mplayerhq.hu/faq.html#TOC6" name=SEC6>1.5 My 
+bugreport/mail to ffmpeg-devel/user has not received any replies.</A></H2>
+<P>Likely reasons 
+<UL>
+  <LI>We are busy and haven't had time yet to read your report or investigate 
+  the issue. 
+  <LI>You didn't follow bugreports.html. 
+  <LI>You didn't use Subversion HEAD. 
+  <LI>You reported a segmentation fault without gdb output. 
+  <LI>You describe a problem but not how to reproduce it. 
+  <LI>It's unclear if you use ffmpeg as command line tool or use libav* from 
+  another application. 
+  <LI>You speak about a video having problems on playback but not what you use 
+  to play it. 
+  <LI>We have no faint clue what you are talking about besides that it is 
+  related to FFmpeg. </LI></UL>
+<H2><A href="http://ffmpeg.mplayerhq.hu/faq.html#TOC7" name=SEC7>1.6 Is there a 
+forum for FFmpeg? I do not like mailing lists.</A></H2>
+<P>Yes, (<A 
+href="http://dir.gmane.org/gmane.comp.video.ffmpeg.user">http://dir.gmane.org/gmane.comp.video.ffmpeg.user</A>). 
+
+<H2><A href="http://ffmpeg.mplayerhq.hu/faq.html#TOC8" name=SEC8>1.7 I cannot 
+read this file although this format seems to be supported by ffmpeg.</A></H2>
+<P>Even if ffmpeg can read the container format, it may not support all its 
+codecs. Please consult the supported codec list in the ffmpeg documentation. 
+<H2><A href="http://ffmpeg.mplayerhq.hu/faq.html#TOC9" name=SEC9>1.8 Which 
+codecs are supported by Windows?</A></H2>
+<P>Windows does not support standard formats like MPEG very well, unless you 
+install some additional codecs 
+<P>The following list of video codecs should work on most Windows systems: 
+<DL compact>
+  <DT><SAMP>`msmpeg4v2'</SAMP> 
+  <DD>.avi/.asf 
+  <DT><SAMP>`msmpeg4'</SAMP> 
+  <DD>.asf only 
+  <DT><SAMP>`wmv1'</SAMP> 
+  <DD>.asf only 
+  <DT><SAMP>`wmv2'</SAMP> 
+  <DD>.asf only 
+  <DT><SAMP>`mpeg4'</SAMP> 
+  <DD>only if you have some MPEG-4 codec installed like ffdshow or XviD 
+  <DT><SAMP>`mpeg1'</SAMP> 
+  <DD>.mpg only </DD></DL>
+<P>Note, ASF files often have .wmv or .wma extensions in Windows. It should also 
+be mentioned that Microsoft claims a patent on the ASF format, and may sue or 
+threaten users who create ASF files with non-Microsoft software. It is strongly 
+advised to avoid ASF where possible. 
+<P>The following list of audio codecs should work on most Windows systems: 
+<DL compact>
+  <DT><SAMP>`adpcm_ima_wav'</SAMP> 
+  <DD>
+  <DT><SAMP>`adpcm_ms'</SAMP> 
+  <DD>
+  <DT><SAMP>`pcm'</SAMP> 
+  <DD>
+  <DT><SAMP>`mp3'</SAMP> 
+  <DD>if some MP3 codec like LAME is installed </DD></DL>
+<H1><A href="http://ffmpeg.mplayerhq.hu/faq.html#TOC10" name=SEC10>2. 
+Usage</A></H1>
+<H2><A href="http://ffmpeg.mplayerhq.hu/faq.html#TOC11" name=SEC11>2.1 ffmpeg 
+does not work; What is wrong?</A></H2>
+<P>Try a <CODE>make distclean</CODE> in the ffmpeg source directory before the 
+build. If this does not help see (<A 
+href="http://ffmpeg.org/bugreports.html">http://ffmpeg.org/bugreports.html</A>). 
+
+<H2><A href="http://ffmpeg.mplayerhq.hu/faq.html#TOC12" name=SEC12>2.2 How do I 
+encode single pictures to movies?</A></H2>
+<P>First, rename your pictures to follow a numerical sequence. For example, 
+img1.jpg, img2.jpg, img3.jpg,... Then you may run: <PRE>  ffmpeg -f image2 -i img%d.jpg /tmp/a.mpg
+</PRE>
+<P>Notice that <SAMP>`%d'</SAMP> is replaced by the image number. 
+<P><TT>`img%03d.jpg'</TT> means the sequence <TT>`img001.jpg'</TT>, 
+<TT>`img002.jpg'</TT>, etc... 
+<P>The same logic is used for any image format that ffmpeg reads. 
+<H2><A href="http://ffmpeg.mplayerhq.hu/faq.html#TOC13" name=SEC13>2.3 How do I 
+encode movie to single pictures?</A></H2>
+<P>Use: <PRE>  ffmpeg -i movie.mpg movie%d.jpg
+</PRE>
+<P>The <TT>`movie.mpg'</TT> used as input will be converted to 
+<TT>`movie1.jpg'</TT>, <TT>`movie2.jpg'</TT>, etc... 
+<P>Instead of relying on file format self-recognition, you may also use 
+<DL compact>
+  <DT><SAMP>`-vcodec ppm'</SAMP> 
+  <DD>
+  <DT><SAMP>`-vcodec png'</SAMP> 
+  <DD>
+  <DT><SAMP>`-vcodec mjpeg'</SAMP> 
+  <DD></DD></DL>
+<P>to force the encoding. 
+<P>Applying that to the previous example: <PRE>  ffmpeg -i movie.mpg -f image2 -vcodec mjpeg menu%d.jpg
+</PRE>
+<P>Beware that there is no "jpeg" codec. Use "mjpeg" instead. 
+<H2><A href="http://ffmpeg.mplayerhq.hu/faq.html#TOC14" name=SEC14>2.4 I get 
+"Unsupported codec (id=86043) for input stream #0.1". What is the 
+problem?</A></H2>
+<P>This is the Qcelp codec, FFmpeg has no support for that codec currently. Try 
+mencoder/mplayer it might work. 
+<H2><A href="http://ffmpeg.mplayerhq.hu/faq.html#TOC15" name=SEC15>2.5 Why do I 
+see a slight quality degradation with multithreaded MPEG* encoding?</A></H2>
+<P>For multithreaded MPEG* encoding, the encoded slices must be independent, 
+otherwise thread n would practically have to wait for n-1 to finish, so it's 
+quite logical that there is a small reduction of quality. This is not a bug. 
+<H2><A href="http://ffmpeg.mplayerhq.hu/faq.html#TOC16" name=SEC16>2.6 How can I 
+read from the standard input or write to the standard output?</A></H2>
+<P>Use <TT>`-'</TT> as filename. 
+<H2><A href="http://ffmpeg.mplayerhq.hu/faq.html#TOC17" name=SEC17>2.7 Why does 
+FFmpeg not decode audio in VOB files?</A></H2>
+<P>The audio is AC-3 (a.k.a. A/52). AC-3 decoding is an optional component in 
+FFmpeg as the component that handles AC-3 decoding is currently released under 
+the GPL. Enable AC-3 decoding with <CODE>./configure --enable-gpl</CODE>. Take 
+care: By enabling AC-3, you automatically change the license of libavcodec from 
+LGPL to GPL. 
+<H2><A href="http://ffmpeg.mplayerhq.hu/faq.html#TOC18" name=SEC18>2.8 Why does 
+the chrominance data seem to be sampled at a different time from the luminance 
+data on bt8x8 captures on Linux?</A></H2>
+<P>This is a well-known bug in the bt8x8 driver. For 2.4.26 there is a patch at 
+(<A 
+href="http://svn.mplayerhq.hu/michael/trunk/patches/bttv-420-2.4.26.patch?view=co">http://svn.mplayerhq.hu/michael/trunk/patches/bttv-420-2.4.26.patch?view=co</A>). 
+This may also apply cleanly to other 2.4-series kernels. 
+<H2><A href="http://ffmpeg.mplayerhq.hu/faq.html#TOC19" name=SEC19>2.9 How do I 
+avoid the ugly aliasing artifacts in bt8x8 captures on Linux?</A></H2>
+<P>Pass 'combfilter=1 lumafilter=1' to the bttv driver. Note though that 
+'combfilter=1' will cause somewhat too strong filtering. A fix is to apply (<A 
+href="http://svn.mplayerhq.hu/michael/trunk/patches/bttv-comb-2.4.26.patch?view=co">http://svn.mplayerhq.hu/michael/trunk/patches/bttv-comb-2.4.26.patch?view=co</A>) 
+or (<A 
+href="http://svn.mplayerhq.hu/michael/trunk/patches/bttv-comb-2.6.6.patch?view=co">http://svn.mplayerhq.hu/michael/trunk/patches/bttv-comb-2.6.6.patch?view=co</A>) 
+and pass 'combfilter=2'. 
+<H2><A href="http://ffmpeg.mplayerhq.hu/faq.html#TOC20" name=SEC20>2.10 -f jpeg 
+doesn't work.</A></H2>
+<P>Try '-f image2 test%d.jpg'. 
+<H2><A href="http://ffmpeg.mplayerhq.hu/faq.html#TOC21" name=SEC21>2.11 Why can 
+I not change the framerate?</A></H2>
+<P>Some codecs, like MPEG-1/2, only allow a small number of fixed framerates. 
+Choose a different codec with the -vcodec command line option. 
+<H2><A href="http://ffmpeg.mplayerhq.hu/faq.html#TOC22" name=SEC22>2.12 How do I 
+encode XviD or DivX video with ffmpeg?</A></H2>
+<P>Both XviD and DivX (version 4+) are implementations of the ISO MPEG-4 
+standard (note that there are many other coding formats that use this same 
+standard). Thus, use '-vcodec mpeg4' to encode these formats. The default fourcc 
+stored in an MPEG-4-coded file will be 'FMP4'. If you want a different fourcc, 
+use the '-vtag' option. E.g., '-vtag xvid' will force the fourcc 'xvid' to be 
+stored as the video fourcc rather than the default. 
+<H2><A href="http://ffmpeg.mplayerhq.hu/faq.html#TOC23" name=SEC23>2.13 How do I 
+encode videos which play on the iPod?</A></H2>
+<DL compact>
+  <DT><SAMP>`needed stuff'</SAMP> 
+  <DD>-acodec libfaac -vcodec mpeg4 width&lt;=320 height&lt;=240 
+  <DT><SAMP>`working stuff'</SAMP> 
+  <DD>4mv, title 
+  <DT><SAMP>`non-working stuff'</SAMP> 
+  <DD>B-frames 
+  <DT><SAMP>`example command line'</SAMP> 
+  <DD>ffmpeg -i input -acodec libfaac -ab 128kb -vcodec mpeg4 -b 1200kb -mbd 2 
+  -flags +4mv+trell -aic 2 -cmp 2 -subcmp 2 -s 320x180 -title X output.mp4 
+</DD></DL>
+<H2><A href="http://ffmpeg.mplayerhq.hu/faq.html#TOC24" name=SEC24>2.14 How do I 
+encode videos which play on the PSP?</A></H2>
+<DL compact>
+  <DT><SAMP>`needed stuff'</SAMP> 
+  <DD>-acodec libfaac -vcodec mpeg4 width*height&lt;=76800 width%16=0 
+  height%16=0 -ar 24000 -r 30000/1001 or 15000/1001 -f psp 
+  <DT><SAMP>`working stuff'</SAMP> 
+  <DD>4mv, title 
+  <DT><SAMP>`non-working stuff'</SAMP> 
+  <DD>B-frames 
+  <DT><SAMP>`example command line'</SAMP> 
+  <DD>ffmpeg -i input -acodec libfaac -ab 128kb -vcodec mpeg4 -b 1200kb -ar 
+  24000 -mbd 2 -flags +4mv+trell -aic 2 -cmp 2 -subcmp 2 -s 368x192 -r 
+  30000/1001 -title X -f psp output.mp4 
+  <DT><SAMP>`needed stuff for H.264'</SAMP> 
+  <DD>-acodec libfaac -vcodec h264 width*height&lt;=76800 width%16=0? 
+  height%16=0? -ar 48000 -coder 1 -r 30000/1001 or 15000/1001 -f psp 
+  <DT><SAMP>`working stuff for H.264'</SAMP> 
+  <DD>title, loop filter 
+  <DT><SAMP>`non-working stuff for H.264'</SAMP> 
+  <DD>CAVLC 
+  <DT><SAMP>`example command line'</SAMP> 
+  <DD>ffmpeg -i input -acodec libfaac -ab 128kb -vcodec h264 -b 1200kb -ar 48000 
+  -mbd 2 -coder 1 -cmp 2 -subcmp 2 -s 368x192 -r 30000/1001 -title X -f psp 
+  -flags loop -trellis 2 -partitions 
+  parti4x4+parti8x8+partp4x4+partp8x8+partb8x8 output.mp4 </DD></DL>
+<H2><A href="http://ffmpeg.mplayerhq.hu/faq.html#TOC25" name=SEC25>2.15 Which 
+are good parameters for encoding high quality MPEG-4?</A></H2>
+<P>'-mbd rd -flags +4mv+trell+aic -cmp 2 -subcmp 2 -g 300 -pass 1/2', things to 
+try: '-bf 2', '-flags qprd', '-flags mv0', '-flags skiprd'. 
+<H2><A href="http://ffmpeg.mplayerhq.hu/faq.html#TOC26" name=SEC26>2.16 Which 
+are good parameters for encoding high quality MPEG-1/MPEG-2?</A></H2>
+<P>'-mbd rd -flags +trell -cmp 2 -subcmp 2 -g 100 -pass 1/2' but beware the '-g 
+100' might cause problems with some decoders. Things to try: '-bf 2', '-flags 
+qprd', '-flags mv0', '-flags skiprd. 
+<H2><A href="http://ffmpeg.mplayerhq.hu/faq.html#TOC27" name=SEC27>2.17 
+Interlaced video looks very bad when encoded with ffmpeg, whats wrong?</A></H2>
+<P>You should use '-flags +ilme+ildct' and maybe '-flags +alt' for interlaced 
+material, and try '-top 0/1' if the result looks really messed-up. 
+<H2><A href="http://ffmpeg.mplayerhq.hu/faq.html#TOC28" name=SEC28>2.18 How can 
+I read DirectShow files?</A></H2>
+<P>If you have built FFmpeg with <CODE>./configure --enable-avisynth</CODE> 
+(only possible on MinGW/Cygwin platforms), then you may use any file that 
+DirectShow can read as input. (Be aware that this feature has been recently 
+added, so you will need to help yourself in case of problems.) 
+<P>Just create an "input.avs" text file with this single line ... <PRE>  DirectShowSource("C:\path to your file\yourfile.asf")
+</PRE>
+<P>... and then feed that text file to FFmpeg: <PRE>  ffmpeg -i input.avs
+</PRE>
+<P>For ANY other help on Avisynth, please visit <A 
+href="http://www.avisynth.org/">http://www.avisynth.org/</A>. 
+<H2><A href="http://ffmpeg.mplayerhq.hu/faq.html#TOC29" name=SEC29>2.19 How can 
+I join video files?</A></H2>
+<P>A few multimedia containers (MPEG-1, MPEG-2 PS, DV) allow to join video files 
+by merely concatenating them. 
+<P>Hence you may concatenate your multimedia files by first transcoding them to 
+these privileged formats, then using the humble <CODE>cat</CODE> command (or the 
+equally humble <CODE>copy</CODE> under Windows), and finally transcoding back to 
+your format of choice. <PRE>ffmpeg -i input1.avi -sameq intermediate1.mpg
+ffmpeg -i input2.avi -sameq intermediate2.mpg
+cat intermediate1.mpg intermediate2.mpg &gt; intermediate_all.mpg
+ffmpeg -i intermediate_all.mpg -sameq output.avi
+</PRE>
+<P>Notice that you should either use <CODE>-sameq</CODE> or set a reasonably 
+high bitrate for your intermediate and output files, if you want to preserve 
+video quality. 
+<P>Also notice that you may avoid the huge intermediate files by taking 
+advantage of named pipes, should your platform support it: <PRE>mkfifo intermediate1.mpg
+mkfifo intermediate2.mpg
+ffmpeg -i input1.avi -sameq -y intermediate1.mpg &lt; /dev/null &amp;
+ffmpeg -i input2.avi -sameq -y intermediate2.mpg &lt; /dev/null &amp;
+cat intermediate1.mpg intermediate2.mpg |\
+ffmpeg -f mpeg -i - -sameq -vcodec mpeg4 -acodec libmp3lame output.avi
+</PRE>
+<P>Similarly, the yuv4mpegpipe format, and the raw video, raw audio codecs also 
+allow concatenation, and the transcoding step is almost lossless. 
+<P>For example, let's say we want to join two FLV files into an output.flv file: 
+<PRE>mkfifo temp1.a
+mkfifo temp1.v
+mkfifo temp2.a
+mkfifo temp2.v
+mkfifo all.a
+mkfifo all.v
+ffmpeg -i input1.flv -vn -f u16le -acodec pcm_s16le -ac 2 -ar 44100 - &gt; temp1.a &lt; /dev/null &amp;
+ffmpeg -i input2.flv -vn -f u16le -acodec pcm_s16le -ac 2 -ar 44100 - &gt; temp2.a &lt; /dev/null &amp;
+ffmpeg -i input1.flv -an -f yuv4mpegpipe - &gt; temp1.v &lt; /dev/null &amp;
+ffmpeg -i input2.flv -an -f yuv4mpegpipe - &gt; temp2.v &lt; /dev/null &amp;
+cat temp1.a temp2.a &gt; all.a &amp;
+cat temp1.v temp2.v &gt; all.v &amp;
+ffmpeg -f u16le -acodec pcm_s16le -ac 2 -ar 44100 -i all.a \
+       -f yuv4mpegpipe -i all.v \
+       -sameq -y output.flv
+rm temp[12].[av] all.[av]
+</PRE>
+<H2><A href="http://ffmpeg.mplayerhq.hu/faq.html#TOC30" name=SEC30>2.20 FFmpeg 
+does not adhere to the -maxrate setting, some frames are bigger than 
+maxrate/fps.</A></H2>
+<P>Read the MPEG spec about video buffer verifier. 
+<H2><A href="http://ffmpeg.mplayerhq.hu/faq.html#TOC31" name=SEC31>2.21 I want 
+CBR, but no matter what I do frame sizes differ.</A></H2>
+<P>You do not understand what CBR is, please read the MPEG spec. Read about 
+video buffer verifier and constant bitrate. The one sentence summary is that 
+there is a buffer and the input rate is constant, the output can vary as needed. 
+
+<H2><A href="http://ffmpeg.mplayerhq.hu/faq.html#TOC32" name=SEC32>2.22 How do I 
+check if a stream is CBR?</A></H2>
+<P>To quote the MPEG-2 spec: "There is no way to tell that a bitstream is 
+constant bitrate without examining all of the vbv_delay values and making 
+complicated computations." 
+<H1><A href="http://ffmpeg.mplayerhq.hu/faq.html#TOC33" name=SEC33>3. 
+Development</A></H1>
+<H2><A href="http://ffmpeg.mplayerhq.hu/faq.html#TOC34" name=SEC34>3.1 Are there 
+examples illustrating how to use the FFmpeg libraries, particularly libavcodec 
+and libavformat?</A></H2>
+<P>Yes. Read the Developers Guide of the FFmpeg documentation. Alternatively, 
+examine the source code for one of the many open source projects that already 
+incorporate ffmpeg at (<A 
+href="http://ffmpeg.mplayerhq.hu/projects.html">projects.html</A>). 
+<H2><A href="http://ffmpeg.mplayerhq.hu/faq.html#TOC35" name=SEC35>3.2 Can you 
+support my C compiler XXX?</A></H2>
+<P>It depends. If your compiler is C99-compliant, then patches to support it are 
+likely to be welcome if they do not pollute the source code with 
+<CODE>#ifdef</CODE>s related to the compiler. 
+<H2><A href="http://ffmpeg.mplayerhq.hu/faq.html#TOC36" name=SEC36>3.3 Is 
+Microsoft Visual C++ supported?</A></H2>
+<P>No. Microsoft Visual C++ is not compliant to the C99 standard and does not - 
+among other things - support the inline assembly used in FFmpeg. If you wish to 
+use MSVC++ for your project then you can link the MSVC++ code with libav* as 
+long as you compile the latter with a working C compiler. For more information, 
+see the <EM>Microsoft Visual C++ compatibility</EM> section in the FFmpeg 
+documentation. 
+<P>There have been efforts to make FFmpeg compatible with MSVC++ in the past. 
+However, they have all been rejected as too intrusive, especially since MinGW 
+does the job adequately. None of the core developers work with MSVC++ and thus 
+this item is low priority. Should you find the silver bullet that solves this 
+problem, feel free to shoot it at us. 
+<P>We strongly recommend you to move over from MSVC++ to MinGW tools. 
+<H2><A href="http://ffmpeg.mplayerhq.hu/faq.html#TOC37" name=SEC37>3.4 Can I use 
+FFmpeg or libavcodec under Windows?</A></H2>
+<P>Yes, but the Cygwin or MinGW tools <EM>must</EM> be used to compile FFmpeg. 
+Read the <EM>Windows</EM> section in the FFmpeg documentation to find more 
+information. 
+<P>To get help and instructions for building FFmpeg under Windows, check out the 
+FFmpeg Windows Help Forum at <A 
+href="http://arrozcru.no-ip.org/ffmpeg/">http://arrozcru.no-ip.org/ffmpeg/</A>. 
+<H2><A href="http://ffmpeg.mplayerhq.hu/faq.html#TOC38" name=SEC38>3.5 Can you 
+add automake, libtool or autoconf support?</A></H2>
+<P>No. These tools are too bloated and they complicate the build. 
+<H2><A href="http://ffmpeg.mplayerhq.hu/faq.html#TOC39" name=SEC39>3.6 Why not 
+rewrite ffmpeg in object-oriented C++?</A></H2>
+<P>ffmpeg is already organized in a highly modular manner and does not need to 
+be rewritten in a formal object language. Further, many of the developers favor 
+straight C; it works for them. For more arguments on this matter, read 
+"Programming Religion" at (<A 
+href="http://www.tux.org/lkml/#s15">http://www.tux.org/lkml/#s15</A>). 
+<H2><A href="http://ffmpeg.mplayerhq.hu/faq.html#TOC40" name=SEC40>3.7 Why are 
+the ffmpeg programs devoid of debugging symbols?</A></H2>
+<P>The build process creates ffmpeg_g, ffplay_g, etc. which contain full debug 
+information. Those binaries are strip'd to create ffmpeg, ffplay, etc. If you 
+need the debug information, used the *_g versions. 
+<H2><A href="http://ffmpeg.mplayerhq.hu/faq.html#TOC41" name=SEC41>3.8 I do not 
+like the LGPL, can I contribute code under the GPL instead?</A></H2>
+<P>Yes, as long as the code is optional and can easily and cleanly be placed 
+under #ifdef CONFIG_GPL without breaking anything. So for example a new codec or 
+filter would be OK under GPL while a bugfix to LGPL code would not. 
+<H2><A href="http://ffmpeg.mplayerhq.hu/faq.html#TOC42" name=SEC42>3.9 I want to 
+compile xyz.c alone but my compiler produced many errors.</A></H2>
+<P>Common code is in its own files in libav* and is used by the individual 
+codecs. They will not work without the common parts, you have to compile the 
+whole libav*. If you wish, disable some parts with configure switches. You can 
+also try to hack it and remove more, but if you had problems fixing the 
+compilation failure then you are probably not qualified for this. 
+<H2><A href="http://ffmpeg.mplayerhq.hu/faq.html#TOC43" name=SEC43>3.10 I'm 
+using libavcodec from within my C++ application but the linker complains about 
+missing symbols which seem to be available.</A></H2>
+<P>FFmpeg is a pure C project, so to use the libraries within your C++ 
+application you need to explicitly state that you are using a C library. You can 
+do this by encompassing your FFmpeg includes using <CODE>extern "C"</CODE>. 
+<P>See <A 
+href="http://www.parashift.com/c++-faq-lite/mixing-c-and-cpp.html#faq-32.3">http://www.parashift.com/c++-faq-lite/mixing-c-and-cpp.html#faq-32.3</A> 
+
+<H2><A href="http://ffmpeg.mplayerhq.hu/faq.html#TOC44" name=SEC44>3.11 I have a 
+file in memory / a API different from *open/*read/ libc how do I use it with 
+libavformat?</A></H2>
+<P>You have to implement a URLProtocol, see libavformat/file.c in FFmpeg and 
+libmpdemux/demux_lavf.c in MPlayer sources. 
+<H2><A href="http://ffmpeg.mplayerhq.hu/faq.html#TOC45" name=SEC45>3.12 I get 
+"No compatible shell script interpreter found." in MSys.</A></H2>
+<P>The standard MSys bash (2.04) is broken. You need to install 2.05 or later. 
+<H2><A href="http://ffmpeg.mplayerhq.hu/faq.html#TOC46" name=SEC46>3.13 I get 
+"./configure: line &lt;xxx&gt;: pr: command not found" in MSys.</A></H2>
+<P>The standard MSys install doesn't come with pr. You need to get it from the 
+coreutils package. 
+<H2><A href="http://ffmpeg.mplayerhq.hu/faq.html#TOC47" name=SEC47>3.14 I tried 
+to pass RTP packets into a decoder, but it doesn't work.</A></H2>
+<P>RTP is a container format like any other, you must first depacketize the 
+codec frames/samples stored in RTP and then feed to the decoder. 
+<H2><A href="http://ffmpeg.mplayerhq.hu/faq.html#TOC48" name=SEC48>3.15 Where 
+can I find libav* headers for Pascal/Delphi?</A></H2>
+<P>see <A 
+href="http://www.iversenit.dk/dev/ffmpeg-headers/">http://www.iversenit.dk/dev/ffmpeg-headers/</A> 
+
+<H2><A href="http://ffmpeg.mplayerhq.hu/faq.html#TOC49" name=SEC49>3.16 Where is 
+the documentation about ffv1, msmpeg4, asv1, 4xm?</A></H2>
+<P>see <A 
+href="http://svn.mplayerhq.hu/michael/trunk/docs/">http://svn.mplayerhq.hu/michael/trunk/docs/</A> 
+
+<H2><A href="http://ffmpeg.mplayerhq.hu/faq.html#TOC50" name=SEC50>3.17 How do I 
+feed H.263-RTP (and other codecs in RTP) to libavcodec?</A></H2>
+<P>Even if peculiar since it is network oriented, RTP is a container like any 
+other. You have to <EM>demux</EM> RTP before feeding the payload to libavcodec. 
+In this specific case please look at RFC 4629 to see how it should be done. 
+<H2><A href="http://ffmpeg.mplayerhq.hu/faq.html#TOC51" name=SEC51>3.18 
+AVStream.r_frame_rate is wrong, it is much larger than the framerate.</A></H2>
+<P>r_frame_rate is NOT the average framerate, it is the smallest framerate that 
+can accurately represent all timestamps. So no, it is not wrong if it is larger 
+than the average! For example, if you have mixed 25 and 30 fps content, then 
+r_frame_rate will be 150. 
+<P>
+<HR>
+
+<P>This document was generated on 7 April 2008 using <A 
+href="http://wwwinfo.cern.ch/dis/texi2html/">texi2html</A>&nbsp;1.56k. 
+</P></BODY></HTML>
