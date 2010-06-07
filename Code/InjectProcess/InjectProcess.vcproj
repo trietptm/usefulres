@@ -139,6 +139,9 @@
 				RelativePath=".\Spy360Dlg.cpp">
 			</File>
 			<File
+				RelativePath=".\SpyOPRDlg.cpp">
+			</File>
+			<File
 				RelativePath=".\stdafx.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
@@ -166,6 +169,9 @@
 			</File>
 			<File
 				RelativePath=".\Spy360Dlg.h">
+			</File>
+			<File
+				RelativePath=".\SpyOPRDlg.h">
 			</File>
 			<File
 				RelativePath=".\stdafx.h">

@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "InjectProcess.h"
 #include "Spy360Dlg.h"
+#include "SpyOPRDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -69,6 +70,10 @@ void InjectInit()
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState());
 	
+#if 0
 	CSpy360Dlg dlg;
+#else
+	CSpyOPRDlg dlg;
+#endif
 	dlg.DoModal();
 }
