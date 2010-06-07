@@ -106,12 +106,12 @@ __declspec(naked) void Hook_45AF5F()
 	}
 }
 
-void __stdcall On_45B29C(LPVOID lpOleFile)
+void __stdcall On_45B29C(LPVOID lpOleFile,DWORD nCount)
 {
 	CString s;
 
 	ULONG pos = ThisCall(lpOleFile,COleStreamFile__GetPosition);
-	s.Format("COleStreamFile::Read 0x%X,0x%X\r\n",lpOleFile,pos);
+	s.Format("COleStreamFile::Read 0x%X,0x%X,0x%X\r\n",lpOleFile,pos,nCount);
 	gpSpyOPRDlg->AddLog(s);
 }
 __declspec(naked) void Hook_45B29C()
@@ -120,16 +120,22 @@ __declspec(naked) void Hook_45B29C()
 	__asm{
 		mov oldEsp,esp
 
+		push ebp
+		mov ebp,esp
+
 		push ecx
 		push edx
 		push ebx
 
+		push dword ptr [ebp+0Ch]
 		push ecx
 		call On_45B29C
 
 		pop ebx
 		pop edx
 		pop ecx
+
+		pop ebp
 
 		mov esp,oldEsp
 
