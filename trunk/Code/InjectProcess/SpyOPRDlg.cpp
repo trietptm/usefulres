@@ -109,7 +109,9 @@ __declspec(naked) void Hook_45AF5F()
 void __stdcall On_45B29C(LPVOID lpOleFile)
 {
 	CString s;
-	s.Format("COleStreamFile::Read 0x%X\r\n",lpOleFile);
+
+	ULONG pos = ThisCall(lpOleFile,COleStreamFile__GetPosition);
+	s.Format("COleStreamFile::Read 0x%X,0x%X\r\n",lpOleFile,pos);
 	gpSpyOPRDlg->AddLog(s);
 }
 __declspec(naked) void Hook_45B29C()
