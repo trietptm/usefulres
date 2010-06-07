@@ -68,7 +68,43 @@ __declspec(naked) void Hook_45AE91()
 		ret
 	}
 }
+
+void __stdcall On_45AF5F(LPVOID lpOleFile)
+{
+	CString s;
+	s.Format("delete COleStreamFile:0x%X\r\n",lpOleFile);
+	gpSpyOPRDlg->AddLog(s);
+}
+__declspec(naked) void Hook_45AF5F()
+{
+	static ULONG oldEsp;
+	__asm{
+		mov oldEsp,esp
+
+		push ecx
+		push edx
+		push ebx
+
+		push ecx
+		call On_45AF5F
+
+		pop ebx
+		pop edx
+		pop ecx
+		
+		mov esp,oldEsp
+
+		push esi
+		mov esi,ecx
+		mov eax,0x0045AF7B
+		call eax
+
+		push 0x0045AF67
+		ret
+	}
+}
 void CSpyOPRDlg::OnBnClickedHook()
 {
 	HookAddr(0x0045AE91,Hook_45AE91);
+	HookAddr(0x0045AF5F,Hook_45AF5F);
 }
