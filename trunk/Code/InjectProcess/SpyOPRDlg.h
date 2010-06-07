@@ -1,4 +1,5 @@
 #pragma once
+#include "afxwin.h"
 
 
 // CSpyOPRDlg 对话框
@@ -18,4 +19,8 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
 	DECLARE_MESSAGE_MAP()
+public:
+	CEdit m_wLog;
+	afx_msg void OnBnClickedHook();
+	void AddLog(LPCSTR lpText);
 };
