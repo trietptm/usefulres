@@ -9,6 +9,8 @@
 
 CSpyOPRDlg *gpSpyOPRDlg;
 
+ULONG (*COleStreamFile__GetPosition)();
+
 IMPLEMENT_DYNAMIC(CSpyOPRDlg, CDialog)
 CSpyOPRDlg::CSpyOPRDlg(CWnd* pParent /*=NULL*/)
 	: CDialog(CSpyOPRDlg::IDD, pParent)
@@ -103,8 +105,45 @@ __declspec(naked) void Hook_45AF5F()
 		ret
 	}
 }
+
+void __stdcall On_45B29C(LPVOID lpOleFile)
+{
+	CString s;
+	s.Format("COleStreamFile::Read 0x%X\r\n",lpOleFile);
+	gpSpyOPRDlg->AddLog(s);
+}
+__declspec(naked) void Hook_45B29C()
+{
+	static ULONG oldEsp;
+	__asm{
+		mov oldEsp,esp
+
+		push ecx
+		push edx
+		push ebx
+
+		push ecx
+		call On_45B29C
+
+		pop ebx
+		pop edx
+		pop ecx
+
+		mov esp,oldEsp
+
+		push ebp
+		mov ebp,esp
+		lea eax,[ebp+0xC]
+
+		push 0x0045B2A2
+		ret
+	}
+}
 void CSpyOPRDlg::OnBnClickedHook()
 {
+	*(ULONG*)&COleStreamFile__GetPosition = 0x0045B101;
+
 	HookAddr(0x0045AE91,Hook_45AE91);
 	HookAddr(0x0045AF5F,Hook_45AF5F);
+	HookAddr(0x0045B29C,Hook_45B29C);
 }
