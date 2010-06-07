@@ -51,7 +51,15 @@ __declspec(naked) void Hook_45AE91()
 		mov oldEsp,esp
 		
 		push ecx
+		push edx
+		push ebx
+
+		push ecx
 		call On_45AE91
+
+		pop ebx
+		pop edx
+		pop ecx
 
 		mov eax,0x46098F
 
