@@ -95,7 +95,7 @@
 			IntermediateDirectory=".\Unicode_Debug"
 			ConfigurationType="4"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
-			UseOfMFC="2"
+			UseOfMFC="1"
 			ATLMinimizesCRunTimeLibraryUsage="false"
 			CharacterSet="1"
 			>
@@ -118,7 +118,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				PreprocessorDefinitions="_WINDOWS;WIN32;_DEBUG;UNICODE;_CRT_SECURE_NO_DEPRECATE"
-				RuntimeLibrary="3"
+				RuntimeLibrary="1"
 				PrecompiledHeaderFile=".\Unicode_Debug/Jpeg.pch"
 				AssemblerListingLocation=".\Unicode_Debug/"
 				ObjectFile=".\Unicode_Debug/"
@@ -303,6 +303,79 @@
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
+		<Configuration
+			Name="G_Debug|Win32"
+			OutputDirectory="$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="4"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
+			UseOfMFC="1"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				InlineFunctionExpansion="1"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE"
+				StringPooling="true"
+				RuntimeLibrary="0"
+				EnableFunctionLevelLinking="true"
+				PrecompiledHeaderFile=".\Release/Jpeg.pch"
+				AssemblerListingLocation=".\Release/"
+				ObjectFile=".\Release/"
+				ProgramDataBaseFileName=".\Release/"
+				WarningLevel="3"
+				SuppressStartupBanner="true"
+				DebugInformationFormat="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				Culture="2057"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile=".\Release\Jpeg.lib"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+				SuppressStartupBanner="true"
+				OutputFile=".\Release/Jpeg.bsc"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
 	</Configurations>
 	<References>
 	</References>
@@ -336,6 +409,14 @@
 			</FileConfiguration>
 			<FileConfiguration
 				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="G_Debug|Win32"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -378,6 +459,14 @@
 					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
 				/>
 			</FileConfiguration>
+			<FileConfiguration
+				Name="G_Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath="Jccoefct.c"
@@ -408,6 +497,14 @@
 			</FileConfiguration>
 			<FileConfiguration
 				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="G_Debug|Win32"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -450,6 +547,14 @@
 					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
 				/>
 			</FileConfiguration>
+			<FileConfiguration
+				Name="G_Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath="Jcdctmgr.c"
@@ -486,6 +591,14 @@
 					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
 				/>
 			</FileConfiguration>
+			<FileConfiguration
+				Name="G_Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath="Jchuff.c"
@@ -516,6 +629,14 @@
 			</FileConfiguration>
 			<FileConfiguration
 				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="G_Debug|Win32"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -562,6 +683,14 @@
 					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
 				/>
 			</FileConfiguration>
+			<FileConfiguration
+				Name="G_Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath="Jcmainct.c"
@@ -592,6 +721,14 @@
 			</FileConfiguration>
 			<FileConfiguration
 				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="G_Debug|Win32"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -634,6 +771,14 @@
 					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
 				/>
 			</FileConfiguration>
+			<FileConfiguration
+				Name="G_Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath="Jcmaster.c"
@@ -670,6 +815,14 @@
 					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
 				/>
 			</FileConfiguration>
+			<FileConfiguration
+				Name="G_Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath="Jcomapi.c"
@@ -700,6 +853,14 @@
 			</FileConfiguration>
 			<FileConfiguration
 				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="G_Debug|Win32"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -746,6 +907,14 @@
 					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
 				/>
 			</FileConfiguration>
+			<FileConfiguration
+				Name="G_Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath="Jcphuff.c"
@@ -776,6 +945,14 @@
 			</FileConfiguration>
 			<FileConfiguration
 				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="G_Debug|Win32"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -818,6 +995,14 @@
 					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
 				/>
 			</FileConfiguration>
+			<FileConfiguration
+				Name="G_Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath="Jcsample.c"
@@ -848,6 +1033,14 @@
 			</FileConfiguration>
 			<FileConfiguration
 				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="G_Debug|Win32"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -890,6 +1083,14 @@
 					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
 				/>
 			</FileConfiguration>
+			<FileConfiguration
+				Name="G_Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath="Jdapimin.c"
@@ -920,6 +1121,14 @@
 			</FileConfiguration>
 			<FileConfiguration
 				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="G_Debug|Win32"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -962,6 +1171,14 @@
 					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
 				/>
 			</FileConfiguration>
+			<FileConfiguration
+				Name="G_Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath="Jdatadst.c"
@@ -992,6 +1209,14 @@
 			</FileConfiguration>
 			<FileConfiguration
 				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="G_Debug|Win32"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -1034,6 +1259,14 @@
 					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
 				/>
 			</FileConfiguration>
+			<FileConfiguration
+				Name="G_Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath="Jdcoefct.c"
@@ -1070,6 +1303,14 @@
 					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
 				/>
 			</FileConfiguration>
+			<FileConfiguration
+				Name="G_Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath="Jdcolor.c"
@@ -1100,6 +1341,14 @@
 			</FileConfiguration>
 			<FileConfiguration
 				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="G_Debug|Win32"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -1146,6 +1395,14 @@
 					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
 				/>
 			</FileConfiguration>
+			<FileConfiguration
+				Name="G_Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath="Jdhuff.c"
@@ -1176,6 +1433,14 @@
 			</FileConfiguration>
 			<FileConfiguration
 				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="G_Debug|Win32"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -1222,6 +1487,14 @@
 					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
 				/>
 			</FileConfiguration>
+			<FileConfiguration
+				Name="G_Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath="Jdmainct.c"
@@ -1252,6 +1525,14 @@
 			</FileConfiguration>
 			<FileConfiguration
 				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="G_Debug|Win32"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -1294,6 +1575,14 @@
 					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
 				/>
 			</FileConfiguration>
+			<FileConfiguration
+				Name="G_Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath="Jdmaster.c"
@@ -1324,6 +1613,14 @@
 			</FileConfiguration>
 			<FileConfiguration
 				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="G_Debug|Win32"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -1366,6 +1663,14 @@
 					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
 				/>
 			</FileConfiguration>
+			<FileConfiguration
+				Name="G_Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath="Jdphuff.c"
@@ -1396,6 +1701,14 @@
 			</FileConfiguration>
 			<FileConfiguration
 				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="G_Debug|Win32"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -1438,6 +1751,14 @@
 					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
 				/>
 			</FileConfiguration>
+			<FileConfiguration
+				Name="G_Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath="Jdsample.c"
@@ -1468,6 +1789,14 @@
 			</FileConfiguration>
 			<FileConfiguration
 				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="G_Debug|Win32"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -1510,6 +1839,14 @@
 					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
 				/>
 			</FileConfiguration>
+			<FileConfiguration
+				Name="G_Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath="Jerror.c"
@@ -1540,6 +1877,14 @@
 			</FileConfiguration>
 			<FileConfiguration
 				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="G_Debug|Win32"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -1586,6 +1931,14 @@
 					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
 				/>
 			</FileConfiguration>
+			<FileConfiguration
+				Name="G_Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath="Jfdctfst.c"
@@ -1616,6 +1969,14 @@
 			</FileConfiguration>
 			<FileConfiguration
 				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="G_Debug|Win32"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -1658,6 +2019,14 @@
 					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
 				/>
 			</FileConfiguration>
+			<FileConfiguration
+				Name="G_Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath="Jidctflt.c"
@@ -1688,6 +2057,14 @@
 			</FileConfiguration>
 			<FileConfiguration
 				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="G_Debug|Win32"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -1730,6 +2107,14 @@
 					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
 				/>
 			</FileConfiguration>
+			<FileConfiguration
+				Name="G_Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath="Jidctint.c"
@@ -1766,6 +2151,14 @@
 					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
 				/>
 			</FileConfiguration>
+			<FileConfiguration
+				Name="G_Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath="Jidctred.c"
@@ -1796,6 +2189,14 @@
 			</FileConfiguration>
 			<FileConfiguration
 				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="G_Debug|Win32"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -1842,6 +2243,14 @@
 					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
 				/>
 			</FileConfiguration>
+			<FileConfiguration
+				Name="G_Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath="Jmemnobs.c"
@@ -1872,6 +2281,14 @@
 			</FileConfiguration>
 			<FileConfiguration
 				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="G_Debug|Win32"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -1930,6 +2347,14 @@
 					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
 				/>
 			</FileConfiguration>
+			<FileConfiguration
+				Name="G_Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath="Jquant2.c"
@@ -1966,6 +2391,14 @@
 					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
 				/>
 			</FileConfiguration>
+			<FileConfiguration
+				Name="G_Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath="Jutils.c"
@@ -1996,6 +2429,14 @@
 			</FileConfiguration>
 			<FileConfiguration
 				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;$(NoInherit)"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="G_Debug|Win32"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
