@@ -32,4 +32,5 @@ protected:
 public:
 	afx_msg void OnBnClickedGenHex();
 	CEdit m_edtResult;
+	afx_msg void OnBnClickedGenRegCode();
 };
