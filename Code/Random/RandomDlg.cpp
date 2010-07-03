@@ -64,6 +64,7 @@ BEGIN_MESSAGE_MAP(CRandomDlg, CDialog)
 	ON_WM_QUERYDRAGICON()
 	//}}AFX_MSG_MAP
 	ON_BN_CLICKED(IDC_GEN_HEX, OnBnClickedGenHex)
+	ON_BN_CLICKED(IDC_GEN_REG_CODE, OnBnClickedGenRegCode)
 END_MESSAGE_MAP()
 
 
@@ -166,4 +167,32 @@ void CRandomDlg::OnBnClickedGenHex()
 	}
 
 	m_edtResult.SetWindowText(sRes);
+}
+void CRandomDlg::OnBnClickedGenRegCode()
+{
+	m_edtResult.SetWindowText(_T(""));
+
+	enum{NKey = 100};
+
+	static CHAR charSet[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+	static ULONG nChar = sizeof(charSet)-1;
+
+	CString sResult;
+	::srand(::time(NULL));
+	for(ULONG iKey = 0;iKey<NKey;iKey++)
+	{
+		CString s;
+		for(ULONG i = 0;i<5;i++)
+		{						
+			for(ULONG j = 0;j<5;j++)
+			{
+				s += charSet[::rand()%nChar];
+			}
+			if(i!=5-1)
+				s += '-';
+		}
+		sResult += s;
+		sResult += _T("\r\n");
+	}
+	m_edtResult.SetWindowText(sResult);
 }
