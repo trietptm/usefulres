@@ -104,9 +104,9 @@ BOOL CMemPeekDlg::OnInitDialog()
 	// TODO: 在此添加额外的初始化代码
 	m_btModify.EnableWindow(FALSE);
 
-	m_edtProcess.SetWindowText("360Safe.exe");
-
-	m_edtModifyValue.SetWindowText("90");
+	m_edtProcess.SetWindowText("OPRemove.exe");
+	m_edtModifyAddr.SetWindowText("0041FB70");
+	m_edtModifyValue.SetWindowText("B801000000C3");
 
 	return TRUE;  // 除非设置了控件的焦点，否则返回 TRUE
 }
@@ -194,7 +194,7 @@ void CMemPeekDlg::OnBnClickedModify()
 		return;
 	
 	Bytes bytes;
-	for(int ofs = 0;ofs < s.GetLength();ofs += 2)
+	for(int ofs = 0;ofs < sValue.GetLength();ofs += 2)
 	{
 		s = sValue.Mid(ofs,2);
 
