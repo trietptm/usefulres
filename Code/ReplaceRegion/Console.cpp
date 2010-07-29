@@ -35,7 +35,12 @@ BOOL GetClipboardText(CString &sText)
 	}
     return FALSE;
 }
-
+void ReadAllStdIn(CString &sIn)
+{
+	CHAR buf[MAX_PATH+1] = {0};
+	while(fgets(buf,MAX_PATH,stdin))
+		sIn += buf;
+}
 //////////////////////////////////////////////////////////////////////////
 int _tmain(int argc, TCHAR* argv[], TCHAR* envp[])
 {
@@ -50,9 +55,13 @@ int _tmain(int argc, TCHAR* argv[], TCHAR* envp[])
 	}
 	else
 	{
-		if(argc!=3)
+		if(argc!=2)
 			return 0;
 
+		CString sIn;
+		ReadAllStdIn(sIn);
+
+	#if 0
 		Ptr data;
 		ULONG fSize = 0;
 		LPCSTR lpData = (LPCSTR)File::LoadFile(argv[1],data,fSize,TRUE);
@@ -60,12 +69,15 @@ int _tmain(int argc, TCHAR* argv[], TCHAR* envp[])
 			return 0;
 
 		CString sData = lpData;
+	#else
+		CString sData = sIn;
+	#endif
 
 		static CString markS;// = "<!--marks-->";
 		static CString markE;// = "<!--marke-->";
 
-		markS.Format("<!--%ss-->",argv[2]);
-		markE.Format("<!--%se-->",argv[2]);
+		markS.Format("<!--%ss-->",argv[1]);
+		markE.Format("<!--%se-->",argv[1]);
 
 		int sOfs = sData.Find(markS);
 		if(sOfs==-1)
