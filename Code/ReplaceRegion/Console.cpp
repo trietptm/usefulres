@@ -14,6 +14,30 @@
 // 唯一的应用程序对象
 
 CWinApp theApp;
+
+BOOL GetClipboardText(CString &sText)
+{
+	sText = "";
+
+	LPSTR buffer = NULL; 
+	//打开剪贴板 
+	CString fromClipboard; 
+	if ( ::OpenClipboard(NULL) ) 
+	{ 
+		HANDLE hData = ::GetClipboardData(CF_TEXT);
+		if(hData)
+		{
+			LPSTR buffer = (LPSTR)::GlobalLock(hData); 
+			sText = buffer; 
+			::GlobalUnlock(hData); 
+			::CloseClipboard();
+
+			return TRUE;
+		}
+	}
+    return FALSE;
+}
+
 //////////////////////////////////////////////////////////////////////////
 int _tmain(int argc, TCHAR* argv[], TCHAR* envp[])
 {
@@ -28,7 +52,7 @@ int _tmain(int argc, TCHAR* argv[], TCHAR* envp[])
 	}
 	else
 	{
-		if(argc!=2)
+		if(argc!=3)
 			return 0;
 
 		Ptr data;
@@ -39,8 +63,11 @@ int _tmain(int argc, TCHAR* argv[], TCHAR* envp[])
 
 		CString sData = lpData;
 
-		static CString markS = "<!--marks-->";
-		static CString markE = "<!--marke-->";
+		static CString markS;// = "<!--marks-->";
+		static CString markE;// = "<!--marke-->";
+
+		markS.Format("<!--%ss-->",argv[2]);
+		markE.Format("<!--%se-->",argv[2]);
 
 		int sOfs = sData.Find(markS);
 		if(sOfs==-1)
@@ -50,9 +77,13 @@ int _tmain(int argc, TCHAR* argv[], TCHAR* envp[])
 		if(eOfs==-1)
 			return 0;
 
+		CString sText;
+		if(!GetClipboardText(sText))
+			return 0;
+
 		int start = sOfs+markS.GetLength();
 		sData.Delete(start,eOfs-start);
-		sData.Insert(start,"\r\nDone!\r\n");
+		sData.Insert(start,sText);
 
 		printf("%s",sData);
 	}
