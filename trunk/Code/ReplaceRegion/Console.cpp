@@ -15,14 +15,6 @@
 
 CWinApp theApp;
 //////////////////////////////////////////////////////////////////////////
-
-void ReadAllStdIn(CString &sIn)
-{
-	CHAR buf[MAX_PATH+1] = {0};
-	while(fgets(buf,MAX_PATH,stdin))
-		sIn += buf;
-}
-
 int _tmain(int argc, TCHAR* argv[], TCHAR* envp[])
 {
 	int nRetCode = 0;
@@ -45,7 +37,24 @@ int _tmain(int argc, TCHAR* argv[], TCHAR* envp[])
 		if(!lpData)
 			return 0;
 
-		printf("%s - tail",lpData);
+		CString sData = lpData;
+
+		static CString markS = "<!--marks-->";
+		static CString markE = "<!--marke-->";
+
+		int sOfs = sData.Find(markS);
+		if(sOfs==-1)
+			return 0;
+
+		int eOfs = sData.Find(markE,sOfs+markS.GetLength());
+		if(eOfs==-1)
+			return 0;
+
+		int start = sOfs+markS.GetLength();
+		sData.Delete(start,eOfs-start);
+		sData.Insert(start,"\r\nDone!\r\n");
+
+		printf("%s",sData);
 	}
 
 	return nRetCode;
