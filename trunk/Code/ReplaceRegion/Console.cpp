@@ -20,8 +20,6 @@ BOOL GetClipboardText(CString &sText)
 	sText = "";
 
 	LPSTR buffer = NULL; 
-	//´ò¿ª¼ôÌù°å 
-	CString fromClipboard; 
 	if ( ::OpenClipboard(NULL) ) 
 	{ 
 		HANDLE hData = ::GetClipboardData(CF_TEXT);
