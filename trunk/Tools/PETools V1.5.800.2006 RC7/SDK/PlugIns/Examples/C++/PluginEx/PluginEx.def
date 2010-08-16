@@ -1,0 +1,8 @@
+; PluginEx.def : Declares the module parameters for the DLL.
+
+LIBRARY      "PluginEx"
+DESCRIPTION  'PluginEx Windows Dynamic Link Library'
+
+EXPORTS
+		StartPTPlugin
+		GetPTPluginName

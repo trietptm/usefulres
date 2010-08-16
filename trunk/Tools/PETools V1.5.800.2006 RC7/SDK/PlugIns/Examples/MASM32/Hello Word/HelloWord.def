@@ -1,0 +1,3 @@
+LIBRARY HelloWord
+EXPORTS StartPTPlugin
+	GetPTPluginName
