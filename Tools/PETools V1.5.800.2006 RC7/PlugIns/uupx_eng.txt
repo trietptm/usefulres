@@ -1,0 +1,52 @@
+Recover UPX v1.0 by Quantum
+===========================
+
+
+I. Description
+--------------
+
+Recover UPX features are viewing and editing of UPX signature in PE32
+files. It doesn't support NE, ELF and any other non-PE32 executables.
+If you don't know about UPX (Ultimate Packer for eXecutables) and UPX
+"scramblers" (i.e. HidePX, UPX-SCRAMBLER and so on), you'd better get
+some info before trying to use this utility.
+
+Why a plug-in for PE Tools instead of a standalone app? The answer is
+that PE Tools include a great tool for PE identification, known as PE
+Sniffer. It correctly detects UPX  even after those sneaky scramblers
+messed up the whole executable.  Another reason is that  you can edit
+section names  (and a lot of other fields)  in PE Editor  in order to
+recover original UPX sections.  Generally speaking,  PE Tools provide
+everything you need to deal with UPX.
+
+
+II. Usage
+---------
+
+Open your packed EXE or DLL. In the case it isn't scrambled  you just
+get the complete signature revealed. Nothing to say...
+
+Recover UPX warns you about partially hidden signature.  Anyhow,  you
+can let it try to recover lost info.
+
+Some scramblers remove UPX signature completely and Recover UPX won't
+guess it's original contents. It gives you the choice to create a new
+signature and fill it with default values. There are some hints about
+how to recover  the correct  values  in a  well known  article  about
+packers, but it's currently available only in Russian  (please, visit
+http://www.wasm.ru and http://www.uinc.ru for further info).
+
+Finally,  when  you're done editing the signature  push "Fix" to save
+your data. Remember  to restore  the original  UPX section  names  in
+PE Editor before trying to unpack.
+
+WARNING!   Always use PE Sniffer or another identification program to
+           ensure it's a UPX file. Recover UPX could damage your PE32
+           file if it wasn't really UPX-packed.
+
+By the way,  you could use  PE Editor  and  Recover UPX  in order  to
+scramble your UPX-packed executable in your very own manner. It won't
+save your PE32 against dumpers though.
+
+=====================================================================
+Feedback is welcomed. Send your bug reports to cpp_master@ukr.net
