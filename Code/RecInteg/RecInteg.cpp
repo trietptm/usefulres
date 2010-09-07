@@ -29,6 +29,7 @@ CRecIntegApp::CRecIntegApp()
 // 唯一的一个 CRecIntegApp 对象
 
 CRecIntegApp theApp;
+CHAR gszWorkDir[MAX_PATH*2];
 
 BOOL   OpenFileDlg(LPSTR pStrFile, HWND hParWnd, LPCSTR pTitle, LPCSTR pFilter)
 {
@@ -51,11 +52,30 @@ BOOL   OpenFileDlg(LPSTR pStrFile, HWND hParWnd, LPCSTR pTitle, LPCSTR pFilter)
 	strcpy(pStrFile, szFileName);
 	return TRUE;
 }
+BOOL GetProcWorkDir(LPSTR pWorkDir,HMODULE hModule = NULL)
+{
+	CHAR   szModFileName[MAX_PATH*2];
+	DWORD   dwRetVal;
+	CHAR   *pFind;
+	dwRetVal = GetModuleFileNameA(hModule, szModFileName, sizeof(szModFileName));
+	if(dwRetVal == 0 || dwRetVal >= sizeof(szModFileName))
+		return FALSE;
 
+	pFind = strrchr(szModFileName, '\\');
+	if(pFind == NULL)
+		return FALSE;
+
+	pFind[0] = 0;
+	if(pWorkDir)
+		strcpy(pWorkDir, szModFileName);
+	return TRUE;
+}
 // CRecIntegApp 初始化
 
 BOOL CRecIntegApp::InitInstance()
 {
+	GetProcWorkDir(gszWorkDir);
+
 	// 如果一个运行在 Windows XP 上的应用程序清单指定要
 	// 使用 ComCtl32.dll 版本 6 或更高版本来启用可视化方式，
 	//则需要 InitCommonControls()。否则，将无法创建窗口。

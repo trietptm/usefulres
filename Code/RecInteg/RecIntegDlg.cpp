@@ -185,7 +185,7 @@ BOOL SaveData(LPCSTR lpFile,/*const*/ StrStrMap &map)
 	CString s;
 
 	s.Format("%s.bak",lpFile);
-	if(::CopyFile(lpFile,s,FALSE))
+	if(!::CopyFile(lpFile,s,FALSE))
 	{
 		AfxMessageBox("创建备份文件失败!");
 		return FALSE;
@@ -216,10 +216,11 @@ void CRecIntegDlg::OnBnClickedAddFile()
 		"所有文件(*.*)\0*.*\0\0"))
 		return;
 
-	#define DataBase "record.txt"
+	CString sDBFile;
+	sDBFile.Format("%s\\record.txt",gszWorkDir);
 
 	StrStrMap db;
-	LoadData(DataBase,db);
+	LoadData(sDBFile,db);
 
 	if(!LoadData(szFile,db))
 	{
@@ -227,7 +228,7 @@ void CRecIntegDlg::OnBnClickedAddFile()
 		return;
 	}
 
-	if(SaveData(DataBase,db))
+	if(SaveData(sDBFile,db))
 	{
 		s.Format("添加记录成功，目前共有%d条记录",db.size());
 		AfxMessageBox(s);

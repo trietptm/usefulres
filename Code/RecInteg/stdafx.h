@@ -46,4 +46,6 @@
 
 typedef std::map<CString,CString> StrStrMap;
 
+extern CHAR gszWorkDir[MAX_PATH*2];
+
 BOOL   OpenFileDlg(LPSTR pStrFile, HWND hParWnd, LPCSTR pTitle, LPCSTR pFilter);
