@@ -184,11 +184,14 @@ BOOL SaveData(LPCSTR lpFile,/*const*/ StrStrMap &map)
 {
 	CString s;
 
-	s.Format("%s.bak",lpFile);
-	if(!::CopyFile(lpFile,s,FALSE))
+	if(::PathFileExists(lpFile))
 	{
-		AfxMessageBox("创建备份文件失败!");
-		return FALSE;
+		s.Format("%s.bak",lpFile);
+		if(!::CopyFile(lpFile,s,FALSE))
+		{
+			AfxMessageBox("创建备份文件失败!");
+			return FALSE;
+		}
 	}
 
 	File f;

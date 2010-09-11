@@ -41,6 +41,7 @@
 #endif // _AFX_NO_AFXCMN_SUPPORT
 
 #include <map>
+#include <Shlwapi.h>
 #include "..\..\..\biggod.dev\Ctrl\Ptr.hpp"
 #include "..\..\..\biggod.dev\Ctrl\File.hpp"
 
