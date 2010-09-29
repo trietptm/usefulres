@@ -37,4 +37,5 @@ public:
 	CButton m_btModify;
 	CEdit m_edtModifyAddr;
 	CEdit m_edtModifyValue;
+	afx_msg void OnBnClickedExportData();
 };

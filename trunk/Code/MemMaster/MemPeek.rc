@@ -13,7 +13,7 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// 中文(中华人民共和国) resources
+// Chinese (P.R.C.) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
 #ifdef _WIN32
@@ -101,6 +101,7 @@ BEGIN
                     WS_VSCROLL
     RTEXT           "值:",IDC_STATIC,15,70,24,10
     PUSHBUTTON      "修改",IDC_MODIFY,144,50,50,14
+    PUSHBUTTON      "导出数据",IDC_EXPORT_DATA,44,127,50,14
 END
 
 
@@ -180,7 +181,7 @@ BEGIN
     IDS_ABOUTBOX            "关于 MemPeek(&A)..."
 END
 
-#endif    // 中文(中华人民共和国) resources
+#endif    // Chinese (P.R.C.) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

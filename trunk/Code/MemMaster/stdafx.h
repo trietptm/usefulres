@@ -45,3 +45,5 @@
 typedef std::vector<UCHAR> Bytes;
 
 #include "..\..\..\aman.softbox\trunk\Ctrl\Process.h"
+#include "..\..\..\biggod.dev\Ctrl\Ptr.hpp"
+#include "..\..\..\biggod.dev\Ctrl\File.hpp"

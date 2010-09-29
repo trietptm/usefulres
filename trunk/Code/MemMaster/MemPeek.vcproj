@@ -181,10 +181,16 @@
 			Name="Ctrl"
 			Filter="">
 			<File
+				RelativePath="..\..\..\biggod.dev\Ctrl\File.hpp">
+			</File>
+			<File
 				RelativePath="..\..\..\aman.softbox\trunk\Ctrl\Process.cpp">
 			</File>
 			<File
 				RelativePath="..\..\..\aman.softbox\trunk\Ctrl\Process.h">
+			</File>
+			<File
+				RelativePath="..\..\..\biggod.dev\Ctrl\Ptr.hpp">
 			</File>
 		</Filter>
 		<File
