@@ -225,10 +225,26 @@ void CMemPeekDlg::OnBnClickedExportData()
 	
 	ULONG srcAddr = 0x03648000;
 
-	St* pData = new St[nItem];
+	St* pData = (St*)::malloc(nItem*sizeof(St));
+	Ptr data = pData;
 	if(!m_proc.ReadMem(srcAddr,(UCHAR*)pData,nItem*sizeof(St)))
 		return;
 
-	File f;
+	{
+		File f;
+		if(!f.Open("_export_data.txt","wb"))
+			return;
 
+		for(ULONG i = 0;i<nItem;i++)
+		{
+			CString str;
+			if(!m_proc.ReadStr((ULONG)pData[i].m0_lpStr,str))
+				return;
+
+			::fwrite(str,str.GetLength(),1,f);
+			::fwrite("\r\n",2,1,f);
+		}
+	}
+
+	AfxMessageBox("导出成功");
 }
