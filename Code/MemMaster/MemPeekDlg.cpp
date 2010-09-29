@@ -69,6 +69,7 @@ BEGIN_MESSAGE_MAP(CMemPeekDlg, CDialog)
 	//}}AFX_MSG_MAP
 	ON_BN_CLICKED(IDC_OPEN_PROCESS, OnBnClickedOpenProcess)
 	ON_BN_CLICKED(IDC_MODIFY, OnBnClickedModify)
+	ON_BN_CLICKED(IDC_EXPORT_DATA, OnBnClickedExportData)
 END_MESSAGE_MAP()
 
 
@@ -104,8 +105,8 @@ BOOL CMemPeekDlg::OnInitDialog()
 	// TODO: 在此添加额外的初始化代码
 	m_btModify.EnableWindow(FALSE);
 
-	m_edtProcess.SetWindowText("OPRemove.exe");
-	m_edtModifyAddr.SetWindowText("0041FB70");
+	m_edtProcess.SetWindowText("AWC.exe");
+	m_edtModifyAddr.SetWindowText("03648000");
 	m_edtModifyValue.SetWindowText("B801000000C3");
 
 	return TRUE;  // 除非设置了控件的焦点，否则返回 TRUE
@@ -210,4 +211,24 @@ void CMemPeekDlg::OnBnClickedModify()
 	{
 		AfxMessageBox("Modify success!");
 	}
+}
+
+class St
+{
+public:
+	LPCSTR m0_lpStr;
+	ULONG m4;
+};
+void CMemPeekDlg::OnBnClickedExportData()
+{
+	ULONG nItem = 0x8FA;
+	
+	ULONG srcAddr = 0x03648000;
+
+	St* pData = new St[nItem];
+	if(!m_proc.ReadMem(srcAddr,(UCHAR*)pData,nItem*sizeof(St)))
+		return;
+
+	File f;
+
 }
