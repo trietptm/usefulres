@@ -174,7 +174,7 @@ void CRandomDlg::OnBnClickedGenRegCode()
 
 	enum{NKey = 100};
 
-	static CHAR charSet[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+	static CHAR charSet[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789";//没有0，以免和O混淆
 	static ULONG nChar = sizeof(charSet)-1;
 
 	CString sResult;
