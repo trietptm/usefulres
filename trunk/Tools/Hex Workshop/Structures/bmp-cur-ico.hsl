@@ -1,0 +1,124 @@
+/*****************************************************************************
+ * bmp-cur-ico.hsl - Structure definitions for the .bmp, .cur, and .ico file 
+ *                   formats
+ *  
+ * Copyright (c) 2003-2008 BreakPoint Software, Inc.  All Rights Reserved
+ *
+ *****************************************************************************
+ * Revision History:
+ *  05/01/03 - RJA - Original
+ *  01/03/08 - RJA - Added verifies and added enums for BI_BITCOUNT and 
+ *                   BI_COMPRESSION.
+ *  12/16/08 - RJA - Added enumsign pragmas
+ */
+
+#include "standard-types.hsl"
+
+#pragma displayname("Bitmap, Cursor, Icon") ;
+#pragma fileextensions(".bmp;.cur;.ico") ;
+
+#pragma byteorder(little_endian) 
+
+struct BITMAPFILEHEADER 
+{
+    WORD    bfType;
+#pragma verify match_var_int("bfType", "0x424D")
+    DWORD   bfSize;
+    WORD    bfReserved1;
+    WORD    bfReserved2;    
+    DWORD   bfOffBits;
+} ;
+
+#pragma enumsize(2)
+#pragma enumsign("unsigned")
+typedef enum BI_BITCOUNT
+{
+    BI_FORMAT_IMPLIED = 0,
+    BI_MONOCHROME     = 1,
+    BI_4_BIT          = 4,
+    BI_8_BIT          = 8,
+    BI_16_BIT         = 16,
+    BI_24_BIT         = 24,
+    BI_32_BIT         = 32      
+} BI_BITCOUNT;
+
+#pragma enumsize(4)
+#pragma enumsign("unsigned")
+typedef enum BI_COMPRESSION
+{
+    BI_RGB       = 0,
+    BI_RLE8      = 1,
+    BI_RLE4      = 2,
+    BI_BITFIELDS = 3,
+    BI_JPEG      = 4,
+    BI_PNG       = 5
+} BI_COMPRESSION;
+
+struct BITMAPINFOHEADER 
+{
+    DWORD          biSize;
+    LONG           biWidth;
+    LONG           biHeight;
+    WORD           biPlanes;
+    BI_BITCOUNT    biBitCount;
+    BI_COMPRESSION biCompression;
+    DWORD          biSizeImage;
+    LONG           biXPelsPerMeter;
+    LONG           biYPelsPerMeter;
+    DWORD          biClrUsed;
+    DWORD          biClrImportant;
+} ;
+
+struct RGBQUAD 
+{
+    UBYTE    rgbBlue;
+    UBYTE    rgbGreen;
+    UBYTE    rgbRed;
+    UBYTE    rgbReserved;
+} ;
+
+struct BITMAPCOREHEADER 
+{
+    DWORD        bcSize;
+    WORD         bcWidth;
+    WORD         bcHeight;
+    WORD         bcPlanes;
+    BI_BITCOUNT  bcBitCount;
+} ;
+
+struct RGBTRIPLE 
+{
+    UBYTE    rgbtBlue;
+    UBYTE    rgbtGreen;
+    UBYTE    rgbtRed;
+} ;
+
+struct BITMAPCOREINFO 
+{
+    struct BITMAPCOREHEADER bmciHeader;
+    struct RGBTRIPLE        bmciColors[1];
+} ;
+
+struct ICONDIRENTRY 
+{
+    UBYTE  bWidth;
+    UBYTE  bHeight;
+    UBYTE  bColorCount;
+    UBYTE  bReserved;
+    WORD   wPlanes;
+    WORD   wBitCount;
+    DWORD  dwBytesInRes;
+    DWORD  dwImageOffset;
+};
+
+struct CURSORDIRENTRY 
+{
+    UBYTE  bWidth;
+    UBYTE  bHeight;
+    UBYTE  bColorCount;
+    UBYTE  bReserved;
+    WORD   wXHotspot;
+    WORD   wYHotspot;
+    DWORD  lBytesInRes;
+    DWORD  dwImageOffset;
+} ;
