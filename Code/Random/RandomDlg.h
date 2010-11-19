@@ -33,4 +33,5 @@ public:
 	afx_msg void OnBnClickedGenHex();
 	CEdit m_edtResult;
 	afx_msg void OnBnClickedGenRegCode();
+	afx_msg void OnBnClickedGenStr();
 };

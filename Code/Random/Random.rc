@@ -97,6 +97,7 @@ BEGIN
                     ES_WANTRETURN | WS_VSCROLL
     LTEXT           "Result:",IDC_STATIC,8,99,90,11
     PUSHBUTTON      "Éú³É×¢²áÂë",IDC_GEN_REG_CODE,15,42,50,14
+    PUSHBUTTON      "Ëæ»ú×Ö·û´®",IDC_GEN_STR,15,67,50,14
 END
 
 
