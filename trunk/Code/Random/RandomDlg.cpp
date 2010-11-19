@@ -65,6 +65,7 @@ BEGIN_MESSAGE_MAP(CRandomDlg, CDialog)
 	//}}AFX_MSG_MAP
 	ON_BN_CLICKED(IDC_GEN_HEX, OnBnClickedGenHex)
 	ON_BN_CLICKED(IDC_GEN_REG_CODE, OnBnClickedGenRegCode)
+	ON_BN_CLICKED(IDC_GEN_STR, OnBnClickedGenStr)
 END_MESSAGE_MAP()
 
 
@@ -195,4 +196,23 @@ void CRandomDlg::OnBnClickedGenRegCode()
 		sResult += _T("\r\n");
 	}
 	m_edtResult.SetWindowText(sResult);
+}
+void CRandomDlg::OnBnClickedGenStr()
+{
+	static CHAR charSet[] = "abcdefghijklmnopqrstuvwxyz";
+	static ULONG nChar = sizeof(charSet)-1;
+
+	srand(time(0));
+
+	CString sRes;
+	CString s;
+
+	ULONG len = rand()%4 + 2;
+
+	for(ULONG i = 0 ;i<len;i++)
+	{
+		s += charSet[::rand()%nChar];
+	}
+
+	m_edtResult.SetWindowText(s);
 }

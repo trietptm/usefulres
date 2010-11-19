@@ -8,9 +8,10 @@
 #define IDD_RANDOM_DIALOG               102
 #define IDR_MAINFRAME                   128
 #define IDC_GEN_HEX                     1000
+#define IDC_GEN_HEX2                    1001
+#define IDC_GEN_STR                     1001
 #define IDC_EDIT2                       1002
 #define IDC_EDIT_RESULT                 1002
-#define IDC_BUTTON1                     1004
 #define IDC_GEN_REG_CODE                1004
 
 // Next default values for new objects
