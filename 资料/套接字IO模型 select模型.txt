@@ -1,0 +1,112 @@
+套接字I/O模型 select模型
+2010-10-17 20:53
+s e l e c t（选择）模型是Wi n s o c k中最常见的I / O模型。之所以称其为“ s e l e c t模型”，是由于
+它的“中心思想”便是利用s e l e c t函数，实现对I / O的管理！最初设计该模型时，主要面向的是
+某些使用U n i x操作系统的计算机，它们采用的是B e r k e l e y套接字方案。s e l e c t模型已集成到
+Winsock 1.1中，它使那些想避免在套接字调用过程中被无辜“锁定”的应用程序，采取一种
+有序的方式，同时进行对多个套接字的管理。由于Winsock 1.1向后兼容于B e r k e l e y套接字实
+施方案，所以假如有一个B e r k e l e y套接字应用使用了s e l e c t函数，那么从理论角度讲，毋需对
+其进行任何修改，便可正常运行。
+利用s e l e c t函数，我们判断套接字上是否存在数据，或者能否向一个套接字写入数据。之
+所以要设计这个函数，唯一的目的便是防止应用程序在套接字处于锁定模式中时，在一次I / O
+绑定调用（如s e n d或r e c v）过程中，被迫进入“锁定”状态；同时防止在套接字处于非锁定模
+式中时，产生W S A E W O U L D B L O C K错误。除非满足事先用参数规定的条件，否则s e l e c t函数
+会在进行I / O操作时锁定。s e l e c t的函数原型如下：
+
+int select(int nfds,//忽略
+    fd_set FAR* readfds,//检查可读性
+    fd_set FAR* writefds,//检查可写性
+    fd_set FAR* exceptfds,//例外数据
+    const struct timeval FAR* timeout);
+
+其中，第一个参数n f d s会被忽略。之所以仍然要提供这个参数，只是为了保持与早期的B e r k e l e y套接字应用程序的兼容。大家可注意到三个f d _ s e t参数：一个用于检查可读性
+（r e a d f d s），一个用于检查可写性（w r i t e f d s），另一个用于例外数据（e x c e p t f d s）。从根本上说，
+f d s e t数据类型代表着一系列特定套接字的集合。其中， r e a d f d s集合包括符合下述任何一个条
+件的套接字：
+■ 有数据可以读入。
+■ 连接已经关闭、重设或中止。
+■ 假如已调用了l i s t e n，而且一个连接正在建立，那么a c c e p t函数调用会成功。
+w r i t e f d s集合包括符合下述任何一个条件的套接字：
+■ 有数据可以发出。
+■ 如果已完成了对一个非锁定连接调用的处理，连接就会成功。
+最后，e x c e p t f d s集合包括符合下述任何一个条件的套接字：
+■ 假如已完成了对一个非锁定连接调用的处理，连接尝试就会失败。
+■ 有带外（O u t - o f - b a n d，O O B）数据可供读取。
+例如，假定我们想测试一个套接字是否“可读”，必须将自己的套接字增添到r e a d f d s集合，
+再等待s e l e c t函数完成。s e l e c t完成之后，必须判断自己的套接字是否仍为r e a d f d s集合的一部
+分。若答案是肯定的，便表明该套接字“可读”，可立即着手从它上面读取数据。在三个参数
+中（r e a d f d s、w r i t e f d s和e x c e p t f d s），任何两个都可以是空值（ N U L L）；但是，至少有一个不
+能为空值！在任何不为空的集合中，必须包含至少一个套接字句柄；否则， s e l e c t函数便没有
+任何东西可以等待。最后一个参数t i m e o u t对应的是一个指针，它指向一个t i m e v a l结构，用于
+决定s e l e c t最多等待I / O操作完成多久的时间。如t i m e o u t是一个空指针，那么s e l e c t调用会无限
+期地“锁定”或停顿下去，直到至少有一个描述符符合指定的条件后结束。对t i m e v a l结构的
+定义如下：
+timeval数据结构
+strcut timeval
+{
+   long tv_sec;
+   long tv_usec
+}    //(0,0)立即返回
+
+其中，t v s e c字段以秒为单位指定等待时间； t v u s e c字段则以毫秒为单位指定等待时间。
+若将超时值设置为（ 0 , 0），表明s e l e c t会立即返回，允许应用程序对s e l e c t操作进行“轮询”。
+出于对性能方面的考虑，应避免这样的设置。s e l e c t成功完成后，会在f d s e t结构中，返回刚
+好有未完成的I / O操作的所有套接字句柄的总量。若超过t i m e v a l设定的时间，便会返回0。不
+管由于什么原因，假如s e l e c t调用失败，都会返回S O C K E T E R R O R。
+用s e l e c t对套接字进行监视之前，在自己的应用程序中，必须将套接字句柄分配给一个集
+合，设置好一个或全部读、写以及例外f d s e t结构。将一个套接字分配给任何一个集合后，再
+来调用s e l e c t，便可知道一个套接字上是否正在发生上述的I / O活动。Wi n s o c k提供了下列宏操
+作，可用来针对I / O活动，对f d s e t进行处理与检查：
+■ FD_CLR(s, *set)：从s e t中删除套接字s。
+■ FD_ISSET(s, *set)：检查s是否s e t集合的一名成员；如答案是肯定的是，则返回T R U E。
+■ FD_SET(s, *set)：将套接字s加入集合s e t。
+■ F D Z E R O ( * s e t )：将s e t初始化成空集合。
+
+例如，假定我们想知道是否可从一个套接字中安全地读取数据，同时不会陷于无休止的
+“锁定”状态，便可使用F D S E T宏，将自己的套接字分配给f d r e a d集合，再来调用s e l e c t。要
+想检测自己的套接字是否仍属f d r e a d集合的一部分，可使用F D I S S E T宏。采用下述步骤，便
+可完成用s e l e c t操作一个或多个套接字句柄的全过程：
+1) 使用F D Z E R O宏，初始化自己感兴趣的每一个f d s e t。
+2) 使用F D S E T宏，将套接字句柄分配给自己感兴趣的每个f d s e t。
+3) 调用s e l e c t函数，然后等待在指定的f d s e t集合中，I / O活动设置好一个或多个套接字句柄。
+s e l e c t完成后，会返回在所有f d s e t集合中设置的套接字句柄总数，并对每个集合进行相应的更新。
+4) 根据s e l e c t的返回值，我们的应用程序便可判断出哪些套接字存在着尚未完成（待决）
+的I / O操作—具体的方法是使用F D I S S E T宏，对每个f d s e t集合进行检查。
+5) 知道了每个集合中“待决”的I / O操作之后，对I / O进行处理，然后返回步骤1 )，继续进
+行s e l e c t处理。
+s e l e c t返回后，它会修改每个f d s e t结构，删除那些不存在待决I / O操作的套接字句柄。这
+正是我们在上述的步骤( 4 )中，为何要使用F D I S S E T宏来判断一个特定的套接字是否仍在集合
+中的原因。在程序清单8 - 4中，我们向大家阐述了为一个（只有一个）套接字设置s e l e c t模型所
+需的一系列基本步骤。若想在这个应用程序中添加更多的套接字，只需为额外的套接字维护
+它们的一个列表，或维护它们的一个数组即可。
+
+SOCKET s;
+fd_set fdread;
+int ret;
+
+//create a socket,and accept a connection 
+//manage i/o on the socket
+
+while(TRUE)
+{
+FD_ZERO(&fread);
+
+FD_SET(s,&fread);
+if(ret=select(0,&fread,NULL,NULL,NULL)==SOCKET_ERROR)
+{
+   //Error condition
+}
+if(ret>0)
+{
+   //for this simple case, select() should return the value1,
+   //an application dealing with more than one socket could get
+   //a value greater than 1,at this point ,your application should
+   //check to see whether the socket is part of a set
+
+   if(FD_ISSET(s,&fdread))
+   {
+    //a read event has occured on socket s
+   }
+
+}
+}
