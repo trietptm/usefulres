@@ -1,0 +1,1 @@
+document.write('<li><a target="_blank" href="http://blog.csdn.net/csdnproduct/archive/2011/01/07/6122942.aspx" onclick="LogClickCount(this,165);">CSDN 产品博客开博啦！ </a></li>');
