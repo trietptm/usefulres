@@ -1,0 +1,87 @@
+TCP和UDP：妓女和嫖客的故事（二）
+post by idnemo / 2007-11-19 13:37 Monday
+TCP和UDP是传输层中定义的两种传输协议。在网络编程中，第一个步骤就是为应用程序选择TCP还是UDP传输数据。
+它们的区别简单说来就是：
+TCP保证数据全部送到，不会丢失，但信息传输较慢。UDP不保证数据全部送到，但传输速度快。
+回到上次的那个故事，嫖客完事之后付钱给妓女。于是妓女清点钞票，保证拿到了全额的服务费用。这，就是TCP。后来，妓女由于技巧高超，找她服务的嫖客越来越多，可以说是应接不暇。忙于接客的她头昏脑胀，无暇顾及每次是否都拿到了全部的费用，反正多赚一笔是一笔。等到她发觉钱收少了时，才再去找嫖客要。这，就是UDP。
+我没有用UDP编过程序，但是我看见过很多局域网游戏都是使用UDP。特别是对于实时响应一些要求很高的FPS来说，它们的发包量通常不大，但是需要很快的传输和响应速度。相反，大型的网络游戏通常都是用TCP。显而易见的是，因为广域网的游戏需要有一个更可高的网络传输环境。
+我写的网络程序都是基于TCP的。不过，TCP虽然能够保证数据完整的收到，但是并不保证应用程序在每次调用recv()函数时收到的是一个完整的数据包。也就是说，可能会因为网络的各种状况导致只收到一次收到半个包或者超过1个包的数据。比如程序三次recv()收到的数据是这样的。
+第一次：[a][a][a][a][a][b][b]
+第二次：[b][b][b][c][c][c]
+第三次：[c][c][d][d]
+……
+这时就需要对程序做包的完整性检测了，下面提供一个包完整性检测的伪代码，是公司的一位前辈教我的。说是伪代码，其实已经跟实际的代码差不多了。
+//包完整性检测的伪代码
+const int iNums=65536;
+int buflen = 0
+char Buffer[iNums];
+bool succRec=fasel;
+
+int len=recv()
+memcpy(Buffer,recv_buf,len);
+buflen += len;
+if (buflen > Package_size)
+{
+   memcpy(Package,Buffer,Package_size);  
+   memmove(Buffer,&Buffer[Package_size],Package_size);
+   buflen -= Package_size;
+   succRec=true;
+}
+if(succRec)
+{
+Process(Package);
+}
+这样的话，第一次收到数据并处理包后的缓冲区是：[b][b]
+第二次就是：[c][c][c]
+第三次就是：[d][d]
+这样，收到三个包就都是完整而且可处理的了。
+
+我靠，今天就写到这里，爽PSP去了。呼啦啦，果然用PSP看AV很赞。
+过几天打算写个评psp,nds,wii,x360,PS3的文章。自从大三封笔以后，就很久没写评论游戏的东西了。最近买了PSP后，又有了一些感触。
+
+标签:	游戏开发
+? 那些转瞬即逝、擦肩而过的美 | select模型：妓女和嫖客的故事(一)?
+引用地址: 
+
+评论：
+fytnkyta 2010-04-05 15:38
+mkIL3n  <a href="http://rteihrfpbcfh.com/">rteihrfpbcfh</a>, [url=http://gfhsxtheqwka.com/]gfhsxtheqwka[/url], [link=http://iozqdxcufgum.com/]iozqdxcufgum[/link], http://nbhlbptanrlv.com/
+idnemo 2008-07-15 14:44
+memcpy把已经收到的数据部分保存，然后使用memmove将Buffer缓冲区的指针前移，前移位置量是Package_size，所以应是一个Package_size大小.
+cai 2008-07-10 06:22
+memmove(Buffer,&Buffer[Package_size],Package_size); 
+最后一个参数是否应改为：buflen -Package_size
+那多记忆 2007-11-25 10:54
+有时间写写psp的评论，我也比较感兴趣。想买个玩玩
+idnemo 2007-11-23 09:40
+如果两个client直接通信了，它就是P2P了。 
+C/S的模式是各个client发包到server，server处理逻辑，然后发还各个client。client之间是没有直接的通信行为的，一定要通过server的处理。 
+你基本概念搞搞清。像WOW这样的MMOG是不可能做成让两个玩家直接通信，成P2P模式的。
+fei 2007-11-23 09:23
+看来挺不明白的, 
+对呀C/S模式,就说WOW.当两个玩家在一起的时候,我想实现的就是两个玩家在服务器注册后就直接相连.而服务器不参与他们两之间的具体行为的中转,就是说你A说话,我只存,不中转给B,B说话也只存储B说的,不转发给A.对吧 
+同样的,我现在也要实现的就是这两个在NAT后面的人如何通信. 
+因为NAT在没有通过工具在NAT端做端口映射的情况下是只信任本地主动发起的连接/
+idnemo 2007-11-23 08:55
+我超级汉， 
+C\S模式的，Client与client是绝对不可能发生通信行为的。 
+还有什么打洞，请确认你说的是winsock的事务……
+fei 2007-11-23 08:35
+晕,一样的,只要你们要实现网络互连,就得想办法用UDP OR TCP 穿透NAT... 
+很简单的说下,现在是这样的 
+client a 在NAT A 后面   
+client B在NAT B后面 
+NAT A ,NAT B 都连接了Server 
+client   A 通过 NAT A 能和Server S通信,同时client B 通过NAT B 和Server S也能通信 
+但我们现在想实现的是如何让client A 通过 NAT A 
+与NAT B里的client B连接. 
+NAT是不信任外面主动连接里成的client的,只有在内部的client A与外部主动连一个外网独立IP的机器没有NAT,此时外网与client通信经过NAT则会被NAT视为信任的,这样就可以连,但是外网机器client B如果也在一个NAT B后面,所以它的NAT B会阻止此次连接,这样只有通过服务器S给发一个消息给NAT B,NAT B才会告诉Client B发送消息到Client A.这样就能连. 
+明白没?我这弄得一头汗中
+idnemo 2007-11-23 07:00
+米有，我们是C\S，不是P2P
+fei 2007-11-23 04:19
+最近在弄UDP和TCP穿透NAT实现P2P连接,你有没有相关的UDP打洞技术和TCP打洞技术.
+idnemo 2007-11-20 12:14
+呃，其实全球人民都爱看AV。只是那个岛国擅于出口AV。
+CrazyVinci 2007-11-20 03:06
+psp~~看AV很赞....很符合他们的国情嘛
