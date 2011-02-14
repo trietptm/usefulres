@@ -1,0 +1,89 @@
+我面试中的soket编程相关(一)(如何判断连接状态断开,Linux:C/Socket多路复用select(),阻塞
+2009-06-17 21:00
+1、阻塞模式与非阻塞模式下recv的返回值各代表什么意思？有没有区别？（就我目前了解阻塞与非阻塞recv返回值没有区分，都是 <0：出错，=0：连接关闭，>0接收到数据大小，特别：返回值 <0时并且(errno == EINTR || errno == EWOULDBLOCK || errno == EAGAIN)的情况下认为连接是正常的，继续接收。只是阻塞模式下recv会阻塞着接收数据，非阻塞模式下如果没有数据会返回，不会阻塞着读，因此需要循环读取）。
+
+2、阻塞模式与非阻塞模式下write的返回值各代表什么意思？有没有区别？（就我目前了解阻塞与非阻塞write返回值没有区分，都是 <0：出错，=0：连接关闭，>0发送数据大小，特别：返回值 <0时并且(errno == EINTR || errno == EWOULDBLOCK || errno == EAGAIN)的情况下认为连接是正常的，继续发送。只是阻塞模式下write会阻塞着发送数据，非阻塞模式下如果暂时无法发送数据会返回，不会阻塞着write，因此需要循环发送）。
+
+3、阻塞模式下read返回值 < 0 && errno != EINTR && errno != EWOULDBLOCK && errno != EAGAIN时，连接异常，需要关闭，read返回值 < 0 && (errno == EINTR || errno == EWOULDBLOCK || errno == EAGAIN)时表示没有数据，需要继续接收，如果返回值大于0表示接送到数据。 
+非阻塞模式下read返回值 < 0表示没有数据，= 0表示连接断开，> 0表示接收到数据。 
+这2种模式下的返回值是不是这么理解，有没有跟详细的理解或跟准确的说明？
+
+4、阻塞模式与非阻塞模式下是否send返回值 < 0 && (errno == EINTR || errno == EWOULDBLOCK || errno == EAGAIN)表示暂时发送失败，需要重试，如果send返回值 <= 0, && errno != EINTR && errno != EWOULDBLOCK && errno != EAGAIN时，连接异常，需要关闭，如果send返回值 > 0则表示发送了数据？send的返回值是否这么理解，阻塞模式与非阻塞模式下send返回值=0是否都是发送失败，还是那个模式下表示暂时不可发送，需要重发？
+
+5、很多人说阻塞模式下read会阻塞着读，是否这样？我和同事试了不会阻塞read。
+
+6、网络上找了很多资料，说的都很笼统，就分大于0，小于0，等于0，并没有区分阻塞与非阻塞，更没有区分一个错误号，希望哪位高手能按上面的问题逐条回答一下，越详细越好，平时少上CSDN，分少，见谅。 
+select():
+
+select()的机制中提供一fd_set的数据结构，实际上是一long类型的数组，每一个数组元素都能与一打开的
+
+文件句柄（不管是Socket句柄,还是其他 文件或命名管道或设备句柄）建立联系，建立联系的工作由程序员
+
+完成，当调用select()时，由内核根据IO状态修改fd_set的内容，由此来通知执行了select()的进程哪一
+
+Socket或文件可读，下面具体解释：
+
+int select(nfds, readfds, writefds, exceptfds, timeout)
+
+int nfds;
+
+fd_set *readfds, *writefds, *exceptfds;
+
+struct timeval *timeout;
+
+ndfs：select监视的文件句柄数，视进程中打开的文件数而定,一般设为你要监视各文件中的最大文件号
+
+加一。
+
+readfds：select监视的可读文件句柄集合。
+
+writefds: select监视的可写文件句柄集合。
+
+exceptfds：select监视的异常文件句柄集合
+
+timeout：本次select()的超时结束时间。（见/usr/include/sys/select.h， 可精确至百万分之一
+
+秒！）
+
+当readfds或writefds中映象的文件可读或可写或超时，本次select() 就结束返回。程序员利用一组系
+
+统提供的宏在select()结束时便可判 断哪一文件可读或可写。对Socket编程特别有用的就是readfds。
+
+相关的宏解释如下：
+
+FD_ZERO(fd_set *fdset)：清空fdset与所有文件句柄的联系。
+
+FD_SET(int fd, fd_set *fdset)：建立文件句柄fd与fdset的联系。
+
+FD_CLR(int fd, fd_set *fdset)：清除文件句柄fd与fdset的联系。
+
+FD_ISSET(int fd, fdset *fdset)：检查fdset联系的文件句柄fd是否可读写，>0表示可读写。 
+（关于fd_set及相关宏的定义见/usr/include/sys/types.h）
+
+这样，你的socket只需在有东东读的时候才读入，大致如下： 
+... 
+int sockfd; 
+fd_set fdR; 
+struct timeval timeout = ..; 
+... 
+for(;;) { 
+    FD_ZERO(&fdR); 
+    FD_SET(sockfd, &fdR); 
+    switch (select(sockfd + 1, &fdR, NULL, &timeout)) { 
+        case -1: 
+            error handled by u; 
+        case 0: 
+            timeout hanled by u; 
+        default: 
+            if (FD_ISSET(sockfd)) { 
+            now u read or recv something; 
+            /* if sockfd is father and server socket, u can now accept() */ 
+            } 
+    } 
+}
+
+所以一个FD_ISSET(sockfd)就相当通知了sockfd可读。
+
+至于struct timeval在此的功能，请man select。不同的timeval设置 使使select()表现出超时结束、
+
+无超时阻塞和轮询三种特性。由于timeval可精确至百万分之一秒，所以Windows的SetTimer()根本不算什么。你可以用select()做一个超级时钟
