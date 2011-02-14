@@ -1,0 +1,1 @@
+document.write('<li><a target="_blank" href="http://blog.csdn.net/csdnproduct/archive/2011/01/07/6122942.aspx" onclick="LogClickCount(this,165);">是CSDN的产品事业部开设的官方博客，是CSDN会员和我们产品事业部门进行沟通的官方渠道。</a></li>');
