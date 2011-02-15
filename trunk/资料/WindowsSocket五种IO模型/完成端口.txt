@@ -1,0 +1,5 @@
+来源：http://zhidao.baidu.com/question/1176386.html
+
+完成端口是一种高效的异步 IO 机制，通过完成端口可以实现高效网络服务器设计。通过将完成端口与 I/O 句柄（文件或Socket等）关联，使用户可以通过完成端口这一统一途径，异步的获取并处理 I/O 操作的结果，同时能够最大限度利用多 CPU （超线程可以看作是2个CPU)的优势，故而在效率上很高。
+与 WaitForMultipleObjects 函数不同，完成端口是由系统直接提供并行优化支持，通过建立完成端口时指定的并行线程值，系统可以保证工作在同一完成端口上的线程数量受控（一般等于系统CPU数量），这样就可以避免无意义的线程上下文切换，获取更高的性能。
+    其次，从使用角度来看：完成端口使用 CreateIoCompletionPort 函数和 CloseHandle 函数创建和释放，使用 GetQueuedCompletionStatus 函数和 PostQueuedCompletionStatus 函数实现完成端口的读写操作。
