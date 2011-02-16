@@ -1,0 +1,831 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0043)http://luisliu.blog.51cto.com/883990/227200 -->
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=GBK">
+<meta http-equiv="x-ua-compatible" content="ie=7">
+
+<title>求子数组的最大和 - Carpe Diem.... - 51CTO技术博客</title>
+<meta name="description" content="题目：输入一个整形数组，数组里有正数也有负数。数组中连续的一个或多个整数组成一个子数组，每个子数组都有一个和。求所有子数组的和的最大值。要求时间复杂度为O(n)。&#160;&#160;&#160;&#160;&#160;&#160;&amp;nb..">
+<meta name="keywords" content="求子数组的最大和">
+<meta http-equiv="Cache-Control" content="private">
+<!--<base href="http://luisliu.blog.51cto.com/">--><base href=".">
+<script src="./求子数组的最大和_files/def.js"></script>
+<script language="javascript" src="./求子数组的最大和_files/message.js" type="text/javascript"></script>
+<script language="javascript" src="./求子数组的最大和_files/user_comment.js" type="text/javascript"></script>
+<script language="javascript" src="./求子数组的最大和_files/base2.js" type="text/javascript"></script>
+<script language="javascript" src="./求子数组的最大和_files/dialog_utf8.js" type="text/javascript"></script>
+<link href="./求子数组的最大和_files/30.css" rel="stylesheet" type="text/css">
+<link rel="alternate" href="http://luisliu.blog.51cto.com/rss.php?uid=883990" type="application/rss+xml" title="RSS 2.0">
+<link rel="edituri" type="application/rsd+xml" title="rsd" href="http://luisliu.blog.51cto.com/xmlrpc.php?rsd=1">
+<link href="./求子数组的最大和_files/header_master_top.css" rel="stylesheet" type="text/css">
+<link href="./求子数组的最大和_files/base.css" rel="stylesheet" type="text/css">
+<script src="./求子数组的最大和_files/poptop.js"></script>
+<script>
+var myid = "";
+function add_flink(){
+	if(myid){
+		var url='/mod/edit_flink.php?type=addflink&uid=883990&flink=http://luisliu.blog.51cto.com';
+		var ajax = InitAjax1();
+		ajax.open("GET", url, true);
+		ajax.onreadystatechange = function() {
+			if (ajax.readyState == 4 && ajax.status == 200) {
+				if(ajax.responseText==""){
+					alert("添加成功。");
+				}
+				if(ajax.responseText=="1"){
+				alert("链接指向自己。");
+				}
+				if(ajax.responseText=="2"){
+				alert("友情链接已存在。")
+				}
+			}
+		}
+		ajax.send(null);
+	}else{
+
+	var refurlk = "http://luisliu.blog.51cto.com/883990/227200";
+
+		commentSubmit("",refurlk);
+		return false;
+	}
+
+}
+function sendmessage(){
+
+	var refurlk = "http://luisliu.blog.51cto.com/883990/227200";
+
+	if(myid){
+		return true;
+	}else{
+		commentSubmit("",refurlk);
+		return false;
+	}
+}
+function copylink(ourl){
+	if(!ourl){
+		var clipBoardContent = "http://luisliu.blog.51cto.com";
+	}else{
+		var clipBoardContent = ourl;
+	}
+	window.clipboardData.setData("Text",clipBoardContent);
+	alert("复制成功!");
+	return false;
+}
+function correctPNG() {
+if (document.getElementById('blog_touxian'))
+{
+var img = document.getElementById('blog_touxian');
+      var imgName = img.src.toUpperCase()
+      var imgID = (img.id) ? "id='" + img.id + "' " : ""
+      var imgClass = (img.className) ? "class='" + img.className + "' " : ""
+      var imgTitle = (img.title) ? "title='" + img.title + "' " : "title='" + img.alt + "' "
+      var imgStyle = "display:inline-block;" + img.style.cssText
+      if (img.align == "left") imgStyle = "float:left;" + imgStyle
+      if (img.align == "right") imgStyle = "float:right;" + imgStyle
+      if (img.parentElement.href) imgStyle = "cursor:hand;" + imgStyle
+      var strNewHTML = "<span " + imgID + imgClass + imgTitle
+         + " style=\"" + "width:" + img.width + "px; height:" + img.height + "px;" + imgStyle + ";"
+         + "filter:progid:DXImageTransform.Microsoft.AlphaImageLoader"
+         + "(src=\'" + img.src + "\', sizingMethod='scale');\"></span>" ;
+      img.outerHTML = strNewHTML;
+}
+}
+//window.attachEvent("onload", correctPNG);
+window.onload=correctPNG;
+
+function copy(){
+var text=document.getElementById("txtUser").value;
+if(copy2Clipboard(text)!=false){ 
+alert("复制成功了！ "); 
+} 
+}
+function copy2Clipboard(txt){ 
+if(window.clipboardData){ 
+window.clipboardData.clearData(); 
+window.clipboardData.setData("Text",txt); 
+}else if(navigator.userAgent.indexOf("Opera")!=-1){ 
+window.location=txt; 
+}else if(window.netscape){ 
+try{ 
+netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect"); 
+} 
+catch(e){ 
+alert("您使用的浏览器不支持此复制功能，请使用Ctrl+C或鼠标右键。"); 
+return false; 
+} 
+var clip=Components.classes['@mozilla.org/widget/clipboard;1'].createInstance(Components.interfaces.nsIClipboard); 
+if(!clip)return; 
+var trans=Components.classes['@mozilla.org/widget/transferable;1'].createInstance(Components.interfaces.nsITransferable); 
+if(!trans)return; 
+trans.addDataFlavor('text/unicode'); 
+var str=new Object(); 
+var len=new Object(); 
+var str=Components.classes["@mozilla.org/supports-string;1"].createInstance(Components.interfaces.nsISupportsString); 
+var copytext=txt;str.data=copytext; 
+trans.setTransferData("text/unicode",str,copytext.length*2); 
+var clipid=Components.interfaces.nsIClipboard; 
+if(!clip)return false; 
+clip.setData(trans,null,clipid.kGlobalClipboard); 
+return true;
+} 
+}
+
+function mod_close(){
+  document.getElementById('mod_tg').style.display="none";
+}
+
+</script>
+<style type="text/css">
+/*
+.artContent img {max-width:450px !important;}
+.showContent img{max-width:650px!important;}
+*/
+
+.artContent img{max-width: 450px; width:expression(this.width > 450 ? "450px" : this.width)}
+/*
+.showContent img{max-width: 450px; width:expression(this.width > 650 ? "650px" : this.width)}
+*/
+
+
+</style>
+</head>
+
+<body>
+
+<div id="home_top">
+<div class="top_nav" style="width:990px;">
+<div class="left" style="margin-top:10px;"><a href="http://blog.51cto.com/"><img src="./求子数组的最大和_files/head_blog_sibebar_logo.gif" align="absmiddle" style="margin-top:-4px;"></a><a target="_blank" href="http://www.51cto.com/">51CTO首页</a><img height="25" align="absmiddle" width="16" src="./求子数组的最大和_files/top_bg_xian.gif" style="margin-top:-4px;"><a href="http://home.51cto.com/?reback=http%253A%252F%252Fluisliu.blog.51cto.com%252F883990%252F227200">我的博客</a><img height="25" align="absmiddle" width="16" src="./求子数组的最大和_files/top_bg_xian.gif" style="margin-top:-4px;">
+
+<a target="_blank" href="http://blog.51cto.com/search.php">搜索</a></div>
+
+<div class="right">
+<div class="more"><img height="16" align="absmiddle" width="27" src="./求子数组的最大和_files/top_shequ.gif">社区：<a target="_blank" href="http://bbs.51cto.com/">论坛</a><a target="_blank" href="http://blog.51cto.com/">博客</a><a target="_blank" href="http://down.51cto.com/">下载</a><a target="_blank" href="http://book.51cto.com/">读书</a><a href="javascript:viod(0);" onmouseout="popupClose()" onmouseover="show(3,this)">更多<img align="absmiddle" style="padding-left: 4px;" src="./求子数组的最大和_files/nav_ico1.gif"></a>            </div>            <span id="login_status"><div class="login" style="padding-top:8px; text-align:right;"><a href="http://home.51cto.com/?reback=http%253A%252F%252Fluisliu.blog.51cto.com%252F883990%252F227200" target="_self">登录</a><a href="http://ucenter.51cto.com/reg_01.php?reback=http%253A%252F%252Fluisliu.blog.51cto.com%252F883990%252F227200" target="_self">注册</a></div></span>                </div>    </div></div>
+
+
+
+<div class="subMenu3" id="s3" onmouseover="popupNoClose()" onmouseout="popupClose()">
+<ul>
+<li><a href="http://home.51cto.com/" target="_blank">家园</a></li>
+<li><a href="http://blog.51cto.com/" target="_blank">博客</a></li>
+<li><a href="http://bbs.51cto.com/" target="_blank">论坛</a></li>
+<li><a href="http://down.51cto.com/" target="_blank">下载</a></li>
+<li><a href="http://selftest.51cto.com/" target="_blank">自测</a></li>
+<li><a href="http://doctor.51cto.com/" target="_blank">门诊</a></li>
+<li><a href="http://blog.51cto.com/newsletter/" target="_blank">周刊</a></li>
+<li><a href="http://book.51cto.com/" target="_blank">读书</a></li>
+<li><a href="http://g.51cto.com/" target="_blank">技术圈</a></li>
+<li><a href="http://zhidao.51cto.com/" target="_blank">知道</a></li>
+</ul>
+</div>
+<!--简导航end-->
+
+
+
+<div class="headerBox">
+<div class="header">
+<div class="header_l">
+<div class="logo_blogname">
+
+
+
+<div class="blogName">
+<a href="http://luisliu.blog.51cto.com/"><h1>Carpe Diem....</h1></a>
+</div>
+</div><!--logo_blogname end-->
+<div class="blogLink">
+
+<a href="http://luisliu.blog.51cto.com/">http://luisliu.blog.51cto.com</a> <input id="txtUser" type="hidden" size="32" value="http://luisliu.blog.51cto.com">   <a href="javascript:void(0);" onclick="copy();">【复制】</a> <a href="http://luisliu.blog.51cto.com/rss.php?uid=883990" target="_blank"></a><a href="http://luisliu.blog.51cto.com/rss.php?uid=883990" target="_blank">【订阅】</a>
+
+</div>
+
+
+
+</div><!--header_l end-->
+<div class="header_r">
+<div class="blogInfo"><span><a href="http://luisliu.blog.51cto.com/883990/o" title="察看welkincq所有原创文章">原创</a>:14</span><span><a href="http://luisliu.blog.51cto.com/883990/t" title="察看welkincq所有翻译文章">翻译</a>:0</span><span><a href="http://luisliu.blog.51cto.com/883990/c" title="察看welkincq所有转载文章">转载</a>:13</span></div>
+<div class="blogNav"><a href="http://luisliu.blog.51cto.com/">博 客</a>|<a href="http://luisliu.blog.51cto.com/pic/">图库</a>|<a href="http://luisliu.blog.51cto.com/addblog.php">写博文</a>|<a href="http://51ctoblog.blog.51cto.com/all/26414/4" target="_blank">帮 助</a></div>
+</div>
+</div>
+<!--header end-->
+</div><!--headerBox end-->
+<div class="mainNav">
+<span class="mainNavT"></span>
+<ul>
+<li><a href="http://luisliu.blog.51cto.com/#">首页</a></li>
+</ul>
+<span class="mainNavB"></span>
+</div>
+<!--mainNav end-->
+
+
+<script type="text/javascript" src="./求子数组的最大和_files/jquery-1.3.2.js"></script>
+<script type="text/javascript">
+jQuery(function() {
+	jQuery('#favourdiv').mouseover(function(){
+		if(jQuery(this).attr('className') == 'support01')
+		{
+			jQuery(this).attr('className', "support02");
+			jQuery(this).html('+1人');
+			jQuery(this).attr('title', "赞一个，我支持TA");
+		}
+	});
+	jQuery('#favourdiv').mouseout(function(){
+		if(jQuery(this).attr('className') == 'support02')
+		{
+			jQuery(this).attr('className', "support01");
+			jQuery(this).html("0人");
+		}
+	});
+	jQuery('#favourdiv').click(function(){
+			jQuery.ajax({
+			   type: "POST",
+			   url:"/mod/favour.php",
+			   dataType: "html",
+			   data: "tid=" + 227200,
+			   success: function(data) {
+					if(data == 0)
+					{
+						alert("您还未登录或者已过期，请重新登录");
+						location.href = "http://home.51cto.com/index.php?reback=http%253A%252F%252Fluisliu.blog.51cto.com%252F883990%252F227200";
+						return false;
+					}
+					else if(data == '-1')
+					{
+						alert("参数传递错误！");
+						return false;
+					}
+					else if(data == '-2')
+					{
+						alert("该博文已被删除或者不存在！");
+						return false;
+					}
+					else if(data == '-3')
+					{
+						alert("您已经赞过了！");
+						return false;
+					}
+					else if(data == '-4')
+					{
+						alert("赞操作失败！");
+						return false;
+					}
+					else
+					{
+						alert("操作成功，你已经赞了这篇博文！");
+						jQuery('#favourdiv').attr('className', "support03");
+						var num = 0 + 1 + "人";
+						jQuery('#favourdiv').html(num);
+						jQuery('#favourer').html(data);
+						return false;
+					}
+			   }
+		  });
+	})
+
+
+})
+</script>
+<script language="JavaScript" type="text/javascript" src="./求子数组的最大和_files/group.js"></script>
+<div id="add_sys_type_div" style="width:600px;border:1px #58B0DD solid; background-color:#FFF; position:absolute;left:30%;top:300px;display:none;z-index:255"></div>
+<div id="add_sys_type_divs" style="width:550px;border:1px #58B0DD solid; background-color:#FFF; position:absolute;left:30%;top:300px;display:none;z-index:255"></div>
+
+
+<div class="blogMain">
+<div class="blogLeft">
+
+
+<div class="box moduleUser">
+<div class="title">
+<h2><strong>welkincq</strong> 的BLOG  </h2>
+</div>
+<div class="modCon">
+
+<div class="userImage"><script src="./求子数组的最大和_files/userface.php"></script><img src="./求子数组的最大和_files/883990_1258207056.jpg" id="userface"></div>
+<div class="crumbs">
+<a href="http://home.51cto.com/index.php?s=/space/883990#message" class="writeMessage" target="_blank">写留言</a><a href="http://g.51cto.com/addgroup.php?uid=" class="inCircle" target="_blank">邀请进圈子</a><a href="http://home.51cto.com/index.php?s=/Notify/write/uid/883990" class="message" target="_blank">发消息</a> <a href="http://luisliu.blog.51cto.com/" onclick="add_flink(883990);return false" class="joinLinks">加友情链接</a><a href="http://home.51cto.com/index.php?s=/space/883990" class="joinFriends" target="_blank">进家园 加好友</a>
+</div>
+
+
+</div><!--modCon end-->
+<span class="modBot"></span>
+</div>
+
+
+<div class="infoList box">
+<div class="title">
+<h2>博客统计信息</h2>
+</div>
+<div class="modCon">
+<p>
+<span class="infoListHead"></span>
+用户名：welkincq<br>
+文章数：27<br>
+评论数：2<br>
+访问量：8619<br>
+无忧币：122<br>
+<a href="http://51ctoblog.blog.51cto.com/26414/5591" target="_blank">博客积分</a>：192<br>
+<a href="http://51ctoblog.blog.51cto.com/26414/5591" target="_blank">博客等级</a>：2<br>
+注册日期：2009-07-31 </p>
+</div>
+<span class="modBot"></span>
+</div>
+
+
+<div class="hotArt box">
+<div class="title">
+<h2>热门文章</h2>
+</div>
+<div class="modCon">
+<ul>
+<li><a href="http://luisliu.blog.51cto.com/883990/270045">HG:Mercurial - 分布式版..</a></li>
+<li><a href="./求子数组的最大和_files/求子数组的最大和.htm">求子数组的最大和</a></li>
+<li><a href="http://luisliu.blog.51cto.com/883990/226618">派生类构造函数和析构函..</a></li>
+<li><a href="http://luisliu.blog.51cto.com/883990/224700">strcpy/strlen/mencpy/me..</a></li>
+<li><a href="http://luisliu.blog.51cto.com/883990/230204">编译原理-文法</a></li>
+<li><a href="http://luisliu.blog.51cto.com/883990/227156">最长公共子序列问题</a></li>
+<li><a href="http://luisliu.blog.51cto.com/883990/227540">C++ 内存分配及堆和栈的区别</a></li>
+<li><a href="http://luisliu.blog.51cto.com/883990/225544">两个升序链表，合并成一..</a></li>
+
+</ul>
+</div>
+<span class="modBot"></span>
+</div>
+<div class="search box">
+<div class="title"><h2>搜索BLOG文章</h2></div>
+<div class="modCon">
+<form method="post" action="http://luisliu.blog.51cto.com/search.php?">
+<input type="hidden" name="step" value="2">
+<input type="hidden" name="authorid" value="883990">
+<input type="hidden" name="sch_area" value="S">
+<input type="text" value="" name="keyword" class="searchInput">
+<input type="submit" value="搜 索" class="searchBtn">
+</form></div><!--modCon end-->
+<span class="modBot"></span>
+</div>
+
+
+<div class="myHome box">
+<div class="title"><h2 class="fl">我的技术圈(<a href="http://luisliu.blog.51cto.com/mygroup.php" target="_blank"><b>0</b></a>)</h2>
+<a href="http://luisliu.blog.51cto.com/mygroup.php" class="fr" target="_blank">更多&gt;&gt;</a></div>
+<div class="modCon">
+<ul>
+
+</ul>
+</div><!--modCon end-->
+<span class="modBot"></span>
+</div>
+
+
+<div class="box recentGuests">
+<div class="title">
+<h2>最近访客</h2>
+</div>
+<div class="modCon">
+<ul>
+
+<li><a href="http://2685066.blog.51cto.com/"><img src="./求子数组的最大和_files/face.jpg"></a>
+<p><a href="http://2685066.blog.51cto.com/">aei135</a></p>
+
+</li><li><a href="http://1830477.blog.51cto.com/"><img src="./求子数组的最大和_files/face.jpg"></a>
+<p><a href="http://1830477.blog.51cto.com/">skcks</a></p>
+
+</li><li><a href="http://1164549.blog.51cto.com/"><img src="./求子数组的最大和_files/face.jpg"></a>
+<p><a href="http://1164549.blog.51cto.com/">feezai</a></p>
+
+</li><li><a href="http://1003987.blog.51cto.com/"><img src="./求子数组的最大和_files/993987_1291898876.jpg"></a>
+<p><a href="http://1003987.blog.51cto.com/">yongc..</a></p>
+
+</li><li><a href="http://2596183.blog.51cto.com/"><img src="./求子数组的最大和_files/face.jpg"></a>
+<p><a href="http://2596183.blog.51cto.com/">57898..</a></p>
+
+</li><li><a href="http://38168.blog.51cto.com/"><img src="./求子数组的最大和_files/face.jpg"></a>
+<p><a href="http://38168.blog.51cto.com/">夜雨飘零</a></p>
+
+</li><li><a href="http://ethanhe.blog.51cto.com/"><img src="./求子数组的最大和_files/210958_1292160805.gif"></a>
+<p><a href="http://ethanhe.blog.51cto.com/">ht34</a></p>
+
+</li><li><a href="http://1419809.blog.51cto.com/"><img src="./求子数组的最大和_files/face.jpg"></a>
+<p><a href="http://1419809.blog.51cto.com/">迷失的狼</a></p>
+
+</li><li><a href="http://1736655.blog.51cto.com/"><img src="./求子数组的最大和_files/face.jpg"></a>
+<p><a href="http://1736655.blog.51cto.com/">lenzener</a></p>
+
+</li><li><a href="http://1447633.blog.51cto.com/"><img src="./求子数组的最大和_files/face.jpg"></a>
+<p><a href="http://1447633.blog.51cto.com/">jieisme</a></p>
+
+</li><li><a href="http://2311889.blog.51cto.com/"><img src="./求子数组的最大和_files/face.jpg"></a>
+<p><a href="http://2311889.blog.51cto.com/">wangt..</a></p>
+
+</li><li><a href="http://2239652.blog.51cto.com/"><img src="./求子数组的最大和_files/face.jpg"></a>
+<p><a href="http://2239652.blog.51cto.com/">hanru..</a></p>
+
+</li></ul>
+<span class="clear"></span>
+</div>
+<span class="modBot"></span>
+</div>
+
+
+<div class="newComments box">
+<div class="title">
+<h2>最新评论</h2>
+</div>
+<div class="modCon">
+<ul>
+
+<li>[匿名]51cto游客：<a href="http://luisliu.blog.51cto.com/883990/227156" target="_blank">受教了，谢谢</a></li>
+
+<li><a href="http://ethanhe.blog.51cto.com/" class="operlink" target="_blank"><b>ht34</b></a>：<a href="http://luisliu.blog.51cto.com/883990/224700" target="_blank">你好啊，看到你的这篇文章，受益匪..</a></li>
+
+
+</ul>
+</div>
+<span class="modBot"></span>
+</div>
+
+
+<div class="hotBlogArt box">
+<div class="title">
+  <h2 class="fl">51CTO推荐博文</h2>
+  <a href="http://blog.51cto.com/artcommend" class="fr">更多&gt;&gt;</a></div>
+<div class="modCon">
+<ul>
+<li><a href="http://yfsoft.blog.51cto.com/1635641/494331" title=".NET Micro Framework开发板用户简明手册(v2.0)" target="_blank">.NET Micro Framework开发板用户..</a></li>
+<li><a href="http://yanyangtian.blog.51cto.com/2310974/494683" title="构建高性能ASP.NET站点 性能瓶颈诊断与初步调优" target="_blank">构建高性能ASP.NET站点 性能瓶颈..</a></li>
+<li><a href="http://yangfei520.blog.51cto.com/1041581/494468" title="小小&lt;base&gt;标签在web开发中的大作用" target="_blank">小小&lt;base&gt;标签在web开发中..</a></li>
+<li><a href="http://bj007.blog.51cto.com/1701577/493953" title="自定义TabBarController" target="_blank">自定义TabBarController</a></li>
+<li><a href="http://yunlongzheng.blog.51cto.com/788996/493942" title="2月12日 LINUX ORACLE10.2.0.4小版本升级详细记录" target="_blank">2月12日 LINUX ORACLE10.2.0.4小..</a></li>
+<li><a href="http://terryblog.blog.51cto.com/1764499/494042" title="Windows Phone 7 不温不火学习之《Expression Blend 创建渐变效果和创建Storyboard动画》" target="_blank">Windows Phone 7 不温不火学习之..</a></li>
+<li><a href="http://yanyangtian.blog.51cto.com/2310974/494224" title="构建高性能ASP.NET站点 第六章—性能瓶颈诊断与初步调优（下前篇）—简单的优化" target="_blank">构建高性能ASP.NET站点 第六章—..</a></li>
+<li><a href="http://powertoolsteam.blog.51cto.com/2369428/493623" title="你应该知道的15个Silverlight诀窍" target="_blank">你应该知道的15个Silverlight诀窍</a></li>
+<li><a href="http://gghandsome.blog.51cto.com/398804/491868" title="你的密码安全了吗？" target="_blank">你的密码安全了吗？</a></li>
+<li><a href="http://leehao353.blog.51cto.com/2029883/492301" title="Eclipse搭建Android 开发环境" target="_blank">Eclipse搭建Android 开发环境</a></li>
+<li><a href="http://asitodaxian.blog.51cto.com/2718133/489613" title="DEDECMS（织梦CMS）首页仿“迅雷看看”首页JS幻灯效果" target="_blank">DEDECMS（织梦CMS）首页仿“迅雷..</a></li>
+
+</ul>
+</div><!--modCon end-->
+<span class="modBot"></span>
+</div>
+
+
+<div class="friendLink box">
+<div class="title">
+  <h2>友情链接</h2>
+</div>
+<div class="modCon">
+<ul>
+
+<li><a href="http://51ctoblog.blog.51cto.com/" title="51CTO博客开发" target="_blank">51CTO博客开发</a></li>
+
+</ul>
+</div><!--modCon end-->
+<span class="modBot"></span>
+</div>
+
+
+
+</div>
+<!--left end-->
+
+<script type="text/javascript">
+    var favor_url = "http://luisliu.blog.51cto.com/883990/227200";
+    var favor_title = "求子数组的最大和";
+    var favor_fuid = "883990";
+</script>
+<script type="text/javascript" src="./求子数组的最大和_files/favorbox.js"></script>
+<div class="blogRight">
+	<div class="artShow box">
+   	  <div class="share" id="share">
+      <p class="shareGo">分享到：</p>
+
+    <div class="shareItem">
+        	<ul style="_margin-left:37px;">
+            <li id="m01" onclick="javascript:showMsn();"><a href="javascript:void(0);">MSN/QQ</a>
+             <div class="shareBox" id="c01" style="display:none">
+            分享本资源给：MSN  QQ好友
+           <input class="shareInput" type="text" value="http://luisliu.blog.51cto.com/883990/227200" name="shareText" id="shareTextQM" onclick="copyShareUrl(&#39;求子数组的最大和&#39;);">
+              <input type="button" value="" class="copyBtn" onclick="copyShareUrl(&#39;求子数组的最大和&#39;);">
+            </div><!--shareBox end-->
+            </li>
+            <li id="m02" onclick="javascript:showBBS();"><a href="javascript:void(0);">论坛</a>
+             <div class="shareBox" id="c02" style="display:none">
+            分享本资源给：论坛好友(UBB代码)
+           <input class="shareInput" type="text" value="[url=http://luisliu.blog.51cto.com/883990/227200][u]fsdsdfsdfsdf[/u][/url]" name="shareText" id="shareTextBBS" onclick="copyShareUrl(&#39;求子数组的最大和&#39;);">
+              <input type="button" value="" class="copyBtn" onclick="copyShareUrl(&#39;求子数组的最大和&#39;);">
+            </div><!--shareBox end-->
+            </li>
+            <li id="m03"><a href="http://www.kaixin001.com/repaste/share.php?rurl=http://luisliu.blog.51cto.com/883990/227200&rcontent=%3Cdiv%3E%3Cspan+style%3D%22font-family%3A+%B7%C2%CB%CE_gb2312%3B+color%3A+%2300246e%3B+font-size%3A+12pt%3B+mso-bidi-font-size%3A+9.0pt%3B+mso-hansi-font-family%3A+%CB%CE%CC%E5%3B+mso-bidi-font-family%3A+tahoma%3B+mso-ansi-language%3A+en-us%3B+mso-fareast-lan&rtitle=%C7%F3%D7%D3%CA%FD%D7%E9%B5%C4%D7%EE%B4%F3%BA%CD" target="_blank">开心</a></li>
+            <li id="m04"><a href="http://share.renren.com/share/buttonshare.do?link=http://luisliu.blog.51cto.com/883990/227200&title=%C7%F3%D7%D3%CA%FD%D7%E9%B5%C4%D7%EE%B4%F3%BA%CD" target="_blank">人人</a></li>
+            <li id="m05"><a href="http://www.douban.com/recommend/?url=http://luisliu.blog.51cto.com/883990/227200&title=%C7%F3%D7%D3%CA%FD%D7%E9%B5%C4%D7%EE%B4%F3%BA%CD" target="_blank">豆瓣</a></li>
+            <li id="m06"><a href="http://v.t.sina.com.cn/share/share.php?url=http://luisliu.blog.51cto.com/883990/227200&title=%C7%F3%D7%D3%CA%FD%D7%E9%B5%C4%D7%EE%B4%F3%BA%CD&pic=http://blog.51cto.com/blogtj/images/logo.gif" target="_blank">新浪微博</a></li>
+            <li id="favor" style="margin-left:10px;"><a href="javascript:favorBox('open');" title="收藏"><img src="./求子数组的最大和_files/favorite_add_small.gif" border="0" alt="收藏"></a></li>
+            </ul>
+            </div>
+            <p class="shareMore"><a href="http://luisliu.blog.51cto.com/all/883990">博主的更多文章&gt;&gt;</a></p>
+
+      </div>
+       <div class="modCon">
+   	  <div class="showBox">
+      <div class="line_hd_r"></div>
+      <div class="art_tj">
+
+      </div>
+    		<div class="showHead">
+    		  <div class="showTitleBOx" style="text-align:center">
+              <div class="showTitle">
+
+	 		<img src="./求子数组的最大和_files/artType02.jpg">
+
+
+    		    求子数组的最大和
+                </div>
+  		    </div>
+   		    <span class="artTime">2009-11-14 22:25:18</span></div><!--showHead end-->
+    <div class="showTags">标签：<a href="http://blog.51cto.com/tagindex.php?keyword=%D7%D3%CA%FD%D7%E9" target="_blank" class="operlink">子数组</a>
+
+	</div>
+
+
+
+            <!--正文 begin-->
+    		<div class="showContent">
+    		  <div><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: 宋体; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa">题目：输入一个整形数组，数组里有正数也有负数。数组中连续的一个或多个整数组成一个子数组，每个子数组都有一个和。求所有子数组的和的最大值。要求时间复杂度为</span><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: tahoma; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa" lang="EN-US">O(n)</span><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: 宋体; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa">。</span></div>
+<div><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: 宋体; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa"><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: 宋体; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa"><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: 宋体; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>例如输入的数组为</span><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: tahoma; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa" lang="EN-US">1, -2, 3, 10, -4, 7, 2, -5</span><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: 宋体; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa">，和最大的子数组为</span><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: tahoma; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa" lang="EN-US">3, 10, -4, 7, 2</span><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: 宋体; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa">，因此输出为该子数组的和</span><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: tahoma; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa" lang="EN-US">18</span><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: 宋体; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa">。</span></span></div>
+<div><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: 宋体; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: 宋体; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa">如果不考虑时间复杂度，我们可以枚举出所有子数组并求出他们的和。不过非常遗憾的是，由于长度为</span><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: tahoma; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa" lang="EN-US">n</span><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: 宋体; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa">的数组有</span><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: tahoma; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa" lang="EN-US">O(n<sup>2</sup>)，具体是n*(n+1)/2</span><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: 宋体; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa">个子数组；而且求一个长度为</span><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: tahoma; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa" lang="EN-US">n</span><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: 宋体; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa">的数组的和的时间复杂度为</span><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: tahoma; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa" lang="EN-US">O(n)</span><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: 宋体; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa">。因此这种思路的时间是<span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: tahoma; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa" lang="EN-US">O(n<sup>3</sup>)</span><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: 宋体; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa">。</span></span></span></div>
+<div><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: 宋体; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa"><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: 宋体; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa"><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: 宋体; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa"></span></span></span>&nbsp;</div>
+<div><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: 宋体; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa"><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: 宋体; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa"><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: 宋体; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa"><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: 宋体; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa">解题思路：很容易理解，当我们加上一个正数时，和会增加；当我们加上一个负数时，和会减少。如果当前得到的和是个负数，那么这个和在接下来的累加中应该抛弃并重新清零，不然的话这个负数将会减少接下来的和。</span></span></span></span></div>
+<div><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: 宋体; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa"><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: 宋体; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa"><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: 宋体; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa"><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: 宋体; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa"></span></span></span></span>&nbsp;</div>
+<div><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: 宋体; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa"><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: 宋体; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa"><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: 宋体; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa"><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: 宋体; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa">代码：</span></span></span></span></div>
+<div><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: 宋体; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa"><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: 宋体; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa"><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: 宋体; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa"><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: 宋体; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa"></span></span><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: tahoma; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa" lang="EN-US">&nbsp;</span></span></span></div>
+<div>
+<div style="border-bottom: #cccccc 1px solid; border-left: #cccccc 1px solid; padding-bottom: 4px; line-height: 16px; background-color: #eeeeee; padding-left: 4px; width: 98%; padding-right: 4px; font-family: verdana,宋体; color: #000000; font-size: 10pt; word-break: break-all; border-top: #cccccc 1px solid; border-right: #cccccc 1px solid; padding-top: 4px">
+<div>/////////////////////////////////////////</div>
+<div>//Find the greatest sum of all sub-arrays <br>//Return value: if the input is valid, return true, otherwise return false <br>/////////////////////////////////////// <br>bool FindGreatestSumOfSubArray <br>( <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int *pData,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// an array <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unsigned int nLength, // the length of array <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int &amp;nGreatestSum&nbsp;&nbsp;&nbsp;&nbsp;// the greatest sum of all sub-arrays <br>) <br>{ <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// if the input is invalid, return false <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if((pData == NULL) || (nLength == 0)) <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return false; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int nCurSum = nGreatestSum = 0; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for(unsigned int i = 0; i &lt; nLength; ++i) <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;nCurSum += pData; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// if the current sum is negative, discard it <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(nCurSum &lt; 0) <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;nCurSum = 0; <br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// if a greater sum is found, update the greatest sum <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(nCurSum &gt; nGreatestSum) <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;nGreatestSum = nCurSum; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// if all data are negative, find the greatest element in the array <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(nGreatestSum == 0) <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;nGreatestSum = pData[0]; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for(unsigned int i = 1; i &lt; nLength; ++i) <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(pData[i] &gt; nGreatestSum) <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;nGreatestSum = pData[i]; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} <br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return true; <br>}&nbsp;&nbsp;&nbsp;&nbsp;<br></div></div></div>
+<div><br><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: 宋体; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa"><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: tahoma; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa" lang="EN-US">讨论：</span></span></div>
+<div><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: 宋体; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa"><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: tahoma; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa" lang="EN-US"><span style="font-family: symbol; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa; mso-ascii-font-family: 仿宋_gb2312; mso-fareast-font-family: 仿宋_gb2312" lang="EN-US">·&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;</span><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: 宋体; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa">函数的返回值不是子数组和的最大值，而是一个判断输入是否有效的标志。如果函数返回值的是子数组和的最大值，那么当输入一个空指针是应该返回什么呢？返回</span><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: tahoma; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa" lang="EN-US">0</span><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: 宋体; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa">？那这个函数的用户怎么区分输入无效和子数组和的最大值刚好是</span><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: tahoma; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa" lang="EN-US">0</span><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: 宋体; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa">这两中情况呢？基于这个考虑，本人认为把子数组和的最大值以引用的方式放到参数列表中，同时让函数返回一个函数是否正常执行的标志。</span><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: tahoma; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa" lang="EN-US"><br></span><span style="font-family: symbol; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa; mso-ascii-font-family: 仿宋_gb2312; mso-fareast-font-family: 仿宋_gb2312" lang="EN-US">·&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;</span><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: 宋体; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa">输入有一类特殊情况需要特殊处理。当输入数组中所有整数都是负数时，子数组和的最大值就是数组中的最大元素。</span><br></span></span></div>
+<div><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: 宋体; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa"></span><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: tahoma; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa" lang="EN-US"><br>&nbsp;解法一：</span></div>
+<div><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: tahoma; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa" lang="EN-US">最直接的解法当然是穷举遍历了，把所有的子数组列出来，然后计算和。</span></div>
+<div><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: tahoma; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa" lang="EN-US">复杂度可以简单的想出来：设置两个变量i和j为子数组边界，这两个变量都要遍历整个数组，然后还需要一个游标k，来遍历整个子数组以求和。所以总的复杂度是O（n^3）。</span></div>
+<div><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: tahoma; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa" lang="EN-US">代码如下：</span></div>
+<div><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: tahoma; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa" lang="EN-US">&nbsp;1 int MaxSubSum(int *A,int n)<br>&nbsp;2 {<br>&nbsp;3&nbsp;&nbsp;&nbsp;&nbsp; int max = -INFINITE;<br>&nbsp;4&nbsp;&nbsp;&nbsp;&nbsp; int sum = 0;<br>&nbsp;5&nbsp;&nbsp;&nbsp;&nbsp; for (int i = 0 ; i &lt; n ; i++)<br>&nbsp;6&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;7&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for (int j = i ; j &lt; n ; j++)<br>&nbsp;8&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;9&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for (int k = i ; k &lt;= j ; k++)<br>10&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>11&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sum += A[k];<br>12&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>13&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (sum &gt; max)<br>14&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>15&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; max = sum;<br>16&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>17&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>18&nbsp;&nbsp;&nbsp;&nbsp; }<br>19&nbsp;&nbsp;&nbsp;&nbsp; return max;<br>20 }<br>21&nbsp;&nbsp; <br>解法一改进版：</span></div>
+<div><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: tahoma; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa" lang="EN-US">仔细琢磨就会发现，其实不需要再使用k去遍历子数组，因为每次j移动都会产生新的子数组，所以只要在每次j移动时进行一下比较，就不会把最大值漏掉。所以只有i和j移动，复杂度降低到O（n^2）。</span></div>
+<div><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: tahoma; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa" lang="EN-US">代码如下：</span></div>
+<div><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: tahoma; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa" lang="EN-US">&nbsp;1 int MaxSubSum(int *A,int n)<br>&nbsp;2 {<br>&nbsp;3&nbsp;&nbsp;&nbsp;&nbsp; int max = -INFINITE;<br>&nbsp;4&nbsp;&nbsp;&nbsp;&nbsp; int sum = 0;<br>&nbsp;5&nbsp;&nbsp;&nbsp;&nbsp; for (int i = 0 ; i &lt; n ; i++)<br>&nbsp;6&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;7&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sum = 0;<br>&nbsp;8&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for (int j = i ; j &lt; n ; j++)<br>&nbsp;9&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>10&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sum += A[j];<br>11&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (sum &gt; max)<br>12&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; max = sum;<br>13&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>14&nbsp;&nbsp;&nbsp;&nbsp; }<br>15&nbsp;&nbsp;&nbsp;&nbsp; return max;<br>16 }<br>17 <br>解法二：分治算法</span></div>
+<div><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: tahoma; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa" lang="EN-US"><br>跟二分查找的思想相似，我们可以分情况讨论这个问题是不是符合二分查找的条件。</span></div>
+<div><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: tahoma; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa" lang="EN-US">情况1.这个满足最大和的子数组全部在本数组的左半部或者右半部。例如：左半部A[i]……A[n/2-1]或者右半部A[n/2]……A[j]。这种情况下可以直接使用递归调用。</span></div>
+<div><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: tahoma; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa" lang="EN-US">情况2.满足最大和的子数组跨过了本数组的中间点。例如：A[i]……A[n/2-1] A[n/2]……A[j]连续。则这种情况下只要在左半部寻找以A[n/2-1]结尾，在右半部寻找以A[n/2]开头的两个满足最大和的连续数组，并求和即可。由于这个已知起点，只需要一个游标即可，所以复杂度是2*O（n/2）=O（n）。</span></div>
+<div><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: tahoma; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa" lang="EN-US">综合以上两种情况，满足分治算法递归式：T（n）=2T（n/2）+O（n）=O（n*logn）。</span></div>
+<div><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: tahoma; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa" lang="EN-US">代码如下：<br>&nbsp;1 int MaxSubSum(int *A,int Left,int Right)<br>&nbsp;2 {<br>&nbsp;3&nbsp;&nbsp;&nbsp;&nbsp; //<br>&nbsp;4&nbsp;&nbsp;&nbsp;&nbsp; int MaxLeftSum,MaxRightSum;<br>&nbsp;5&nbsp;&nbsp;&nbsp;&nbsp; //左右子数组的和的最大值<br>&nbsp;6&nbsp;&nbsp;&nbsp;&nbsp; int MaxLeftPartSum,MaxRightPartSum;<br>&nbsp;7&nbsp;&nbsp;&nbsp;&nbsp; //临时变量，用于存储计算出来的和<br>&nbsp;8&nbsp;&nbsp;&nbsp;&nbsp; int LeftPartSum,RightPartSum;<br>&nbsp;9&nbsp;&nbsp;&nbsp;&nbsp; int Center,i; <br>10 <br>11&nbsp;&nbsp;&nbsp;&nbsp; //其中某一部分只有一个元素<br>12&nbsp;&nbsp;&nbsp;&nbsp; if(Left == Right)<br>13&nbsp;&nbsp;&nbsp;&nbsp; {<br>14&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if(A[Left] &gt; 0)&nbsp;&nbsp; <br>15&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return A[Left];&nbsp;&nbsp; <br>16&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else&nbsp;&nbsp; <br>17&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return 0;<br>18&nbsp;&nbsp;&nbsp;&nbsp; }<br>19 <br>20&nbsp;&nbsp;&nbsp;&nbsp; //递归调用。分别计算左右子数组的最大和子数组。<br>21&nbsp;&nbsp;&nbsp;&nbsp; //即假设最大和子数组没有被Center切割<br>22&nbsp;&nbsp;&nbsp;&nbsp; Center = (Left+Right)/2;&nbsp;&nbsp; <br>23&nbsp;&nbsp;&nbsp;&nbsp; MaxLeftSum = MaxSubSum(A,Left,Center);&nbsp;&nbsp; <br>24&nbsp;&nbsp;&nbsp;&nbsp; MaxRightSum = MaxSubSum(A,Center+1,Right);&nbsp;&nbsp; <br>25 <br>26&nbsp;&nbsp;&nbsp;&nbsp; //假设最大和子数组被Center切开的情况<br>27&nbsp;&nbsp;&nbsp;&nbsp; //那么需要从Center开始向两侧计算<br>28&nbsp;&nbsp;&nbsp;&nbsp; MaxLeftPartSum = 0;&nbsp;&nbsp; <br>29&nbsp;&nbsp;&nbsp;&nbsp; LeftPartSum = 0;&nbsp;&nbsp; <br>30&nbsp;&nbsp;&nbsp;&nbsp; for(i = Center ; i &gt;= Left; --i )&nbsp;&nbsp; <br>31&nbsp;&nbsp;&nbsp;&nbsp; {&nbsp;&nbsp; <br>32&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LeftPartSum += A[i];&nbsp;&nbsp; <br>33&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if(LeftPartSum &gt; MaxLeftPartSum)&nbsp;&nbsp; <br>34&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MaxLeftPartSum = LeftPartSum;&nbsp;&nbsp; <br>35&nbsp;&nbsp;&nbsp;&nbsp; }&nbsp;&nbsp; <br>36&nbsp;&nbsp;&nbsp;&nbsp; MaxRightPartSum = 0;&nbsp;&nbsp; <br>37&nbsp;&nbsp;&nbsp;&nbsp; RightPartSum = 0;&nbsp;&nbsp; <br>38&nbsp;&nbsp;&nbsp;&nbsp; for(i = Center+1 ; i &lt;= Right ; ++i)&nbsp;&nbsp; <br>39&nbsp;&nbsp;&nbsp;&nbsp; {&nbsp;&nbsp; <br>40&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RightPartSum += A[i];&nbsp;&nbsp; <br>41&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if(RightPartSum &gt; MaxRightPartSum)&nbsp;&nbsp; <br>42&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MaxRightPartSum = RightPartSum;&nbsp;&nbsp; <br>43&nbsp;&nbsp;&nbsp;&nbsp; }<br>44&nbsp;&nbsp;&nbsp;&nbsp; //返回三者中的最大值。<br>45&nbsp;&nbsp;&nbsp;&nbsp; return max(max(MaxLeftSum,MaxRightSum),MaxLeftPartSum+MaxRightPartSum);&nbsp;&nbsp; <br>46 } <br>47 <br>解法三：</span></div>
+<div><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: tahoma; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa" lang="EN-US"><br>我们试着再观察这个数组的特点，一个元素一个元素的看。</span></div>
+<div><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: tahoma; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa" lang="EN-US">根据A[0]是否在这个满足最大和的子数组中，我们可以分为两种情况。</span></div>
+<div><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: tahoma; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa" lang="EN-US">1.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 在。那么可以从A[0]开始求（比较容易）。</span></div>
+<div><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: tahoma; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa" lang="EN-US">2.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 不在。那么这种情况，又可以继续分为两种情况：A[1]在不在这个满足最大和的子数组中。</span></div>
+<div><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: tahoma; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa" lang="EN-US">从这里我们可以观察出一种递归的特点，可以把一个规模为N的问题转化为规模为N-1的问题。所以这个从A[0]到A[n-1]的最大和子数组问题分解成：</span></div>
+<div><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: tahoma; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa" lang="EN-US">1.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 所求子数组中包含A[0]。如果不包含A[1]，则A[0]自己满足条件，此时Max（A[0]……A[n-1]）=A[0]。如果包含A[1]，则Max（A[0]……A[n-1]）=A[0]+Max（A[1]……A[n-1]）。</span></div>
+<div><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: tahoma; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa" lang="EN-US">2.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 所求子数组中不包含A[0]。Max（A[0]……A[n-1]）=Max（A[1]……A[n-1]）。</span></div>
+<div><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: tahoma; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa" lang="EN-US">最终结果取以上三者的最大值即可，即Max（A[0]……A[n-1]）=max（ A[0], A[0]+Max（A[1]……A[n-1]）, Max（A[1]……A[n-1]））。</span></div>
+<div><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: tahoma; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa" lang="EN-US">这个的复杂度为线性：因为只要把数组遍历一遍即可。</span></div>
+<div><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: tahoma; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa" lang="EN-US">代码如下：</span></div>
+<div><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: tahoma; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa" lang="EN-US"><br>&nbsp;1 int MaxSubSum(int *A,int n)<br>&nbsp;2 {<br>&nbsp;3&nbsp;&nbsp;&nbsp;&nbsp; //假设满足最大和的子数组就是从StartFrom[i]开始<br>&nbsp;4&nbsp;&nbsp;&nbsp;&nbsp; int *StartFrom = new int[n];<br>&nbsp;5&nbsp;&nbsp;&nbsp;&nbsp; memset(StartFrom,n,0);<br>&nbsp;6&nbsp;&nbsp;&nbsp;&nbsp; StartFrom[n-1] = A[n-1];<br>&nbsp;7&nbsp;&nbsp;&nbsp;&nbsp; //假设A[i]之后满足最大和的子数组的和为Longest[i]（不一定包括A[i]）<br>&nbsp;8&nbsp;&nbsp;&nbsp;&nbsp; int *Longest = new int[n];<br>&nbsp;9&nbsp;&nbsp;&nbsp;&nbsp; memset(Longest,n,0);<br>10&nbsp;&nbsp;&nbsp;&nbsp; Longest[n-1] = A[n-1];<br>11 <br>12&nbsp;&nbsp;&nbsp;&nbsp; for (int i = n-2 ; i &gt;= 0 ; i--)<br>13&nbsp;&nbsp;&nbsp;&nbsp; {<br>14&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //如果从i开始，那么要么最大和只包括A[i]自己，要么就是后面的那个序列连上A[i]<br>15&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; StartFrom[i] = max(A[i],A[i]+StartFrom[i+1]);<br>16&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //最大和，要么是从i开始的，要么还是以前的<br>17&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Longest[i] = max(StartFrom[i],Longest[i+1]);<br>18&nbsp;&nbsp;&nbsp;&nbsp; }<br>19&nbsp;&nbsp;&nbsp;&nbsp; //最后结果是在号元素中保存<br>20&nbsp;&nbsp;&nbsp;&nbsp; return Longest[0];<br>21 }<br>22 <br>由于这种前后单元素的相关性，实际上不需要两个数组来储存这个信息，只需要两个变量即可，这样可以减小程序的空间复杂度。</span></div><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: tahoma; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa" lang="EN-US">
+<div><br>代码如下：&nbsp; 1 int MaxSubSum(int *A,int n)<br>&nbsp;2 {<br>&nbsp;3&nbsp;&nbsp;&nbsp;&nbsp; //假设满足最大和的子数组就是从StartFrom开始<br>&nbsp;4&nbsp;&nbsp;&nbsp;&nbsp; int StartFrom = A[n-1];<br>&nbsp;5&nbsp;&nbsp;&nbsp;&nbsp; //假设A[i]之后满足最大和的子数组的和为Longest（不一定包括A[i]）<br>&nbsp;6&nbsp;&nbsp;&nbsp;&nbsp; int Longest = A[n-1];<br>&nbsp;7 <br>&nbsp;8&nbsp;&nbsp;&nbsp;&nbsp; for (int i = n-2 ; i &gt;= 0 ; i--)<br>&nbsp;9&nbsp;&nbsp;&nbsp;&nbsp; {<br>10&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //如果从i开始，那么要么最大和只包括A[i]自己，要么就是后面的那个序列连上A[i]<br>11&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; StartFrom = max(A[i],A[i]+StartFrom);<br>12&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //最大和，要么是从i开始的，要么还是以前的<br>13&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Longest = max(StartFrom,Longest);<br>14&nbsp;&nbsp;&nbsp;&nbsp; }<br>15&nbsp;&nbsp;&nbsp;&nbsp; //最后结果是在0号元素中保存<br>16&nbsp;&nbsp;&nbsp;&nbsp; return Longest;<br>17 }<br><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: tahoma; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa" lang="EN-US"><font color="#000000">&nbsp;输出子序列的起点和终点，并输出该子序列的和</font></span></div>
+<div><span style="font-family: 仿宋_gb2312; color: #00246e; font-size: 12pt; mso-bidi-font-size: 9.0pt; mso-hansi-font-family: tahoma; mso-bidi-font-family: tahoma; mso-ansi-language: en-us; mso-fareast-language: zh-cn; mso-bidi-language: ar-sa" lang="EN-US">
+<div>
+<div style="border-bottom: #cccccc 1px solid; border-left: #cccccc 1px solid; padding-bottom: 4px; line-height: 16px; background-color: #eeeeee; padding-left: 4px; width: 98%; padding-right: 4px; font-family: verdana,宋体; color: #000000; font-size: 10pt; word-break: break-all; border-top: #cccccc 1px solid; border-right: #cccccc 1px solid; padding-top: 4px">
+<div>#include &lt;stdio.h&gt; <br>#include &lt;stdlib.h&gt; <br>#include &lt;limits.h&gt; <br>#include &lt;malloc.h&gt; <br><br>int main()</div>
+<div>{ <br>&nbsp;&nbsp;&nbsp;&nbsp;int *ip; <br>&nbsp;&nbsp;&nbsp;&nbsp;int j,length,max,sum; <br>&nbsp;&nbsp;&nbsp;&nbsp;int start1 = 0 ,start2 = 0; <br>&nbsp;&nbsp;&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;printf("Please enter the array's length:"); <br>&nbsp;&nbsp;&nbsp;&nbsp;scanf("%d",&amp;length); <br>&nbsp;&nbsp;&nbsp;&nbsp;if((ip = (int*)malloc(length*sizeof(int)))==NULL) <br>&nbsp;&nbsp;&nbsp;&nbsp;{ <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fprintf(stderr,"Malloc memory failed !"); <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exit(1); <br>&nbsp;&nbsp;&nbsp;&nbsp;} <br>&nbsp;&nbsp;&nbsp;&nbsp;printf("Enter eath element:"); <br>&nbsp;&nbsp;&nbsp;&nbsp;for(j = 0; j &lt; length ; j ++) <br>&nbsp;&nbsp;&nbsp;&nbsp;scanf("%d",ip+j); <br><br>&nbsp;&nbsp;&nbsp;&nbsp;max = INT_MIN; <br>&nbsp;&nbsp;&nbsp;&nbsp;for(sum = j = 0; j &lt; length; j ++) <br>&nbsp;&nbsp;&nbsp;&nbsp;{ <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sum += *(ip+j); <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(max &lt; sum) <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;start1 = start2; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;max = sum; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(sum &lt; 0){ <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;start2 = j+1; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sum = 0; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} <br>&nbsp;&nbsp;&nbsp;&nbsp; } <br>&nbsp;&nbsp;&nbsp;&nbsp; for(j = start1,sum = 0; sum != max; j ++) <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sum += *(ip+j); <br>&nbsp;&nbsp;&nbsp;&nbsp; printf("\nThe subsequence from %d to %d,max sum is %d\n",start1,j-1,max); <br>&nbsp;    return 0; <br>}</div></div></div></span></div></span>
+    		</div><!--正文 end-->
+    		<div class="showBottom">
+            <!--<div class="reviews"><span class="fl" style="cursor:pointer;"><a onclick="openFavoulist();" id="favourer"></a>
+
+            </span><div id="favourdiv" class="support01">0人</div>
+              <span class="fl">了这篇文章</span></div>-->
+              <table width="720" border="0" cellspacing="0" cellpadding="0">
+  <tbody><tr>
+    <td align="right"><img src="./求子数组的最大和_files/icon01.png" width="15" height="16"> <span style="cursor:pointer;"><a onclick="openFavoulist();" id="favourer"></a></span></td>
+    <td width="70" align="left"><div style="line-height:28px;" id="favourdiv" class="support01">0人</div></td>
+    <td width="60" align="left">了这篇文章</td>
+  </tr>
+</tbody></table>
+
+
+
+
+            <div class="showType">类别：未分类┆<a class="operlink" onclick="javascript:joingroups(227200,&#39;luisliu&#39;);return false;">技术圈</a>(<script src="./求子数组的最大和_files/joingroup.php"></script>0)┆阅读(<script src="./求子数组的最大和_files/header.php"></script>572)┆评论(<script>document.write(replies)</script>0)
+
+┆
+
+	<a href="http://luisliu.blog.51cto.com/#" onclick="javascript:dfanologin(&#39;http://home.51cto.com/index.php?reback=http%253A%252F%252Fluisliu.blog.51cto.com%252F883990%252F227200&#39;);return false;" class="operlink">
+
+推送到技术圈</a>┆<a href="http://luisliu.blog.51cto.com/">返回首页</a></div>
+            <div class="prevNext">
+
+			上一篇 <a href="http://luisliu.blog.51cto.com/883990/227156" class="operlink" title="最长公共子序列问题">最长公共子序列问题</a>
+
+
+			下一篇 <a href="http://luisliu.blog.51cto.com/883990/227223" class="operlink" title="C++的溢出问题">C++的溢出问题</a>
+
+
+            </div>
+
+            </div>
+
+	  </div><!--showBottom end-->
+      </div><!--modCon-->
+    <span class="modBot"></span>
+    </div><!--artShow end-->
+    <span class="blank"></span>
+
+<div class="artComm box">
+    <div class="title"><a name="replay"></a><h2>文章评论</h2></div>
+    <div class="modCon" id="artcomment">
+		<div>  &nbsp;</div><div>  &nbsp;</div>
+    </div><!--modCon-->
+        <span class="modBot"></span>
+</div><!--commBox end-->
+
+
+<span class="blank1"></span>
+<div class="box writeComm">
+<a name="comment"></a>
+<input type="hidden" name="action" value="comment">
+<input id="commenttid" type="hidden" name="tid" value="227200">
+<input type="hidden" name="com_count_ajax" id="com_count_ajax" value="1">
+
+ <div class="title"><h2>发表评论</h2></div>
+ <div class="modCon">
+ <div class="commForm">
+<dl>
+<dt>昵&nbsp;&nbsp;称：</dt>
+<dd>
+
+<input type="text" id="commentusername" name="username" value="" class="commInput fl"><span><a href="http://home.51cto.com/index.php?reback=http%253A%252F%252Fluisliu.blog.51cto.com%252F883990%252F227200" style="text-decoration:underline">登录</a>&nbsp;&nbsp;<a href="http://ucenter.51cto.com/reg_01.php?reback=http://blog.51cto.com" target="_blank" style="text-decoration: underline;">快速注册</a></span>
+
+
+
+</dd>
+</dl>
+
+
+
+<dl id="commentyanzheng">
+
+
+<dt>验证码：</dt>
+<dd><input class="code" type="text" value="" id="commentauthnum" name="authnum" onclick="displaysecunum();">
+
+  <img width="78" class="fl" height="29" id="secunum" onclick="refimg()" style="display:none;"><p class="fl"><span style="display:none;" id="spanfont">点击图片可刷新验证码</span><span style="display:inline;" id="clickfont">请点击后输入验证码</span><span class="pl5"><a href="http://51ctoblog.blog.51cto.com/26414/5591" target="_blank" style="text-decoration: underline;">博客过2级，无需填写验证码</a></span></p></dd>
+</dl>
+<dl>
+<dt>内&nbsp;&nbsp;容：</dt>
+<dd>
+<textarea class="writeCommCon f12" id="commentcontent" name="content"></textarea>
+</dd>
+</dl>
+</div>
+<div class="writeCommBot">
+  <input class="commBtn fl" name="submit" type="button" id="commentsubmit" value="" onclick="commentSubmitend2()">
+
+ <p class="fl" style="display:none;"><input class="fl" type="checkbox" name="favour" id="favour" checked="" value="1"><span class="fl">同时赞一个</span></p>
+
+</div>
+<span class="blank"></span>
+</div><!--modCon-->
+<span class="modBot"></span>
+</div>
+
+<iframe id="iframe1" name="iframe1" width="0" height="0"></iframe>
+<!--发表评论 end-->
+</div>
+</div>
+<script language="javascript">
+	function refimg(){
+		var randval = Math.random();
+		document.getElementById("secunum").src="/seccode.php?rnum="+randval;
+	}
+	function displaysecunum()
+	{
+		var displaystr = document.getElementById("secunum").style.display;
+		if(displaystr == 'none')
+		{
+			refimg();
+			document.getElementById("clickfont").style.display = 'none';
+			document.getElementById("secunum").style.display = 'inline';
+			document.getElementById("spanfont").style.display = 'inline';
+		}
+	}
+
+	function showMsn(){
+		document.getElementById("c02").style.display = "none";
+		document.getElementById("c01").style.display = "block";
+		document.getElementById("share").style.height = "83px";
+		document.getElementById("share").style.background = "none";
+	}
+	function showBBS(){
+		document.getElementById("c01").style.display = "none";
+		document.getElementById("c02").style.display = "block";
+		document.getElementById("share").style.height = "83px";
+		document.getElementById("share").style.background = "none";
+	}
+
+	//资源页面，分享按钮
+	function copyShareUrl(title){
+
+		if (window.clipboardData){
+
+			if(document.getElementById("c01").style.display == 'block')
+			{
+				copy = "推荐：" + title + "http://luisliu.blog.51cto.com/883990/227200";
+				var alertText = "复制成功，你可以粘贴到MSN或QQ中发给好友。";
+			}
+			else
+			{
+				copy = "[url=" + "http://luisliu.blog.51cto.com/883990/227200" + "][u]" + title + "[/u][/url]";
+				var alertText = "复制成功，你可以粘贴到论坛分享给坛友。";
+			}
+			window.clipboardData.clearData();
+			window.clipboardData.setData("Text", copy);
+			alert(alertText);
+		}
+		else if (window.netscape){
+			alert("您使用的浏览器不支持此复制功能，请使用Ctrl+C或鼠标右键。");
+			if(document.getElementById("c01").style.display == 'block')
+			{
+				document.getElementById("shareTextQM").value = "推荐：" + title + "http://luisliu.blog.51cto.com/883990/227200";
+				document.getElementById("shareTextQM").select();
+			}
+			else
+			{
+				document.getElementById("shareTextBBS").value = "[url=" + "http://luisliu.blog.51cto.com/883990/227200" + "][u]" + title + "[/u][/url]";
+                document.getElementById("shareTextBBS").select();
+			}
+		}
+		return false;
+	}
+	function select_login(){
+		document.getElementById('fixed').style.display='';
+	}
+	function commentcheck()
+	{
+		if(document.form1.content.value == "")
+		{
+			alert("评论内容为空!");
+			document.form1.content.focus();
+			return false;
+		}
+	}
+	function changename(){
+
+	var memberid=0;
+	memberid="";
+
+	if(document.getElementById('commentniming').checked){
+		document.getElementById('commentusername').disabled=false;
+		document.getElementById('commentusername').value='';
+		document.getElementById("indexhidden").style.display="none";
+		document.getElementById("commentindex").value='';
+		document.getElementById("commentyanzheng").style.display="";
+	}else{
+		document.getElementById('commentusername').disabled=true;
+		document.getElementById('commentusername').value="";
+		document.getElementById("indexhidden").style.display="";
+		document.getElementById("commentindex").value="http://.blog.51cto.com";
+		if(memberid>8)
+		{
+			document.getElementById("commentyanzheng").style.display="none";
+		}
+	}
+	}
+	function openFavoulist()
+	{
+		window.open ('http://blog.51cto.com/mod/favourlist.php?tid=227200','newwindow','height=300,width=500,top=400,left=400,toolbar=no,menubar=no,scrollbars=no, resizable=no,location=no, status=no,z-look=yes');
+	}
+
+
+</script>
+
+
+
+
+
+
+
+<div class="clear"></div>
+
+<div id="footer">
+  <div id="innerFooter">
+	<center>
+		<small>
+			Copyright By 51CTO.COM 版权所有<br><br>
+			<a href="http://www.51cto.com/" target="_blank"><img src="./求子数组的最大和_files/copyright.jpg"></a>
+	  </small>
+	</center>
+  </div>
+</div>
+<script src="./求子数组的最大和_files/index.php" charset="utf-8"></script>
+<div style="display:none">
+<script src="./求子数组的最大和_files/count.js"></script><script src="./求子数组的最大和_files/count.php"></script>
+
+<iframe frameborder="0" scrolling="no" width="0" height="0" src="./求子数组的最大和_files/pageview.htm"></iframe>
+</div>
+
+
+</body></html>
