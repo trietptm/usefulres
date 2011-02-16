@@ -1,0 +1,1 @@
+document.write("<img src=\"http://img1.51cto.com/image/upload/883990_1258207056.jpg\" id=userface>");
