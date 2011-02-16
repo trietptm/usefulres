@@ -1,5 +1,0 @@
-var phpadsbanner = '';
-
-phpadsbanner += '<'+'object classid=\'clsid:D27CDB6E-AE6D-11cf-96B8-444553540000\' codebase=\'http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0\' width=\'960\' height=\'90\'><'+'param name=\'movie\' value=\'http://vd.51cto.com/adimage.php?filename=large_banner_server_homepage_960x90_30k.swf&amp;contenttype=swf\'><'+'param name=\'quality\' value=\'high\'><'+'param name=\'wmode\' value=\'Opaque\'><'+'embed src=\'http://vd.51cto.com/adimage.php?filename=large_banner_server_homepage_960x90_30k.swf&amp;contenttype=swf\' quality=high width=\'960\' height=\'90\' type=\'application/x-shockwave-flash\' pluginspace=\'http://www.macromedia.com/go/getflashplayer\'><'+'/embed><'+'/object><'+'div id="beacon_5122" style="position: absolute; left: 0px; top: 0px; visibility: hidden;"><'+'img src=\'http://vd.51cto.com/adlog.php?bannerid=5122&amp;clientid=4616&amp;zoneid=0&amp;source=&amp;block=0&amp;capping=0&amp;cb=624471dcb3b2c3d71154883e1eb9642a\' width=\'0\' height=\'0\' alt=\'\' style=\'width: 0px; height: 0px;\'><'+'/div>';
-
-document.write(phpadsbanner);
