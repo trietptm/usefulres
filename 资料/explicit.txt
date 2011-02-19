@@ -1,5 +1,5 @@
 explicit,和构造函数一起使用. 
-explicit   constructor指明构造函数只能显示使用,目的是为了防止不必要的隐式转化. 
+explicit   constructor指明构造函数只能显示使用,目的是为了防止不必要的隐式转化(禁止隐式转化). 
 举个例子: 
     有这样一段代码: 
 
