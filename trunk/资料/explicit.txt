@@ -1,0 +1,39 @@
+explicit,和构造函数一起使用. 
+explicit   constructor指明构造函数只能显示使用,目的是为了防止不必要的隐式转化. 
+举个例子: 
+    有这样一段代码: 
+
+class   A 
+{ 
+      public: 
+          A(int); 
+      private: 
+          int   num; 
+}; 
+
+int   Test(const   A&)   //   一个应用函数 
+{ 
+      ... 
+} 
+
+Test(2);   //   正确 
+过程是这样的:   编译器知道传的值是int而函数需要的是A类型，但它也同时知道调用A的构造函数将int转换成一个合适的A，所以才有上面成功的调用.换句话说，编译器处理这个调用时的情形类似下面这样： 
+    const   A   temp(2);             //   从2产生一个临时A对象 
+    Test(temp);           //   调用函数 
+
+
+如果代码写成如下样子: 
+class   A 
+{ 
+      public: 
+        explicit   A(int); 
+      private: 
+          int   num; 
+}; 
+
+int   Test(const   A&)   //   一个应用函数 
+{ 
+      ... 
+} 
+
+Test(2);   //   失败,不能通过隐式类型转换将int类型变量构造成成A类型变量
