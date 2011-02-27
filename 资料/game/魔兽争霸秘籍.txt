@@ -1,0 +1,49 @@
+魔兽争霸秘籍在战役模式下（多人游戏不可），
+按下回车，会出来对话框，然后把下面字符输入即可 
+无敌并一击必杀: whosyourdaddy 
+无限能量: thereisnospoon 魔兽争霸秘籍 
+任务模式里即使失败也继续游戏: strengthandhonor 
+地图全开: iseedeadpeople 魔兽争霸秘籍 
+立即胜利: allyourbasearebelongtous 
+立即失败: somebodysetusupthebomb 
+禁止任务默认的胜利条件: itvexesme 
+加黄金: keysersoze [黄金数量](如果未指定数量默认增加500) 
+加木材: leafittome [木材数量](如果未指定数量默认增加500) 
+加黄金和木材: greedisgood [数量](如果未指定数量默认增加500) 
+魔兽争霸秘籍 
+快速建造: warpten 
+无人口上限: pointbreak 
+快速研究技能: whoisjohngalt 
+快速升级: sharpandshiny 
+解除科技树限制: synergy 
+魔兽争霸秘籍 
+将时间直接设定到白昼: riseandshine 
+将时间直接设定到夜晚: lightsout 
+设定具体时间: daylightsavings [小时数] 
+让时间永远停留在白昼: daylightsavings 
+魔兽争霸秘籍 
+等级选择: motherland [种族] [等级] 
+Fast death(?): iocainepowder 
+Cool down时间为0。即放完一个魔法立刻可以放第二次。。 thedudeabides 
+魔兽争霸秘籍在战役模式下（多人游戏不可），敲回车，会出来对话框，然后把下面字符输入即可 
+无敌并一击必杀: whosyourdaddy 
+无限能量: thereisnospoon 魔兽争霸秘籍 
+任务模式里即使失败也继续游戏: strengthandhonor 
+地图全开: iseedeadpeople 魔兽争霸秘籍 
+立即胜利: allyourbasearebelongtous 
+立即失败: somebodysetusupthebomb 
+禁止任务默认的胜利条件: itvexesme 
+加黄金: keysersoze [黄金数量](如果未指定数量默认增加500) 
+加木材: leafittome [木材数量](如果未指定数量默认增加500) 
+加黄金和木材: greedisgood [数量](如果未指定数量默认增加500) 
+魔兽争霸秘籍 
+快速建造: warpten 
+无人口上限: pointbreak 
+快速研究技能: whoisjohngalt 
+快速升级: sharpandshiny 
+解除科技树限制: synergy 
+魔兽争霸秘籍 
+将时间直接设定到白昼: riseandshine 
+将时间直接设定到夜晚: lightsout 
+设定具体时间: daylightsavings [小时数] 
+让时间永远停留在白昼: daylightsavings
