@@ -6,7 +6,7 @@
 地图全开: iseedeadpeople 魔兽争霸秘籍 
 立即胜利: allyourbasearebelongtous 
 立即失败: somebodysetusupthebomb 
-禁止任务默认的胜利条件: itvexesme 
+禁止任务默认的胜利条件: itvexesme
 加黄金: keysersoze[黄金数量](如果未指定数量默认增加500) 
 加木材: leafittome[木材数量](如果未指定数量默认增加500) 
 加黄金和木材: greedisgood[数量](如果未指定数量默认增加500) 
