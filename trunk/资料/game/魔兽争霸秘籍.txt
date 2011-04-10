@@ -23,8 +23,8 @@
 让时间永远停留在白昼: daylightsavings 
 魔兽争霸秘籍 
 等级选择: motherland [种族] [等级] 
-Fast death(?): iocainepowder 
-Cool down时间为0。即放完一个魔法立刻可以放第二次。。 thedudeabides 
+Fast death(?): iocainepowder
+Cool down时间为0。即放完一个魔法立刻可以放第二次。。 thedudeabides
 魔兽争霸秘籍在战役模式下（多人游戏不可），敲回车，会出来对话框，然后把下面字符输入即可 
 无敌并一击必杀: whosyourdaddy 
 无限能量: thereisnospoon 魔兽争霸秘籍 
