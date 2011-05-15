@@ -18,7 +18,7 @@
 解除科技树限制: synergy
 魔兽争霸秘籍
 将时间直接设定到白昼: riseandshine
-将时间直接设定到夜晚: lightsout 
+将时间直接设定到夜晚: lightsout
 设定具体时间: daylightsavings [小时数] 
 让时间永远停留在白昼: daylightsavings 
 魔兽争霸秘籍 
