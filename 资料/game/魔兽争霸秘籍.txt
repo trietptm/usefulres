@@ -20,7 +20,7 @@
 将时间直接设定到白昼: riseandshine
 将时间直接设定到夜晚: lightsout
 设定具体时间: daylightsavings [小时数] 
-让时间永远停留在白昼: daylightsavings 
+让时间永远停留在白昼: daylightsavings
 魔兽争霸秘籍 
 等级选择: motherland [种族] [等级] 
 Fast death(?): iocainepowder
@@ -30,7 +30,7 @@ Cool down时间为0。即放完一个魔法立刻可以放第二次。。 thedudeabides
 无限能量: thereisnospoon 魔兽争霸秘籍 
 任务模式里即使失败也继续游戏: strengthandhonor 
 地图全开: iseedeadpeople 魔兽争霸秘籍 
-立即胜利: allyourbasearebelongtous 
+立即胜利: allyourbasearebelongtous
 立即失败: somebodysetusupthebomb 
 禁止任务默认的胜利条件: itvexesme 
 加黄金: keysersoze [黄金数量](如果未指定数量默认增加500) 
