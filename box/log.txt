@@ -9,3 +9,7 @@ Thank you!
 Best Regards,
 RobotSoft Team
 http://www.robot-soft.com
+
+int __stdcall SDT_GetSAMID(int iPort,unsigned char* pucASMID,int iIfOpen);
+
+int __stdcall (*SDT_GetSAMID)(int iPort,unsigned char* pucASMID,int iIfOpen)
