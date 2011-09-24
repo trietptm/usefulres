@@ -1,0 +1,341 @@
+    本文由tzwsoho贡献
+    并行图像细化算法和C代码实现
+    图像细化一般作为一种图像预处理技术出现,目的是提取源图像的骨架,即是将原图像中线条宽度大于1个象素的线条细化成只有一个象素宽,形成'骨架',形成骨架后能比较容易的分析图像,如提取图像的特征.
+    细化分成串行细化和并行细化2中,串行细化即是一遍检测满足细化条件的点一边删除细化点,并行细化即是检测细化点的时候不进行点的删除只进行标记,而在检测完整幅图像后一次性去除要细化的点.
+    细化基本思想是'层层剥夺',即从线条边缘开始一层一层向里剥夺,直到线条剩下一个象素的为止.
+    进行细化算法前要先对图像进行2值化,即图像中直包含'黑'和'白'2中颜色.
+    细化算法:
+    在微观上取检测点的8个临域(由于是并行细化,有些模板要扩展为12临域),如下
+    xxx
+    xox
+    xxx
+    其中o为检测点x为其相邻点
+    以下用1代表黑色点,用0代表白色点,用x代表任意颜色的点,要剥夺(删除)的点应满足一下8个模板中的一个.
+    模板a(向右扩大)
+    0x1x
+    0111
+    0x1x
+    模板b(向右扩大)
+    00xx
+    0111
+    x11x
+    模板c(向右扩大)
+    x11x
+    0111
+    00xx
+    模板d
+    111
+    x1x
+    000
+    模板e
+    1x0
+    110
+    1x0
+    模板f
+    x00
+    110
+    x1x
+    模板g
+    x1x
+    110
+    x00
+    模板h(向下扩大)
+    000
+    x1x
+    111
+    x1x
+    符合以上8个模板的点为要剥夺的点,因为符合这8个模板的点可以确认为线条边沿上的点.
+    而试事实上经过这8个模板并行细化后还有下面2种特殊的边沿点保留了下来,
+    特殊边沿点1
+    000
+    010
+    111
+    特殊边沿点2
+    001
+    011
+    001
+    造成这种2种特殊点的原因扩大后的模板a和扩大后的模板h,扩大的的本意是防止偶数列(行)的线条被完全消去(并行细化并然的).
+    解决方法是在并行细化后再进行一次串行细化,选取缩小后的模板a和模板h
+    模板a(缩小后)
+    0x1
+    011
+    0x1
+    模板h(缩小后)
+    000
+    x1x
+    111
+    其中缩小后的模板a解决了特殊情况1,缩小后的模板h解决了特殊情况2,注意这次是串行细化了.一下根据这个原理用C++Builder6.0实现,关键代码如下.
+    //--------------------------------BCB6 代码
+    #include <vcl.h>
+    #pragma hdrstop
+    #include
+    #include "Unit1.h"
+    #include"File1.h"
+    #include<math.h>
+    #include<time.h>
+    #include<vector>
+    #pragma pack(1)
+    using namespace std;
+    /*
+    程序：图像细化
+    作者:sboom(Lingch)
+    日期:05年1月18日
+    */
+    //BMP文件头
+    struct BITMAPFILEHEADER_
+    {
+    short type;
+    int bfSize;
+    short re1,re2;
+    int Offbits;
+    };
+    //BMP信息头
+    struct BITMAPINFO_
+    {
+    long size;
+    long width,height;
+    short planes,bitCount;
+    long comp,sizeImg;
+    long xpels,ypels;
+    long used,important;
+    };
+    //------将BMP彩色表的数据校正到BCB 的TColor的数据。
+    TColor* SwitchColor(unsigned char r,unsigned char g,unsigned char b)
+    {
+    TColor *re=new TColor;
+    *re=(r | g<<8 | b<<16 );
+    *re=*re & 0x00ffffff;
+    return re;
+    }
+    void xxx()
+    {
+    FILE *f=fopen("f:\\1.bmp","rb");
+    if(f==NULL) /*判断文件是否打开成功*/
+    {
+    ShowMessage("File open error");
+    return;
+    }
+    fseek(f,0,0);//移动到开头
+    //----------读BMP文件头
+    BITMAPFILEHEADER_ *bmph=new BITMAPFILEHEADER_();
+    if(fread((char*)bmph,sizeof(BITMAPFILEHEADER_),1,f)==NULL)
+    {
+    ShowMessage("File read error");
+    return;
+    }
+    //-----------读BMP信息头
+    BITMAPINFO_ *bmpi=new BITMAPINFO_();
+    if(fread((char*)bmpi,sizeof(BITMAPINFO_),1,f)==NULL)
+    {
+    ShowMessage("File read error2");
+    return;
+    }
+    fseek(f,bmph->Offbits,0);
+    //----------显示一些信息
+    Form1->Edit1->Text=IntToStr(bmph->bfSize);
+    Form1->Edit2->Text=IntToStr(bmpi->width);
+    Form1->Edit3->Text=IntToStr(bmpi->height);
+    Form1->Edit4->Text=IntToStr(bmpi->comp);
+    Form1->Edit5->Text=IntToStr(bmpi->used);
+    int i,j,k,l,wc,pos;
+    long N=bmph->bfSize- bmph->Offbits;//象素总数
+    unsigned char *image=new unsigned char[N]; //位图矩阵
+    fread(image,N,1,f);//读入位图矩阵
+    int skip=0; //BMP 文件4字节对齐
+    if(bmpi->width%4==0)
+    skip=0;
+    else
+    skip=4-bmpi->width%4;
+    unsigned char color=0;
+    TColor *tc;
+    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    //2值化
+    for(i=0;i<N;i++)
+    {
+    if((unsigned char)image[i]<0xa0)
+    image[i]=(unsigned char)0;
+    else
+    image[i]=(unsigned char)0xff;
+    }
+    //
+    int flag=1;
+    long x,b;
+    unsigned char *om=new unsigned char[N]; //标记矩阵
+    for(i=0;i<N;i++) //初始化
+    om[i]=0;
+    while(flag==1) //flag=0时迭代结束
+    {
+    flag=0;
+    for( i=2;iheight-2;i++)
+    {
+    for(j=2;jwidth-2;j++)
+    {
+    //模板a
+    if(image[(i-1)*(bmpi->width+skip)+j-1]==0xff
+    && image[(i-1)*(bmpi->width+skip)+j+1]==0
+    && image[(i)*(bmpi->width+skip)+j-1]==0xff
+    && image[(i)*(bmpi->width+skip)+j-0]==0
+    && image[(i)*(bmpi->width+skip)+j+1]==0
+    && image[(i)*(bmpi->width+skip)+j+2]==0
+    && image[(i+1)*(bmpi->width+skip)+j-1]==0xff
+    && image[(i+1)*(bmpi->width+skip)+j+1]==0)
+    {
+    om[(i)*(bmpi->width+skip)+j]=0xff;
+    flag=1;
+    continue;
+    }
+    //模板b
+    if(image[(i-1)*(bmpi->width+skip)+j-0]==0
+    && image[(i-1)*(bmpi->width+skip)+j+1]==0
+    && image[(i)*(bmpi->width+skip)+j-1]==0xff
+    && image[(i)*(bmpi->width+skip)+j-0]==0
+    && image[(i)*(bmpi->width+skip)+j+1]==0
+    && image[(i)*(bmpi->width+skip)+j+2]==0
+    && image[(i+1)*(bmpi->width+skip)+j-1]==0xff
+    && image[(i+1)*(bmpi->width+skip)+j-0]==0xff)
+    {
+    om[(i)*(bmpi->width+skip)+j]=0xff;
+    flag=1;
+    continue;
+    }
+    //模板c
+    if(image[(i-1)*(bmpi->width+skip)+j-1]==0xff
+    && image[(i-1)*(bmpi->width+skip)+j-0]==0xff
+    && image[(i)*(bmpi->width+skip)+j-1]==0xff
+    && image[(i)*(bmpi->width+skip)+j-0]==0
+    && image[(i)*(bmpi->width+skip)+j+1]==0
+    && image[(i)*(bmpi->width+skip)+j+2]==0
+    && image[(i+1)*(bmpi->width+skip)+j-0]==0
+    && image[(i+1)*(bmpi->width+skip)+j+1]==0)
+    {
+    om[(i)*(bmpi->width+skip)+j]=0xff;
+    flag=1;
+    continue;
+    }
+    //模板d
+    if(image[(i-1)*(bmpi->width+skip)+j-1]==0xff
+    && image[(i-1)*(bmpi->width+skip)+j-0]==0xff
+    && image[(i-1)*(bmpi->width+skip)+j+1]==0xff
+    && image[(i)*(bmpi->width+skip)+j-0]==0
+    && image[(i+1)*(bmpi->width+skip)+j-1]==0
+    && image[(i+1)*(bmpi->width+skip)+j-0]==0
+    && image[(i+1)*(bmpi->width+skip)+j+1]==0)
+    {
+    om[(i)*(bmpi->width+skip)+j]=0xff;
+    flag=1;
+    continue;
+    }
+    //模板e
+    if(image[(i-1)*(bmpi->width+skip)+j-1]==0
+    && image[(i-1)*(bmpi->width+skip)+j+1]==0xff
+    && image[(i)*(bmpi->width+skip)+j-1]==0
+    && image[(i)*(bmpi->width+skip)+j-0]==0
+    && image[(i)*(bmpi->width+skip)+j+1]==0xff
+    && image[(i+1)*(bmpi->width+skip)+j-1]==0
+    && image[(i+1)*(bmpi->width+skip)+j+1]==0xff)
+    {
+    om[(i)*(bmpi->width+skip)+j]=0xff;
+    flag=1;
+    continue;
+    }
+    //模板f
+    if(image[(i-1)*(bmpi->width+skip)+j-0]==0
+    && image[(i)*(bmpi->width+skip)+j-1]==0
+    && image[(i)*(bmpi->width+skip)+j-0]==0
+    && image[(i)*(bmpi->width+skip)+j+1]==0xff
+    && image[(i+1)*(bmpi->width+skip)+j-0]==0xff
+    && image[(i+1)*(bmpi->width+skip)+j+1]==0xff)
+    {
+    om[(i)*(bmpi->width+skip)+j]=0xff;
+    flag=1;
+    continue;
+    }
+    //模板g
+    if(image[(i-1)*(bmpi->width+skip)+j-0]==0xff
+    && image[(i-1)*(bmpi->width+skip)+j+1]==0xff
+    && image[(i)*(bmpi->width+skip)+j-1]==0
+    && image[(i)*(bmpi->width+skip)+j-0]==0
+    && image[(i)*(bmpi->width+skip)+j+1]==0xff
+    && image[(i+1)*(bmpi->width+skip)+j-0]==0)
+    {
+    om[(i)*(bmpi->width+skip)+j]=0xff;
+    flag=1;
+    continue;
+    }
+    //模板h
+    if(image[(i-2)*(bmpi->width+skip)+j-0]==0
+    && image[(i-1)*(bmpi->width+skip)+j-1]==0
+    && image[(i-1)*(bmpi->width+skip)+j-0]==0
+    && image[(i-1)*(bmpi->width+skip)+j+1]==0
+    && image[(i)*(bmpi->width+skip)+j-0]==0
+    && image[(i+1)*(bmpi->width+skip)+j-1]==0xff
+    && image[(i+1)*(bmpi->width+skip)+j-0]==0xff
+    && image[(i+1)*(bmpi->width+skip)+j+1]==0xff)
+    {
+    om[(i)*(bmpi->width+skip)+j]=0xff;
+    flag=1;
+    continue;
+    }
+    }
+    }
+    for(i=0;i<N;i++)
+    {
+    if(om[i]==0xff)
+    {
+    image[i]=0xff;
+    }
+    }
+    }
+    //-------------第二次串行细化
+    for( i=2;iheight-2;i++)
+    {
+    for(j=2;jwidth-2;j++)
+    {
+    //缩小后的模板a
+    if(image[(i-1)*(bmpi->width+skip)+j-1]==0xff
+    && image[(i-1)*(bmpi->width+skip)+j+1]==0
+    && image[(i)*(bmpi->width+skip)+j-1]==0xff
+    && image[(i)*(bmpi->width+skip)+j-0]==0
+    && image[(i)*(bmpi->width+skip)+j+1]==0
+    && image[(i+1)*(bmpi->width+skip)+j-1]==0xff
+    && image[(i+1)*(bmpi->width+skip)+j+1]==0)
+    {
+    image[(i)*(bmpi->width+skip)+j]=0xff;
+    flag=1;
+    continue;
+    }
+    //缩小后的模板h
+    if(image[(i-1)*(bmpi->width+skip)+j-1]==0
+    && image[(i-1)*(bmpi->width+skip)+j-0]==0
+    && image[(i-1)*(bmpi->width+skip)+j+1]==0
+    && image[(i)*(bmpi->width+skip)+j-0]==0
+    && image[(i+1)*(bmpi->width+skip)+j-1]==0xff
+    && image[(i+1)*(bmpi->width+skip)+j-0]==0xff
+    && image[(i+1)*(bmpi->width+skip)+j+1]==0xff)
+    {
+    image[(i)*(bmpi->width+skip)+j]=0xff;
+    flag=1;
+    continue;
+    }
+    }
+    }
+    //----－－－－－－－－－--显示图形
+    for( i=0;iheight;i++)
+    {
+    for(j=0;jwidth;j++)
+    {
+    //-----原始图形
+    color=image[(i)*(bmpi->width+skip)+j];
+    tc=SwitchColor(color,color,color);
+    Form1->Canvas->Pixels[10+j][400-i]=*tc;
+    }
+    }
+    //----------关闭文件
+    fclose(f);
+    }
+    //------------------------------------------------------------------------
+    原图和细化效果图对比
+    细化是常用的图像预处理技术,目前也有很多图像细化算法,细化后能更好的分析图像,现在很多图像的特征提取,特征分析算法是基于细化后的图像的.
+
+本TXT由“文库宝”下载:http://www.mozhua.net/wenkubao
+http://wenku.baidu.com/view/b14dd650ad02de80d4d84002.html
