@@ -250,88 +250,88 @@
     flag=1;
     continue;
     }
-    //模板g
-    if(image[(i-1)*(bmpi->width+skip)+j-0]==0xff
-    && image[(i-1)*(bmpi->width+skip)+j+1]==0xff
-    && image[(i)*(bmpi->width+skip)+j-1]==0
-    && image[(i)*(bmpi->width+skip)+j-0]==0
-    && image[(i)*(bmpi->width+skip)+j+1]==0xff
-    && image[(i+1)*(bmpi->width+skip)+j-0]==0)
-    {
-    om[(i)*(bmpi->width+skip)+j]=0xff;
-    flag=1;
-    continue;
-    }
-    //模板h
-    if(image[(i-2)*(bmpi->width+skip)+j-0]==0
-    && image[(i-1)*(bmpi->width+skip)+j-1]==0
-    && image[(i-1)*(bmpi->width+skip)+j-0]==0
-    && image[(i-1)*(bmpi->width+skip)+j+1]==0
-    && image[(i)*(bmpi->width+skip)+j-0]==0
-    && image[(i+1)*(bmpi->width+skip)+j-1]==0xff
-    && image[(i+1)*(bmpi->width+skip)+j-0]==0xff
-    && image[(i+1)*(bmpi->width+skip)+j+1]==0xff)
-    {
-    om[(i)*(bmpi->width+skip)+j]=0xff;
-    flag=1;
-    continue;
-    }
-    }
-    }
-    for(i=0;i<N;i++)
-    {
-    if(om[i]==0xff)
-    {
-    image[i]=0xff;
+	    //模板g
+	    if(image[(i-1)*(bmpi->width+skip)+j-0]==0xff
+	    && image[(i-1)*(bmpi->width+skip)+j+1]==0xff
+	    && image[(i)*(bmpi->width+skip)+j-1]==0
+	    && image[(i)*(bmpi->width+skip)+j-0]==0
+	    && image[(i)*(bmpi->width+skip)+j+1]==0xff
+	    && image[(i+1)*(bmpi->width+skip)+j-0]==0)
+	    {
+		    om[(i)*(bmpi->width+skip)+j]=0xff;
+		    flag=1;
+		    continue;
+	    }
+	    //模板h
+	    if(image[(i-2)*(bmpi->width+skip)+j-0]==0
+	    && image[(i-1)*(bmpi->width+skip)+j-1]==0
+	    && image[(i-1)*(bmpi->width+skip)+j-0]==0
+	    && image[(i-1)*(bmpi->width+skip)+j+1]==0
+	    && image[(i)*(bmpi->width+skip)+j-0]==0
+	    && image[(i+1)*(bmpi->width+skip)+j-1]==0xff
+	    && image[(i+1)*(bmpi->width+skip)+j-0]==0xff
+	    && image[(i+1)*(bmpi->width+skip)+j+1]==0xff)
+	    {
+		    om[(i)*(bmpi->width+skip)+j]=0xff;
+		    flag=1;
+		    continue;
+	    }
     }
     }
+	    for(i=0;i<N;i++)
+	    {
+		    if(om[i]==0xff)
+		    {
+			image[i]=0xff;
+		    }
+	    }
     }
-    //-------------第二次串行细化
-    for( i=2;iheight-2;i++)
-    {
-    for(j=2;jwidth-2;j++)
-    {
-    //缩小后的模板a
-    if(image[(i-1)*(bmpi->width+skip)+j-1]==0xff
-    && image[(i-1)*(bmpi->width+skip)+j+1]==0
-    && image[(i)*(bmpi->width+skip)+j-1]==0xff
-    && image[(i)*(bmpi->width+skip)+j-0]==0
-    && image[(i)*(bmpi->width+skip)+j+1]==0
-    && image[(i+1)*(bmpi->width+skip)+j-1]==0xff
-    && image[(i+1)*(bmpi->width+skip)+j+1]==0)
-    {
-    image[(i)*(bmpi->width+skip)+j]=0xff;
-    flag=1;
-    continue;
-    }
-    //缩小后的模板h
-    if(image[(i-1)*(bmpi->width+skip)+j-1]==0
-    && image[(i-1)*(bmpi->width+skip)+j-0]==0
-    && image[(i-1)*(bmpi->width+skip)+j+1]==0
-    && image[(i)*(bmpi->width+skip)+j-0]==0
-    && image[(i+1)*(bmpi->width+skip)+j-1]==0xff
-    && image[(i+1)*(bmpi->width+skip)+j-0]==0xff
-    && image[(i+1)*(bmpi->width+skip)+j+1]==0xff)
-    {
-    image[(i)*(bmpi->width+skip)+j]=0xff;
-    flag=1;
-    continue;
-    }
-    }
-    }
-    //----－－－－－－－－－--显示图形
-    for( i=0;iheight;i++)
-    {
-    for(j=0;jwidth;j++)
-    {
-    //-----原始图形
-    color=image[(i)*(bmpi->width+skip)+j];
-    tc=SwitchColor(color,color,color);
-    Form1->Canvas->Pixels[10+j][400-i]=*tc;
-    }
-    }
-    //----------关闭文件
-    fclose(f);
+	    //-------------第二次串行细化
+	    for( i=2;iheight-2;i++)
+	    {
+		    for(j=2;jwidth-2;j++)
+		    {
+			    //缩小后的模板a
+			    if(image[(i-1)*(bmpi->width+skip)+j-1]==0xff
+			    && image[(i-1)*(bmpi->width+skip)+j+1]==0
+			    && image[(i)*(bmpi->width+skip)+j-1]==0xff
+			    && image[(i)*(bmpi->width+skip)+j-0]==0
+			    && image[(i)*(bmpi->width+skip)+j+1]==0
+			    && image[(i+1)*(bmpi->width+skip)+j-1]==0xff
+			    && image[(i+1)*(bmpi->width+skip)+j+1]==0)
+			    {
+				    image[(i)*(bmpi->width+skip)+j]=0xff;
+				    flag=1;
+				    continue;
+			    }
+			    //缩小后的模板h
+			    if(image[(i-1)*(bmpi->width+skip)+j-1]==0
+			    && image[(i-1)*(bmpi->width+skip)+j-0]==0
+			    && image[(i-1)*(bmpi->width+skip)+j+1]==0
+			    && image[(i)*(bmpi->width+skip)+j-0]==0
+			    && image[(i+1)*(bmpi->width+skip)+j-1]==0xff
+			    && image[(i+1)*(bmpi->width+skip)+j-0]==0xff
+			    && image[(i+1)*(bmpi->width+skip)+j+1]==0xff)
+			    {
+				    image[(i)*(bmpi->width+skip)+j]=0xff;
+				    flag=1;
+				    continue;
+			    }
+		    }
+	    }
+	    //----－－－－－－－－－--显示图形
+	    for( i=0;iheight;i++)
+	    {
+		    for(j=0;jwidth;j++)
+		    {
+			    //-----原始图形
+			    color=image[(i)*(bmpi->width+skip)+j];
+			    tc=SwitchColor(color,color,color);
+			    Form1->Canvas->Pixels[10+j][400-i]=*tc;
+		    }
+	    }
+	    //----------关闭文件
+	    fclose(f);
     }
     //------------------------------------------------------------------------
     原图和细化效果图对比
