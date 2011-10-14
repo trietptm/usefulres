@@ -1,0 +1,18 @@
+使用CxImage：
+#include "..\..\usefulres\Dev\CxImage\ximage.h"
+
+添加链接库：
+..\..\usefulres\Lib\cximage.lib
+..\..\usefulres\Lib\Tiff.lib
+..\..\usefulres\Lib\jasper.lib
+..\..\usefulres\Lib\libdcr.lib
+..\..\usefulres\Lib\mng.lib
+..\..\usefulres\Lib\zlib.lib
+..\..\usefulres\Lib\png.lib
+..\..\usefulres\Lib\Jpeg.lib
+
+CxImage img;
+if(img.Load(sPngFile))
+{
+	img.Save(_T("down.bmp"),CXIMAGE_FORMAT_BMP);
+}
