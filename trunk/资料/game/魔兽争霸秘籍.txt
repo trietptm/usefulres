@@ -5,6 +5,7 @@ dota
 -apnengdu
 -apnengom
 -apnengomdu
+-apnengomsh
 
 -pa 选择已方英雄
 -pe 选择敌方英雄
