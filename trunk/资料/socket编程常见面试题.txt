@@ -2,11 +2,14 @@
 2.¼ÙÉèÔÚ½¨Á¢Á¬½ÓÊ±Ê¹ÓÃ2´ÎÎÕÊÖ¶ø·ÇÈý´ÎÎÕÊÖµÄ·½°¸£¬ 
     ¼´£º²»ÔÙÐèÒªµÚ3Ìõ±¨ÎÄ£¬ÕâÊ±»á·¢ÉúÊ²Ã´Çé¿ö? 
     ÎªÊ²Ã´²»¿ÉÒÔÕâÑù£¿
+3.TCP/IPµÄSocketÌá¹©ÄÄÈýÖÖÀàÐÍµÄÌ×½Ó×Ö
+4.»ù±¾Ì×½Ó×Öµ÷ÓÃ
+5.Ê²Ã´ÊÇTCP/IP¡¢UDP
+6.SocketÊÇÊ²Ã´ÄØ
 
 
-
-
-1¡¢¼òµ¥µÄËµ¾ÍÊÇTCP¸´ÔÓµ«¿É¿¿£¬UDP²»¿É¿¿µ«¼òµ¥¡£TCPÊÇÃæÏòÁ¬½ÓµÄ£¬UDPÊÇ·ÇÁ¬½ÓµÄ¡£
+1¡¢
+¼òµ¥µÄËµ¾ÍÊÇTCP¸´ÔÓµ«¿É¿¿£¬UDP²»¿É¿¿µ«¼òµ¥¡£TCPÊÇÃæÏòÁ¬½ÓµÄ£¬UDPÊÇ·ÇÁ¬½ÓµÄ¡£
 UDP¿ªÏúÐ¡£¬Ö»ÊÇÔÚIPÖ®ÉÏÔö¼ÓÁË¶Ë¿ÚºÅ£¬ÓÃÀ´Ê¶±ð²»Í¬µÄ·þÎñ/½ø³Ì¡£ÆäÊµÏóIPX£¬Æä±¨ÎÄÀïÖ±½Ó¾ÍÓÐSOCKETºÅ£¬¸ù±¾¾Í²»ÐèÒªUDP¾Í¿ÉÒÔ½øÐÐ·þÎñ/½ø³ÌµÄÇø·Ö¡£
 
 ¼òµ¥µÄËµ   ÔÚÁ¬½Ó·½Ê½ÉÏ   TCP¾ÍÏñÄã´òµç»°   UDP¾ÍÏñÄã·¢¶ÌÐÅ
@@ -15,4 +18,31 @@ UDP¿ªÏúÐ¡£¬Ö»ÊÇÔÚIPÖ®ÉÏÔö¼ÓÁË¶Ë¿ÚºÅ£¬ÓÃÀ´Ê¶±ð²»Í¬µÄ·þÎñ/½ø³Ì¡£ÆäÊµÏóIPX£¬Æä±¨ÎÄÀ
 1)ÔÚÊ¹ÓÃÖÐ£¬ÀàËÆÓÚÍ¼Ïñ£¬ÉùÒôµÈ¶Ô¿É¿¿ÐÔÒªÇóÃ»ÓÐÄÇÃ´¸ßµÄÒµÎñ¿ÉÒÔÓÃUDP£¬ÀàËÆÓÚÎÄ±¾¡¢³ÌÐòµÈÒªÇó¿É¿¿µÄÊý¾Ý×îºÃ¾ÍÓÃTCP¡£ 
 2)ÊµÏÖUDPÐ­ÒéÏà¶Ô¼òµ¥£¬TCPÔò¸´ÔÓ£¬µ«ÊÇÕâ¸öÒòËØÏÖÔÚ²»ÓÃÔõÃ´¿¼ÂÇÁË£¬±Ï¾¹Ó²¼þ·¢Õ¹µÃÌ«¿ì¿ì¡£
 
-2¡¢ÒòÎªÍøÂçÊÇ²»¿É¿¿µÄ£¬Òò´Ë¶àÉÙ´ÎÎÕÊÖ¶¼²»Ò»¶¨ÊÇ¿É¿¿Á¬½Ó¡£Èý´ÎÊÇ×îÉÙµÄÎÕÊÖ´ÎÊý£¬ÒòÎª2´ÎÎÕÊÖ£¬ÏìÓ¦¶Ë²»ÖªµÀ·¢Æð¶ËÊÇ·ñÊÕµ½ÁËÏìÓ¦±¨ÎÄ£¬Ò²¾Í²»ÄÜÈ·ÐÅÁ¬½ÓÊÇ·ñÒÑ¾­½¨Á¢¡£Ö»ÓÐÊÕµ½·¢ËÍ¶ËµÄÏìÓ¦ºó£¬Ë«·½²ÅÄÜÈ·ÈÏÁ¬½ÓÒÑ¾­½¨Á¢¡£
+2¡¢
+ÒòÎªÍøÂçÊÇ²»¿É¿¿µÄ£¬Òò´Ë¶àÉÙ´ÎÎÕÊÖ¶¼²»Ò»¶¨ÊÇ¿É¿¿Á¬½Ó¡£Èý´ÎÊÇ×îÉÙµÄÎÕÊÖ´ÎÊý£¬ÒòÎª2´ÎÎÕÊÖ£¬ÏìÓ¦¶Ë²»ÖªµÀ·¢Æð¶ËÊÇ·ñÊÕµ½ÁËÏìÓ¦±¨ÎÄ£¬Ò²¾Í²»ÄÜÈ·ÐÅÁ¬½ÓÊÇ·ñÒÑ¾­½¨Á¢¡£Ö»ÓÐÊÕµ½·¢ËÍ¶ËµÄÏìÓ¦ºó£¬Ë«·½²ÅÄÜÈ·ÈÏÁ¬½ÓÒÑ¾­½¨Á¢¡£
+
+3¡¢
+    1¡£Á÷Ê½Ì×½Ó×Ö(SOCKET_STREAM)  
+    Ìá¹©ÁËÒ»¸öÃæÏòÁ¬½Ó£¬¿É¿¿µÄÊý¾Ý´«Êä·þÎñ£¬Êý¾ÝÎÞ²î´í£¬ÎÞÖØ¸´µÄ·¢ËÍÇÒ°´·¢ËÍË³Ðò½ÓÊÕ¡£ÄÚÉèÁ÷Á¿¿ØÖÆ£¬±ÜÃâÊý¾ÝÁ÷³¬ÏÞ£»Êý¾Ý±»¿´×÷ÊÇ×Ö½ÚÁ÷£¬ÎÞ³¤¶ÈÏÞÖÆ¡£FTPÐ­Òé¼´²ÉÓÃÁ÷Ê½Ì×½Ó×Ö¡£  
+    2¡£Êý¾Ý±¨Ê½Ì×½Ó×Ö(SOCKET_DGRAM)  
+    Ìá¹©ÁËÒ»¸öÎÞÁ¬½Ó·þÎñ¡£Êý¾Ý°üÒÔ¶ÀÁ¢°üÐÎÊ½±»·¢ËÍ£¬²»Ìá¹©ÎÞ´í±£Ö¤£¬Êý¾Ý¿ÉÄÜ¶ªÊ§»òÖØ¸´£¬²¢ÇÒ½ÓÊÕË³ÐòÎÞÐò¡£ÍøÂçÎÄ¼þÏµÍ³NFSÊ¹ÓÃÊý¾Ý±¨Ê½Ì×½Ó×Ö¡£  
+    3¡£Ô­Ê¼Ê½Ì×½Ó×Ö(SOCKET_RAW)  
+    ¸Ã½Ó¿ÚÔÊÐí¶Ô½ÏµÍ²ã´ÎÐ­Òé£¬ÈçIP¡¢ICMPÖ±½Ó·ÃÎÊ¡£³£ÓÃÓÚ¼ìÑéÐÂµÄÐ­ÒéÊµÏÖ»ò·ÃÎÊÏÖÓÐ·þÎñÖÐÅäÖÃµÄÐÂÉè±¸¡£
+
+4¡¢
+´´½¨Ì×½Ó×Ö--socket();  
+°ó¶¨±¾»ú¶Ë¿Ú--bind();  
+½¨Á¢Á¬½Ó--connect(),accept();
+ÕìÌý¶Ë¿Ú--listen();  
+Êý¾Ý´«Êä--send(),recv();  
+ÊäÈë/Êä³ö¶àÂ·¸´ÓÃ--select();
+¹Ø±ÕÌ×½Ó×Ö--closesocket(); 
+
+5¡¢
+TCP/IP£¨Transmission Control Protocol/Internet Protocol£©¼´´«Êä¿ØÖÆÐ­Òé/Íø¼äÐ­Òé£¬ÊÇÒ»¸ö¹¤Òµ±ê×¼µÄÐ­Òé¼¯£¬ËüÊÇÎª¹ãÓòÍø£¨WANs£©Éè¼ÆµÄ¡£
+UDP£¨User Data Protocol£¬ÓÃ»§Êý¾Ý±¨Ð­Òé£©ÊÇÓëTCPÏà¶ÔÓ¦µÄÐ­Òé¡£ËüÊÇÊôÓÚTCP/IPÐ­Òé×åÖÐµÄÒ»ÖÖ¡£
+
+TCP/IPÐ­Òé×å°üÀ¨ÔËÊä²ã¡¢ÍøÂç²ã¡¢Á´Â·²ã¡£
+
+6¡¢
+SocketÊÇÓ¦ÓÃ²ãÓëTCP/IPÐ­Òé×åÍ¨ÐÅµÄÖÐ¼äÈí¼þ³éÏó²ã£¬ËüÊÇÒ»×é½Ó¿Ú¡£ÔÚÉè¼ÆÄ£Ê½ÖÐ£¬SocketÆäÊµ¾ÍÊÇÒ»¸öÃÅÃæÄ£Ê½£¬Ëü°Ñ¸´ÔÓµÄTCP/IPÐ­Òé×åÒþ²ØÔÚSocket½Ó¿ÚºóÃæ£¬¶ÔÓÃ»§À´Ëµ£¬Ò»×é¼òµ¥µÄ½Ó¿Ú¾ÍÊÇÈ«²¿£¬ÈÃSocketÈ¥×éÖ¯Êý¾Ý£¬ÒÔ·ûºÏÖ¸¶¨µÄÐ­Òé¡£
