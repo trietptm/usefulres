@@ -1,0 +1,86 @@
+http://blog.csdn.net/chief1985/article/details/2431568
+
+导读： 
+
+
+讲一点和实现细节相关的东西。在Visual C++中，所有在main之前执行的函数调用实际上都通过一个自动生成的函数来调用，比如下面这段代码：
+
+
+int func()
+{
+ return 1;
+}
+
+
+int data = func();
+
+
+int main()
+{
+ return 0;
+}
+
+
+实际上生成了三个函数：
+
+
+?func@@YAHXZ，对应于 func
+_main 对应于 main
+_$E1 对应于 data=func() 这句赋值语句。它调用了 func，并且完成赋值这个操作。
+
+
+窍门在于，VC将 _$E1这个函数的指针放到了段CRT$XCU中：
+
+
+CRT$XCU SEGMENT
+_$S2 DD FLAT:_$E1
+; Function compile flags: /Odt /RTCsu /ZI
+CRT$XCU ENDS
+
+
+这个段的定义为：
+
+
+CRT$XCU SEGMENT DWORD USE32 PUBLIC 'DATA'
+CRT$XCU ENDS
+
+
+参考 crt0dat.c 文件可以看到：
+
+
+extern _CRTALLOC(".CRT$XIA") _PIFV __xi_a[];
+extern _CRTALLOC(".CRT$XIZ") _PIFV __xi_z[];    /* C initializers */
+extern _CRTALLOC(".CRT$XCA") _PVFV __xc_a[];
+extern _CRTALLOC(".CRT$XCZ") _PVFV __xc_z[];    /* C++ initializers */
+extern _CRTALLOC(".CRT$XPA") _PVFV __xp_a[];
+extern _CRTALLOC(".CRT$XPZ") _PVFV __xp_z[];    /* C pre-terminators */
+extern _CRTALLOC(".CRT$XTA") _PVFV __xt_a[];
+extern _CRTALLOC(".CRT$XTZ") _PVFV __xt_z[];    /* C terminators */
+
+
+这里实际上有一个很巧妙的地方在于，VC应用了x86上段是连续并且可重叠的概念，因此CRT$XCU是位于CRT$XCA到CRT$XCZ之间，具体说，段的顺序是：
+
+
+CRT$XCA SEGMENT DWORD USE32 PUBLIC 'DATA'
+CRT$XCA ENDS
+CRT$XCU SEGMENT DWORD USE32 PUBLIC 'DATA'
+CRT$XCU ENDS
+CRT$XCL SEGMENT DWORD USE32 PUBLIC 'DATA'
+CRT$XCL ENDS
+CRT$XCC SEGMENT DWORD USE32 PUBLIC 'DATA'
+CRT$XCC ENDS
+CRT$XCZ SEGMENT DWORD USE32 PUBLIC 'DATA'
+CRT$XCZ ENDS
+
+
+由于CRT$XCA开始都是C++初始化函数，_PVFV实际上就是 void (*_PVFV)()，因此CRT的_initterm()函数就把这个段中的数据作为一个函数指针数组来访问，依次调用其中的函数，从而完成系统所有初始化操作。
+
+
+最后，也是最关键的问题，就是实际上每个 CPP 文件编译好以后都有初始化函数，并且其指针位于 CRT$XC? 段中，随后连接程序 LINK 做了最后一个重要的任务，就是把所有具有相同名字的段合并成为一个单独的段（这也就是连接程序名字的由来之一），合并的做法就是简单地把每个段中的数据按顺序前后放到一个连续的空间就可以了。这样在最终运行的时候，程序看到的CRT$XC?段也就是一个连续的数组，而不是多个数组。
+
+
+至于顺序问题，在这里就可以看到，是由连接程序最后做拼接时候确定的。连接程序拼接的顺序，基本上是它看到OBJ文件的顺序，也就是在连接程序命令行指定的顺序。因此，在程序中决不能依赖于这个顺序，因为在连接程序命令行中的文件顺序是不确定的。
+
+
+以上是初始化程序的顺序，至于析构函数（或者在main函数之后的函数调用）则是通过用at_exit函数注册的顺序来确定，而注册往往是在初始化的时候进行，因此析构函数的调用顺序也是不确定的。
+
