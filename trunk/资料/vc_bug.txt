@@ -1,0 +1,3 @@
+1. LINK : fatal error LNK1104: cannot open file 'LIBC.lib'
+Project Property -> Configuation Properties -> Linker -> Input -> Ignore Specific Library
+Ignore the LIBC.LIB
