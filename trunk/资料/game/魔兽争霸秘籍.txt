@@ -6,6 +6,7 @@ dota
 -apnengom
 -apnengomdu
 -apnengomsh
+-apnengntnbnm
 
 -pa 选择已方英雄
 -pe 选择敌方英雄
@@ -15,6 +16,10 @@ dota
 中路模式： -om/-onlymid 上下两路既不出兵，塔也无敌状态。等于-ntnb。 
 上路禁兵模式： -nt/-notop 上（左）路既不出兵，塔也无敌状态。 
 中路禁兵模式： -nm/-nomid 中路既不出兵，塔也无敌状态。 
+
+加钱，仅调自己的英雄
+-test
+-gold -3410
 
 先输入-test,进入测试模式，等可以选人时再输入-noherolimit〔没有英雄的人数限制〕这样就可以选几个人了
 设置英雄等级：开始游戏之前要打-test ,然后用-lvlup 升级，可以加数字
@@ -37,7 +42,8 @@ DOTA打电脑指令：
 魔兽争霸秘籍在战役模式下（多人游戏不可），
 按下回车，会出来对话框，然后把下面字符输入即可 
 无敌并一击必杀: whosyourdaddy
-无限能量: thereisnospoon魔兽争霸秘籍 
+无限能量: thereisnospoon
+魔兽争霸秘籍 
 任务模式里即使失败也继续游戏: strengthandhonor 
 地图全开: iseedeadpeople魔兽争霸秘籍 
 立即胜利: allyourbasearebelongtous
