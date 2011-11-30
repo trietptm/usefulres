@@ -1,0 +1,109 @@
+SSDT HOOK进程保护挂钩ZwTerminateProcess函数，不过这个函数仅有两个参数，其中一个是进程句柄，它指定了需要被结束的进程。
+
+#include<ntddk.h>  
+  
+typedef struct ServiceDescriptorEntry  {  
+    unsigned int *ServiceTableBase;          //指向系统服务程序的地址(SSDT)  
+    unsigned int *ServiceCounterTableBase;   //指向另一个索引表，该表包含了每个服务表项被调用的次数；不过这个值只在Checkd Build的内核中有效，在Free Build的内核中，这个值总为NULL  
+    unsigned int NumberOfServices;           //表示当前系统所支持的服务个数  
+    unsigned char *ParamTableBase;           //指向SSPT中的参数地址，它们都包含了NumberOfService这么多个数组单元  
+} ServiceDescriptorTableEntry , *PServiceDescriptorTableEntry;  
+  
+extern PServiceDescriptorTableEntry KeServiceDescriptorTable;//KeServiceDescriptorTable为导出函数  
+  
+typedef NTSTATUS (*NTTERNIMATEPROCESS)(  
+    IN HANDLE ProcessHandle,  
+    IN NTSTATUS ExitStatus  
+); //定义一个函数指针  
+  
+NTTERNIMATEPROCESS pRealNtTerminateAddr;  
+  
+ULONG RealServiceAddress;                //接受被hook的函数地址  
+CHAR *TerminateName = "Client.exe";      //这里就是我们的进程名  
+UCHAR *PsGetProcessImageFileName( IN PEPROCESS Process );  
+  
+BOOLEAN IsProtect(CHAR *temp)            //判断正在结束的进程是否是我们要保护的进程  
+{  
+    ULONG len = strcmp(TerminateName, temp);  
+    if(!len)  
+        return TRUE;  
+    return FALSE;  
+}  
+  
+NTSTATUS MyNtTerminateProcess(IN HANDLE ProcessHandle, IN NTSTATUS ExitStatus)//我们自己的NtTerminateProcess  
+{  
+    PEPROCESS process;  //接受通过ProcessHandle返回的进程  
+    NTSTATUS status;   
+    CHAR *pName;        //接受进程的进程名  
+      
+    status = ObReferenceObjectByHandle(ProcessHandle,  
+        FILE_READ_DATA,0,KernelMode,&process,NULL);    //获取进程  
+      
+    if(!NT_SUCCESS(status))   
+        return (NTSTATUS)(NTTERNIMATEPROCESS)pRealNtTerminateAddr(ProcessHandle, ExitStatus);  
+      
+    pName = (CHAR*)PsGetProcessImageFileName(process); //获取进程名  
+    if(IsProtect(pName)) //判断是否是我们要保护的进程，是则返回权限不足，否则调用原函数结束进程  
+    {  
+        if(process != PsGetCurrentProcess())  
+        {  
+            return STATUS_ACCESS_DENIED;  
+        }  
+    }  
+      
+    return (NTSTATUS)(NTTERNIMATEPROCESS)pRealNtTerminateAddr(ProcessHandle, ExitStatus);   
+}  
+  
+VOID Hook()  
+{  
+    ULONG Address;  
+    Address = (ULONG)KeServiceDescriptorTable->ServiceTableBase + 0x101 * 4; // 2003 0x10A  
+    RealServiceAddress = *(ULONG*)Address;  
+    pRealNtTerminateAddr = (NTTERNIMATEPROCESS)RealServiceAddress;  
+    __asm{//去掉内存保护  
+        cli  
+            mov eax,cr0  
+            and eax,not 10000h  
+            mov cr0,eax  
+    }  
+    *((ULONG*)Address) = (ULONG)MyNtTerminateProcess; //替换为我们自己的NtTerminateProcess函数  
+    __asm{//恢复内存保护   
+        mov eax,cr0  
+            or eax,10000h  
+            mov cr0,eax  
+            sti  
+    }  
+}  
+  
+VOID Unhook()  
+{  
+    ULONG Address;  
+    Address = (ULONG)KeServiceDescriptorTable->ServiceTableBase + 0x101 * 4; // 2003 0x10A  
+    __asm{  
+        cli  
+            mov eax,cr0  
+            and eax,not 10000h  
+            mov cr0,eax  
+    }  
+    *((ULONG*)Address) = (ULONG)RealServiceAddress;   
+    __asm{   
+        mov eax,cr0  
+            or eax,10000h  
+            mov cr0,eax  
+            sti  
+    }  
+}  
+  
+VOID OnUnload(IN PDRIVER_OBJECT DriverObject)  
+{  
+    DbgPrint("Unhooker unload!");  
+    Unhook();  
+}  
+  
+NTSTATUS DriverEntry(IN PDRIVER_OBJECT DriverObject,PUNICODE_STRING RegistryPath)  
+{  
+    DriverObject->DriverUnload = OnUnload;  
+    DbgPrint("Unhooker load");  
+    Hook();  
+    return STATUS_SUCCESS;  
+}  
