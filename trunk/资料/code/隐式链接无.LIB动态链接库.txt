@@ -1,0 +1,91 @@
+http://topic.csdn.net/t/20030403/23/1616591.html
+
+隐式链接无.LIB动态链接库   
+
+由于我们经常要调用一些第三方厂商或其他编译器编写的动态链接库，但是一般都不提供源文件或.lib文件，而作为VC隐式链接到DLL（implicitly   link   to   the   DLL）调用，这些却是必需的。本文将主要讨论在没有源文件及.lib输入库文件或欲调用Windows未公开函数的情况下重建.Lib文件的方法。在建立之前，我们首先要了解一下DLL输出函数的几种方式。 
+一、从DLL中输出函数的方式（calling   conventions） 
+_cdecl是C和C＋＋程序的缺省调用方式。每一个调用它的函数都包含清空堆栈的代码，所以产生的可执行文件大小会比调用_stdcall函数的大。函数采用从右到左的压栈方式。VC将函数编译后会在函数名前面加上下划线前缀。 
+_stdcall是Pascal程序的缺省调用方式，通常用于Win32   Api中，函数采用从右到左的压栈方式，自己在退出时清空堆栈。VC将函数编译后会在函数名前面加上下划线前缀，在函数名后加上 "@ "和参数的字节数。 
+_fastcall方式的函数采用寄存器传递参数，VC将函数编译后会在函数名前面加上 "@ "前缀，在函数名后加上 "@ "和参数的字节数。 
+用VC建立一个空的动态链接库，并加入以下三个文件： 
+//noname.h   动态链接库头文件 
+extern   "C "   void   _stdcall   stdcallproc(void); 
+extern   "C "   void   _cdecl   cdeclproc(void); 
+extern   "C "   void   _fastcall   fastcallproc(void); 
+//noname.cpp   动态链接库实现文件 
+＃include   <windows.h> 
+extern   "C "   void   _stdcall   stdcallproc(void) 
+{   MessageBox(0, "stdcall   function ", "dll   call ",0); 
+} 
+extern   "C "   void   _cdecl   cdeclproc(void) 
+{   MessageBox(0, "cdecl   function   ", "dll   call ",0); 
+} 
+extern   "C "   void   _fastcall   fastcallproc(void) 
+{   MessageBox(0, "fastcall   function   ", "dll   call ",0); 
+} 
+//noname.def   动态链接库输出函数定义 
+LIBRARY   "noname " 
+EXPORTS 
+stdcallproc   @1   noname   
+cdeclproc   @2 
+fastcallproc   @3 
+编译后生成noname.lib,输出函数_cdeclproc,_stdcallproc@0,@fastcallproc@0;生成的noname.dll在Exescope等PE格式的工具中只能看到cdeclproc和fastcallproc函数，因为stdcallproc被指定noname属性，没有名字输出，类似于Windows未公开函数。   
+二、可执行程序调用DLL的方式 
+可执行程序可以采用隐式链接(implicit   linking)或显式链接(explicit   linking)两种方式调用一个DLL。 
+使用显式链接时，使用DLL的程序在使用之前必须加载（LoadLibrary）加载DLL从而得到一个DLL模块的句柄，然后调用GetProcAddress函数得到输出函数的指针，在退出之前必须卸载DLL(FreeLibrary)，因为不是本文重点，具体例程请参考有关文档。显然，在调用大量的函数时这种方法会很不方便。 
+使用隐式链接时，可执行程序链接到一个包含DLL输出函数信息的输入库文件(.LIB文件)。操作系统在加载使用可执行程序时加载DLL。可执行程序直接通过函数名调用DLL的输出函数，调用方法和程序内部其他的函数是一样的。 
+三、重建.Lib输入库文件 
+根据微软的建议，要想隐式地链接到一个DLL，可执行程序必须从DLL的提供者那儿得到一个包含输出函数的头文件（.h文件）、一个用于链接的输入库（.lib文件）。愿望是很好的，但是一般情况下，我们都无法得到第三方动态链接库的输入库文件，或者我们需要调用Windows未公开函数。如果你是使用Delphi或Visual   Basic开发程序，那么，你只要简单的申明一下函数和输出库就可以了。但是，使用VC的朋友们只好重建.Lib文件了。 
+1.删掉第一步中生成的noname.lib(假设我们没有这个文件)。 
+2.用微软的DumpBin.exe:dumpbin   /exports   noname.dll> noname.def,留下noname.def文件的输出段： 
+ordinal   hint   RVA   name 
+2   0   00001005   cdeclproc 
+3   1   0000100F   fastcallproc 
+1   0000100A   [NONAME] 
+修改为： 
+LIBRARY   "noname " 
+EXPORTS 
+cdeclproc   @2 
+fastcallproc   @3 
+nonameproc   @1   //请注意与第一步中noname.def的区别：nonameproc可以自己指定为任何名字 
+再执行lib.exe   /def:noname.def即可生成noname.lib文件（但如果这个动态链接库不仅仅包含_cdecl类型函数，那么这个noname.lib还不是最终可用的.lib文件，具体请看下文）。 
+3.建立一个名为DllCaller的Win32控制台程序，将刚才生成的noname.dll和noname.lib拷入DllCallerdebug目录。 
+//DllCaller.cpp 
+//声明函数原型 
+extern   "C "   void   _stdcall   nonameproc(void); 
+extern   "C "   void   _cdecl   cdeclproc(void); 
+extern   "C "   void   _fastcall   fastcallproc(void); 
+//链接输入库文件 
+＃pragma   comment(lib, "debug\noname.lib ") 
+int   main(int   argc,   char＊   argv[]) 
+{ 
+nonameproc(); 
+cdeclproc(); 
+fastcallproc(); 
+return   0; 
+} 
+编译器产生如下错误： 
+DllCaller.obj   :   error   LNK2001:   unresolved   external   symbol   @fastcallproc@0 
+DllCaller.obj   :   error   LNK2001:   unresolved   external   symbol   _nonameproc@0 
+根据错误提示信息将noname.def更改如下： 
+@fastcallproc@0   @3 
+nonameproc@0   @1   
+重新生成noname.lib，即可重新编译DllCaller.exe。 
+四、调用Windows未公开函数 
+根据以上分析，下面给出一个简单的调用Window98系统Shell32.DLL中序号为60的未公开函数，执行后将出现重新启动的对话框。 
+//shell32.def，据此生成Shell32.LIB 
+LIBRARY   "shell32 " 
+EXPORTS 
+SHShutDownDialog@4   @60   
+
+//   DllCaller.cpp:调用未公开函数的控制台程序 
+//函数声明 
+extern   "C "   long   _stdcall   SHShutDownDialog(long   lShutdown); 
+//链接输入库文件 
+＃pragma   comment(lib, "debug\shell32.lib ") 
+int   main(int   argc,char＊   argv[]) 
+{ 
+SHShutDownDialog(0); 
+return   0; 
+} 
+本文所有程序在VC6.0，Windows98SE环境下调试通过，也希望这些程序对于用VC的朋友有所帮助。 
