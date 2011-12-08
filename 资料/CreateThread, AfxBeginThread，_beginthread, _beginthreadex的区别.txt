@@ -1,0 +1,18 @@
+CreateThread, AfxBeginThread，_beginthread, _beginthreadex的区别
+CreateThread是Windows的API函数(SDK函数的标准形式,直截了当的创建方式，任何场合都可以使用)，提供操作系统级别的创建线程的操作，且仅限于工作者线程。不调用MFC和RTL的函数时，可以用CreateThread，其它情况不要轻易。在使用的过程中要考虑到进程的同步与互斥的关系（防止死锁）。线程函数定义为：DWORD WINAPI _yourThreadFun(LPVOID pParameter)。但它没有考虑：
+（1）C Runtime中需要对多线程进行纪录和初始化，以保证C函数库工作正常（典型的例子是strtok函数）。
+（2）MFC也需要知道新线程的创建，也需要做一些初始化工作（当然，如果没用MFC就没事了）。   
+
+AfxBeginThread：MFC中线程创建的MFC函数，首先创建了相应的CWinThread对象，然后调用CWinThread::CreateThread,   在CWinThread::CreateThread中，完成了对线程对象的初始化工作，然后，调用_beginthreadex(AfxBeginThread相比较更为安全)创建线程。它简化了操作或让线程能够响应消息，即可用于界面线程，也可以用于工作者线程，但要注意不要在一个MFC程序中使用_beginthreadex()或CreateThread()。线程函数定义为：UINT _yourThreadFun(LPVOID pParam)
+
+_beginthreadex：MS对C Runtime库的扩展SDK函数，首先针对C Runtime库做了一些初始化的工作，以保证C Runtime库工作正常。然后，调用CreateThread真正创建线程。  仅使用Runtime Library时，可以用_BegingThread。
+
+小节：实际上，这三个函数之间存在一定的调用关系，第一个纯粹一些，后两个完成自己相应的工作之后，调用前者实现线程的创建。其中CreateThread是由操作系统提供的接口，而AfxBeginThread和_BeginThread则是编译器对它的封装。
+
+小节：用_beginthreadex()、_endthreadex函数应该是最佳选择，且都是C Run-time Library中的函数，函数的参数和数据类型都是C Run-time Library中的类型，这样在启动线程时就不需要进行Windows数据类型和C Run-time Library中的数据类型之间的转化，从而，减低了线程启动时的资源消耗和时间的消耗。但使用_beginthread，无法创建带有安全属性的新线程，无法创建暂停的线程，也无法获得 线程ID，_endthread的情况类似，它不带参数，这意味这线程的退出代码必须硬编码为0。
+
+小节：MFC也是C++类库（只不过是Microsoft的C++类库，不是标准的C++类库），在MFC中也封装了new和delete两中运算符，所以用到new和delete的地方不一定非要使用_beginthreadex() 函数，用其他两个函数都可以。
+
+_beginthreadex和_beginthread在回调入口函数之前进行一些线程相关的CRT的初始化操作。
+CRT的函数库在线程出现之前就已经存在，所以原有的CRT不能真正支持线程，
+这也导致了许多CRT的函数在多线程的情况下必须有特殊的支持，不能简单的使用CreateThread就OK。 

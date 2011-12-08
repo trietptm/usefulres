@@ -1,0 +1,123 @@
+仔细想想地位卑贱的类型转换功能（cast），其在程序设计中的地位就象goto语句一样令人鄙视。但是它还不是无法令人忍受，因为当在某些紧要的关头，类型转换还是必需的，这时它是一个必需品。
+
+　　不过C风格的类型转换并不代表所有的类型转换功能。一来它们过于粗鲁，能允许你在任何类型之间进行转换。不过如果要进行更精确的类型转换，这会是一个优点。在这些类型转换中存在着巨大的不同，例如把一个指向const对象的指针（pointer-to-const-object）转换成指向非const对象的指针（pointer-to-non-const-object）(即一个仅仅去除cosnt的类型转换)，把一个指向基类的指针转换成指向子类的指针（即完全改变对象类型）。传统的C风格的类型转换不对上述两种转换进行区分。（这一点也不令人惊讶，因为C风格的类型转换是为C语言设计的，而不是为C++语言设计的）。
+
+　　二来C风格的类型转换在程序语句中难以识别。在语法上类型转换由圆括号和标识符组成，而这些可以用在C＋＋中的任何地方。这使得回答象这样一个最基本的有关类型转换的问题变得很困难，“在这个程序中是否使用了类型转换？”。这是因为人工阅读很可能忽略了类型转换的语句，而利用象grep的工具程序也不能从语句构成上区分出它们来。
+
+　　C++通过引进四个新的类型转换操作符克服了C风格类型转换的缺点，这四个操作符是,static_cast, const_cast, dynamic_cast, 和reinterpret_cast。在大多数情况下，对于这些操作符你只需要知道原来你习惯于这样写，(type) expression而现在你总应该这样写： static_cast(expression)；例如，假设你想把一个int转换成double，以便让包含int类型变量的表达式产生出浮点数值的结果。如果用C风格的类型转换，你能这样写：
+
+int firstNumber, secondNumber;
+...
+double result = ((double)firstNumber)/secondNumber； 
+
+　　如果用上述新的类型转换方法，你应该这样写：
+
+double result = static_cast(firstNumber)/secondNumber; 
+
+　　这样的类型转换不论是对人工还是对程序都很容易识别。
+
+　　static_cast 在功能上基本上与C风格的类型转换一样强大，含义也一样。它也有功能上限制。例如，你不能用static_cast象用C风格的类型转换一样把struct转换成int类型或者把double类型转换成指针类型，另外，static_cast不能从表达式中去除const属性，因为另一个新的类型转换操作符const_cast有这样的功能。
+
+　　其它新的C++类型转换操作符被用在需要更多限制的地方。const_cast 用于类型转换掉表达式的const或volatileness属性。通过使用const_cast，你向人们和编译器强调你通过类型转换想做的只是改变一些东西的constness 或者 volatileness属性。这个含义被编译器所约束。如果你试图使用const_cast来完成修改constness 或者 volatileness属性之外的事情，你的类型转换将被拒绝。下面是一些例子：
+
+class Widget { ... };
+class SpecialWidget: public Widget { ... };
+void update(SpecialWidget *psw);
+SpecialWidget sw; // sw 是一个非const 对象。
+const SpecialWidget& csw = sw; // csw 是sw的一个引用
+// 它是一个const 对象
+update(&csw); // 错误!不能传递一个const SpecialWidget* 变量
+// 给一个处理SpecialWidget*类型变量的函数
+update(const_cast(&csw));
+// 正确，csw的const被显示地转换掉（
+// csw和sw两个变量值在update
+//函数中能被更新）
+update((SpecialWidget*)&csw);
+// 同上，但用了一个更难识别
+//的C风格的类型转换
+Widget *pw = new SpecialWidget;
+update(pw); // 错误！pw的类型是Widget*，但是
+// update函数处理的是SpecialWidget*类型
+update(const_cast(pw));
+// 错误！const_cast仅能被用在影响
+// constness or volatileness的地方上。,
+// 不能用在向继承子类进行类型转换。 
+
+　　到目前为止，const_cast最普通的用途就是转换掉对象的const属性。
+
+　　第二种特殊的类型转换符是dynamic_cast，它被用于安全地沿着类的继承关系向下进行类型转换。这就是说，你能用dynamic_cast把指向基类的指针或引用转换成指向其派生类或其兄弟类的指针或引用，而且你能知道转换是否成功。失败的转换将返回空指针（当对指针进行类型转换时）或者抛出异常（当对引用进行类型转换时）：
+
+Widget *pw;
+...
+update(dynamic_cast(pw));
+// 正确，传递给update函数一个指针
+// 是指向变量类型为SpecialWidget的pw的指针
+// 如果pw确实指向一个对象,
+// 否则传递过去的将使空指针。
+void updateViaRef(SpecialWidget& rsw);
+updateViaRef(dynamic_cast(*pw));
+//正确。 传递给updateViaRef函数
+// SpecialWidget pw 指针，如果pw
+// 确实指向了某个对象
+// 否则将抛出异常 
+
+　　dynamic_casts在帮助你浏览继承层次上是有限制的。它不能被用于缺乏虚函数的类型上，也不能用它来转换掉constness:
+
+int firstNumber, secondNumber;
+...
+...
+double result = dynamic_cast(firstNumber)/secondNumber;
+// 错误！没有继承关系
+const SpecialWidget sw;
+...
+update(dynamic_cast(&sw));
+// 错误! dynamic_cast不能转换
+// 掉const。 
+
+　　如你想在没有继承关系的类型中进行转换，你可能想到static_cast。如果是为了去除const，你总得用const_cast。
+
+　　这四个类型转换符中的最后一个是reinterpret_cast。这个操作符被用于的类型转换的转换结果几乎都是实现时定义（implementation-defined）。因此，使用reinterpret_casts的代码很难移植。
+
+　　reinterpret_casts的最普通的用途就是在函数指针类型之间进行转换。例如，假设你有一个函数指针数组：
+
+typedef void (*FuncPtr)(); // FuncPtr is 一个指向函数
+// 的指针，该函数没有参数
+// 也返回值类型为void
+FuncPtr funcPtrArray[10]; // funcPtrArray 是一个能容纳
+// 10个FuncPtrs指针的数组 
+
+　　让我们假设你希望（因为某些莫名其妙的原因）把一个指向下面函数的指针存入funcPtrArray数组：
+
+int doSomething(); 
+
+　　你不能不经过类型转换而直接去做，因为doSomething函数对于funcPtrArray数组来说有一个错误的类型。在FuncPtrArray数组里的函数返回值是void类型，而doSomething函数返回值是int类型。
+
+funcPtrArray[0] = &doSomething; // 错误！类型不匹配
+reinterpret_cast可以让你迫使编译器以你的方法去看待它们：
+funcPtrArray[0] = // this compiles
+reinterpret_cast(&doSomething); 
+
+　　转换函数指针的代码是不可移植的（C++不保证所有的函数指针都被用一样的方法表示），在一些情况下这样的转换会产生不正确的结果（参见条款31），所以你应该避免转换函数指针类型，除非你处于着背水一战和尖刀架喉的危急时刻。一把锋利的刀。一把非常锋利的刀。
+
+　　如果你使用的编译器缺乏对新的类型转换方式的支持，你可以用传统的类型转换方法代替static_cast, const_cast, and reinterpret_cast。也可以用下面的宏替换来模拟新的类型转换语法：
+
+#define static_cast(TYPE,EXPR) ((TYPE)(EXPR))
+#define const_cast(TYPE,EXPR) ((TYPE)(EXPR))
+#define reinterpret_cast(TYPE,EXPR) ((TYPE)(EXPR)) 
+
+　　你可以象这样使用使用：
+
+double result = static_cast(double, firstNumber)/secondNumber;
+update(const_cast(SpecialWidget*, &sw));
+funcPtrArray[0] = reinterpret_cast(FuncPtr, &doSomething); 
+
+　　这些模拟不会象真实的操作符一样安全，但是当你的编译器可以支持新的的类型转换时它们可以简化你把代码升级的过程。
+
+　　没有一个容易的方法来模拟dynamic_cast的操作，但是很多函数库提供了函数，安全地在派生类与基类之间的进行类型转换。如果你没有这些函数而你有必须进行这样的类型转换，你也可以回到C风格的类型转换方法上，但是这样的话你将不能获知类型转换是否失败。当然，你也可以定义一个宏来模拟dynamic_cast的功能，就象模拟其它的类型转换一样：
+
+#define dynamic_cast(TYPE,EXPR) (TYPE)(EXPR) 
+
+　　请记住，这个模拟并不能完全实现dynamic_cast的功能，它没有办法知道转换是否失败。
+
+　　我知道，是的，我知道，新的类型转换操作符不是很美观而且用键盘键入也很麻烦。如果你发现它们看上去实在令人讨厌，C风格的类型转换还可以继续使用并且合法。然而正是因为新的类型转换符缺乏美感才能使它弥补了在含义精确性和可辨认性上的缺点，并且使用新类型转换符的程序更容易被解析（不论是对人工还是对于工具程序），它们允许编译器检测出原来不能发现的错误。这些都是放弃C风格类型转换方法的强有力的理由，还有第三个理由：也许让类型转换符不美观和键入麻烦是一件好事。
+
