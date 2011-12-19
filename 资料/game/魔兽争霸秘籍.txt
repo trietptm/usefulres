@@ -7,6 +7,8 @@ dota
 -apnengomdu
 -apnengomsh
 -apnengntnbnm
+-nengar
+-nengarro
 
 -pa 选择已方英雄
 -pe 选择敌方英雄
@@ -16,6 +18,9 @@ dota
 中路模式： -om/-onlymid 上下两路既不出兵，塔也无敌状态。等于-ntnb。 
 上路禁兵模式： -nt/-notop 上（左）路既不出兵，塔也无敌状态。 
 中路禁兵模式： -nm/-nomid 中路既不出兵，塔也无敌状态。 
+-ar/-allrandom：全体随机模式,玩家从所有酒馆的范围里自动随机得到一个英雄
+仅近战模式： -meleeonly/-mo 只可选择近战英雄 
+仅远程模式： -rangeonly/-ro
 
 加钱，仅调自己的英雄
 -test
