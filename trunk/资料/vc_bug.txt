@@ -1,3 +1,12 @@
 1. LINK : fatal error LNK1104: cannot open file 'LIBC.lib'
 Project Property -> Configuation Properties -> Linker -> Input -> Ignore Specific Library
 Ignore the LIBC.LIB
+
+2. try-catch 在RELEASE版无法捕捉错误
+
+问题： try-catch 在RELEASE版无法捕捉错误，而DEBUG可以。
+答案：这个跟C++的try-catch异常捕获的两种模式有关。同步模式和异步模式。其中前者不能捕获内存访问错误，后者可以捕获内存访问错误。
+/EHs是启用同步模式。(同 /GX)   
+/EHa是起用异步模式。 
+
+要在Release版本使用异步模式，需要加上/EHa选项，此时可以捕获到楼主的异常。
