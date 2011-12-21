@@ -1,0 +1,41 @@
+Delphi(Pascal) code
+procedure TForm1.FormCreate(Sender: TObject);
+var
+  hDSound: Cardinal;
+  pDirectSoundCreate: Pointer;
+  hWinmm: Cardinal;
+  pmidiStreamOpen: Pointer;
+  pwaveOutWrite: Pointer;
+  lp: Cardinal;
+begin
+  hDSound := LoadLibrary('DSound.dll');
+  if hDSound > 0 then
+    pDirectSoundCreate := GetProcAddress(hDSound, 'DirectSoundCreate');
+  if pDirectSoundCreate <> nil then
+  begin
+    VirtualProtect(pDirectSoundCreate, 3, PAGE_EXECUTE_READWRITE, lp);
+    Move(#$C2#$0C#$00, pDirectSoundCreate^, 3);
+  end;
+
+  hWinmm := LoadLibrary('Winmm.dll');
+  if hWinmm > 0 then
+    pmidiStreamOpen := GetProcAddress(hWinmm, 'midiStreamOpen');
+  if pmidiStreamOpen <> nil then
+  begin
+    VirtualProtect(pmidiStreamOpen, 3, PAGE_EXECUTE_READWRITE, lp);
+    Move(#$C2#$04#$00, pmidiStreamOpen^, 3);
+  end;
+
+  if hWinmm > 0 then
+    pwaveOutWrite := GetProcAddress(hWinmm, 'waveOutWrite');
+  if pwaveOutWrite <> nil then
+  begin
+    VirtualProtect(pwaveOutWrite, 3, PAGE_EXECUTE_READWRITE, lp);
+    Move(#$C2#$0C#$00, pwaveOutWrite^, 3);
+  end;
+end;
+
+
+把原的来函数地址保存下来还可以随时恢愎（恢愎完要刷新网页）。
+Move(#$C2#$0C#$00, pDirectSoundCreate^, 3);//
+这句里的#$C2#$0C#$00参数是机器码，对应汇编语言是retn 0c
