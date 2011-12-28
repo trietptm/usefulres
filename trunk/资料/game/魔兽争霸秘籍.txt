@@ -45,6 +45,13 @@ DOTA打电脑指令：
 
 地图修改人口上限：“高级”=》“游戏平衡系数”，勾选“使用自定义游戏平衡常数”，修改“食物限制”
 
+set udg_nKilled = udg_nKilled+1
+if ( udg_nKilled >= 100 ) then
+    call CustomVictoryBJ( Player(0), true, true )
+else
+    call DoNothing(  )
+endif
+
 ============================
 魔兽争霸秘籍在战役模式下（多人游戏不可），
 按下回车，会出来对话框，然后把下面字符输入即可 
