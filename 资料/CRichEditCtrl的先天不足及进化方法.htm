@@ -1,0 +1,317 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gbk" />
+<title>数CRichEditCtrl的先天不足及进化方法 - 蚂蚁当家的博客 - IXPUB技术博客  - Powered by X-Space</title>
+<meta name="keywords" content="使用,解决,方法,windows,应用,存储,问题 IXPUB,技术博客,视频教程,病毒,木马,下载,服务器,操作系统,数据库,路由器,交换机,防火墙,网络工程,布线,网络编程,游戏,网络基础,硬件,网页制作，网管,网管论坛,网管软件,网管下载,网管技术,网络技术,网管社区,网管博客,企业网管,网吧网管,网吧管理" />
+<meta name="description" content="今天一位同事要离开公司到电脑报去做事，中午大家为他举行了一个欢送会，大家都喝得挺多。送走那位同事之后，我回到了办公室，觉得头有点晕，不想做事，于是就把集聚在心中，这几天对MFC框架中的CRichEditCtrl的不. IXPUB技术博客，原创技术文章，视频教程，网管员的网上家园。" />
+<link rel="alternate" type="application/rss+xml" href="http://blog.ixpub.net/13151495/action-rss-type-blog" title="蚂蚁当家的博客" />
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://blog.ixpub.net/xmlrpc.php?rsd=13151495" />
+<link id="commonstyle" rel="stylesheet" type="text/css" href="http://blog.ixpub.net/css/space.css" />
+<link id="themestyle" rel="stylesheet" type="text/css" href="http://blog.ixpub.net/user/95/css_13151495.cache.css" />
+<script type="text/javascript">
+var siteUrl = "http://blog.ixpub.net";
+</script>
+<script type="text/javascript" language="javascript" src="http://blog.ixpub.net/include/js/ajax.js"></script>
+<script type="text/javascript" language="javascript" src="http://blog.ixpub.net/include/js/common.js"></script>
+</head>
+<body>
+
+<div id="wrap">
+	<div id="header">
+		<div id="spacename">
+			<div id="xspace-spacename">
+				<strong>蚂蚁当家的博客</strong>
+								<p>
+					<a href="javascript:;" class="xspace-copyurl" onclick="javascript:setCopy('http://blog.ixpub.net/13151495');" title="复制地址">copy</a>
+					<a href="http://blog.ixpub.net/13151495" title="加入收藏" class="xspace-add2fav" onclick="javascript:addBookmark('蚂蚁当家的博客','http://blog.ixpub.net/13151495');return false;">Bookmark</a>
+					http://blog.ixpub.net/13151495				</p>
+			</div>
+		</div>
+		<div id="menu">
+			<ul id="xspace-menu">
+				<li class="xspace-active"><a href="http://blog.ixpub.net/13151495/spacelist-blog" class="xspace-blog">博客</a></li>																												<li><a href="http://blog.ixpub.net/13151495/spacelist-friend" class="xspace-friend">好友</a></li>				<li><a href="http://blog.ixpub.net/13151495/spacelist-bbs" class="xspace-mybbs">论坛</a></li>				<li><a href="http://blog.ixpub.net/13151495/action-viewpro" class="xspace-guestbook">留言</a></li>							</ul>
+		</div>
+	</div>
+
+	<div id="content" class="xspace-layout1">
+
+		
+		<div id="mainarea" class="mainarea-side">
+			<div id="xspace-guide">
+				<a href="http://blog.ixpub.net/batch.manage.php?uid=13151495" class="xspace-spacecp" target="_blank">空间管理</a>
+				您的位置:
+				<a href="http://blog.ixpub.net/" target="_blank">IXPUB技术博客</a>
+				&raquo; <a href="http://blog.ixpub.net/13151495/">蚂蚁当家的博客</a>
+				&raquo; <a href="http://blog.ixpub.net/13151495/spacelist-blog">日志</a>			</div>
+
+			
+			
+						<div id="show"><h1 class="xspace-title">数CRichEditCtrl的先天不足及进化方法</h1>
+<p class="xspace-smalltxt">
+<a href="http://blog.ixpub.net/batch.common.php?action=viewspace&amp;op=up&amp;itemid=172348&amp;uid=13151495">上一篇</a> / 
+<a href="http://blog.ixpub.net/batch.common.php?action=viewspace&amp;op=next&amp;itemid=172348&amp;uid=13151495">下一篇</a> &nbsp;2008-03-21 13:18:37
+
+
+
+
+</p>
+
+<div class="xspace-itemdata">
+<a href="#xspace-tracks">查看( 1222 )</a> / 
+<a href="#xspace-itemreply">评论( 0 )</a> / 
+<a href="#xspace-itemform">评分( <span class="xspace-rategood" title="好评">0</span> / <span class="xspace-ratebad" title="差评">0</span> )</a>
+</div>
+<div id="xspace-showmessage" class="xspace-itemmessage">
+<P>今天一位同事要离开公司到电脑报去做事，中午大家为他举行了一个欢送会，大家都喝得挺多。<BR>送走那位同事之后，我回到了办公室，觉得头有点晕，不想做事，于是就把集聚在心中，这几天对MFC框架中的CRichEditCtrl的不满，发泄在这篇blog上，希望前辈们能够多指教，也希望能够为后来者扫除一些MFC开发历程中的障碍。</P><OL><LI>不能够自动初始化<LI>不能够接受TAB键<LI>不能够通过属性设置自动换行<LI>不能显示图片等其他OLE对象<LI>不能够使用Ctrl+C来实现拷贝</LI></OL><P><STRONG>不能够自动初始化</STRONG></P><P>当我第一次将Rich Edit控件放在资源窗体上的时候，发现程序根本就不能运行。后来才找到原因，原来Rich Edit 控件是Ole类型的控件。在加载Rich Edit 控件的时候，必须进行初始化。代码如下：<BR>BOOLCTestApp::InitInstance(){</P><P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .....<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AfxInitRichEdit();</P><P>}</P><P><STRONG>&nbsp;不能够接受TAB键</STRONG></P><P>将 RichEdit控件放到资源窗体上的时候，发现它的属性页中并没有设置接受TAB键的设置，导致当把焦点放到Rich Edit 控件上的时候，一按tab键，焦点就移动到下一个控件上面去了。<BR>具体<a href="javascript:;" onClick="javascript:tagshow(event, '%BD%E2%BE%F6');" target="_self"><u><strong>解决</strong></u></a><a href="javascript:;" onClick="javascript:tagshow(event, '%B7%BD%B7%A8');" target="_self"><u><strong>方法</strong></u></a>就是重载Rich Edit控件的OnGetDlgCode：<BR>例子代码：<BR>.h文件：<BR>class CMyRichEdit : public CRichEditCtrl{<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ........<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; afx_msg UINT OnGetDlgCode( );<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ........<BR><BR>}<BR>.cpp文件：<BR>BEGIN_MESSAGE_MAP(CMyRichEdit, CRichEditCtrl)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ON_WM_GETDLGCODE( )<BR>END_MESSAGE_MAP()<BR><BR><BR>UINT COleRichEditCtrl::OnGetDlgCode( ){</P><P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return DLGC_WANTTAB;</P><P><BR>}<BR><BR></P><P><STRONG>&nbsp;不能够通过属性设置自动换行</STRONG></P><P>当把Rich Edit控件放到资源窗体上的时候，发现在它的属性窗体中并没有设置Rich Edit控件自动换行的属性设置。要达到这一目的，例子代码如下：<BR>BOOL CTestDlg::InitDialog(){</P><P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .............<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //m_RichEdit为窗体类的成员变量<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this-&gt;m_RichEdit.SetTargetDevice(NULL,0);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ............</P><P>}<BR></P><P><STRONG>不能显示图片等其他OLE对象</STRONG></P><P>MFC提供的CRichEditCtrl没有提供直接显示图片等OLE对象的属性或方法设置，但是提供了一个接口<STRONG>SetOLECallback( IRichEditOleCallback*</STRONG>pCallback<STRONG>);<BR></STRONG>要让CRichEditCtrl显示图片，就得在IRichEditOleCallback上下功夫。<BR>IRichEditOleCallback是<a href="javascript:;" onClick="javascript:tagshow(event, 'windows');" target="_self"><u><strong>windows</strong></u></a>中的接口，它的定义如下：<BR><FONT color=#0000ff>ContextSensitiveHelp:<BR>&nbsp;&nbsp;&nbsp;<FONT color=#000000>通过该方</FONT><FONT color=#000000>法通知<a href="javascript:;" onClick="javascript:tagshow(event, '%D3%A6%D3%C3');" target="_self"><u><strong>应用</strong></u></a>程序它将以上下文关联方式调度帮助。</FONT><BR>DeleteObject:<BR>&nbsp;&nbsp;&nbsp;<FONT color=#000000>通过该方</FONT><FONT color=#000000>法发出通知：一个对象即将从RichEdit控件中删除<BR></FONT>GetClipboardData:<BR>&nbsp;&nbsp;&nbsp;<FONT color=#000000>通过该方法</FONT><FONT color=#000000>允许RichEdit的客户端（调用程序）提供自己的粘贴对象<BR></FONT>GetContextMenu:<BR>&nbsp;&nbsp;&nbsp;<FONT color=#000000>通过该方法向</FONT><FONT color=#000000>应用程序提出通过鼠标右键事件来获取上下文菜单的请求<BR></FONT>GetDragDropEffect:<BR>&nbsp;&nbsp;&nbsp;<FONT color=#000000>通过该方法允许RichEdit的客户端（调用程序）设置拖动操作的效果<BR></FONT>GetInPlaceContext:<BR>&nbsp;&nbsp;<FONT color=#000000>&nbsp; 通过该方法提供了应用程序级和文档级接口，以及必要的支持In-place激活的信息<BR></FONT>GetNewStrorage:<BR>&nbsp;&nbsp;&nbsp;<FONT color=#000000>通过该方</FONT><FONT color=#000000>法<a href="javascript:;" onClick="javascript:tagshow(event, '%B4%E6%B4%A2');" target="_self"><u><strong>存储</strong></u></a>从粘贴板或超文本流(RTF)中读取的新对象<BR></FONT>QueryAcceptData:<BR>&nbsp;&nbsp;&nbsp;<FONT color=#000000>通过该方法决定在粘贴操作或拖放操作中引入的数据是否可以被接受。<BR></FONT>QueryInsertObject:<BR>&nbsp;&nbsp;&nbsp;<FONT color=#000000>通过该方法向应用程序询问某个对象是否可以被插入<BR></FONT>ShowContainerUI:<BR>&nbsp;&nbsp;&nbsp;</FONT><FONT color=#000000>通过该方法告知应用程序是否显示自己的操作界面<BR></FONT><BR>大致了解了IRichEditOleCallback接口后，就应该清楚，要显示图片等ole对象，至少应该实现GetNewStorage方法，因为该方法是存储ole对象的接口方法。<BR><BR>以下是接口声明的代码：<BR>interface IExRichEditOleCallback : IRichEditOleCallback<BR>{</P><P>public:<BR>&nbsp;&nbsp;IExRichEditOleCallback();<BR>&nbsp;&nbsp;virtual ~IExRichEditOleCallback();<BR>&nbsp;&nbsp;int m_iNumStorages;<BR>&nbsp;&nbsp;IStorage* pStorage;<BR>&nbsp;&nbsp;DWORD m_dwRef;</P><P><FONT color=#0000ff>&nbsp;&nbsp;virtual</FONT>HRESULT STDMETHODCALLTYPE GetNewStorage(LPSTORAGE* lplpstg);<BR><FONT color=#0000ff>&nbsp;&nbsp;virtual</FONT>HRESULT STDMETHODCALLTYPE QueryInterface(REFIID iid, void ** ppvObject);<BR><FONT color=#0000ff>&nbsp;&nbsp;virtual</FONT>ULONG STDMETHODCALLTYPE AddRef();<BR><FONT color=#0000ff>&nbsp;&nbsp;virtual</FONT>ULONG STDMETHODCALLTYPE Release();<BR><FONT color=#0000ff>&nbsp;&nbsp;virtual</FONT>HRESULT STDMETHODCALLTYPE GetInPlaceContext(LPOLEINPLACEFRAME. FAR *lplpFrame,<BR>&nbsp;&nbsp;&nbsp;LPOLEINPLACEUIWINDOW FAR *lplpDoc, LPOLEINPLACEFRAMEINFO lpFrameInfo);<BR><FONT color=#0000ff>&nbsp;&nbsp;virtual</FONT>HRESULT STDMETHODCALLTYPE ShowContainerUI(BOOL fShow);<BR><FONT color=#0000ff>&nbsp;&nbsp;virtual</FONT>HRESULT STDMETHODCALLTYPE QueryInsertObject(LPCLSID lpclsid, LPSTORAGE lpstg, LONG cp);<BR><FONT color=#0000ff>&nbsp;&nbsp;virtual</FONT>HRESULT STDMETHODCALLTYPE DeleteObject(LPOLEOBJECT lpoleobj);<BR><FONT color=#0000ff>&nbsp;&nbsp;virtual</FONT>HRESULT STDMETHODCALLTYPE QueryAcceptData(LPDATAOBJECT lpdataobj, CLIPFORMAT FAR *lpcfFormat,&nbsp;&nbsp;&nbsp;DWORD reco, BOOL fReally, HGLOBAL hMetaPict);<BR><FONT color=#0000ff>&nbsp;&nbsp;virtual</FONT>HRESULT STDMETHODCALLTYPE ContextSensitiveHelp(BOOL fEnterMode);<BR><FONT color=#0000ff>&nbsp;&nbsp;virtual</FONT>HRESULT STDMETHODCALLTYPE GetClipboardData(CHARRANGE FAR *lpchrg, DWORD reco, LPDATAOBJECT FAR *lplpdataobj);<BR>&nbsp;<FONT color=#0000ff>&nbsp;&nbsp;virtual</FONT>HRESULT STDMETHODCALLTYPE GetDragDropEffect(BOOL fDrag, DWORD grfKeyState, LPDWORD pdwEffect);<BR><FONT color=#0000ff>&nbsp;&nbsp;virtual</FONT>HRESULT STDMETHODCALLTYPE GetContextMenu(WORD seltyp, LPOLEOBJECT lpoleobj, CHARRANGE FAR *lpchrg,&nbsp;&nbsp;&nbsp;HMENU FAR *lphmenu);</P><P>}<BR>关于接口的实现，将被附在最后的附录中。</P><P><BR><STRONG>不能够使用Ctrl+C来实现拷贝</STRONG></P><P>实际上，CRichEditCtrl本身是支持Ctrl+C实现拷贝功能的，但是当我在CRichiEditCtrl的继承类中<a href="javascript:;" onClick="javascript:tagshow(event, '%CA%B9%D3%C3');" target="_self"><u><strong>使用</strong></u></a>了IRichiEditCallback接口后，它就不在支持Ctrl+C实现拷贝功能了。我想<a href="javascript:;" onClick="javascript:tagshow(event, '%CE%CA%CC%E2');" target="_self"><u><strong>问题</strong></u></a>就出在IRichEditCallback接口上。<BR>仔细看了一遍它的帮助文档，我发现问题就出在GetClipboardData上，我没有在它的实现方法中写代码，只是返回了S_OK，如果要处理Ctrl+C，就必须返回E_NOTIMPL。<BR><BR>以上是我近几天的开发经历，与大家分享，还希望路过的高手多多指教。<BR>在以下关于RichEdit的代码例子中，我参考了<A href="http://www.codeproject.com/script/profile/whos_who.asp?vt=arts&amp;id=208786"><FONT color=#990000>Mike O"Neill</FONT></A>的代码，再次谢谢他的贡献。<BR></P><P><STRONG>附录</STRONG><BR>.h文件</P><P>#if !defined(AFX_OLERICHEDITCTRL_H__3DFF15EE_7336_4297_9620_7F00B611DAA1__INCLUDED_)<BR>#define AFX_OLERICHEDITCTRL_H__3DFF15EE_7336_4297_9620_7F00B611DAA1__INCLUDED_</P><P>#if _MSC_VER &gt; 1000<BR>#pragma once<BR>#endif // _MSC_VER &gt; 1000<BR>// OleRichEditCtrl.h : header file<BR>//</P><P><BR>#include &lt;richole.h&gt;</P><P><BR>/////////////////////////////////////////////////////////////////////////////<BR>// COleRichEditCtrl window</P><P>class COleRichEditCtrl : public CRichEditCtrl<BR>{<BR>// Construction<BR>public:<BR>&nbsp;COleRichEditCtrl();<BR>&nbsp;virtual ~COleRichEditCtrl();</P><P>&nbsp;long StreamInFromResource(int iRes, LPCTSTR sType);</P><P>&nbsp;</P><P>protected:<BR>&nbsp;<BR>&nbsp;static DWORD CALLBACK readFunction(DWORD dwCookie,<BR>&nbsp;&nbsp; LPBYTE lpBuf,&nbsp;&nbsp;&nbsp;// the buffer to fill<BR>&nbsp;&nbsp; LONG nCount,&nbsp;&nbsp;&nbsp;// number of bytes to read<BR>&nbsp;&nbsp; LONG* nRead);&nbsp;&nbsp;&nbsp;// number of bytes actually read</P><P>&nbsp;interface IExRichEditOleCallback;&nbsp;// forward declaration (see below in this header file)</P><P>&nbsp;IExRichEditOleCallback* m_pIRichEditOleCallback;<BR>&nbsp;BOOL m_bCallbackSet;<BR>&nbsp;<BR>&nbsp;<BR>&nbsp;interface IExRichEditOleCallback : public IRichEditOleCallback<BR>&nbsp;{<BR>&nbsp;public:<BR>&nbsp;&nbsp;IExRichEditOleCallback();<BR>&nbsp;&nbsp;virtual ~IExRichEditOleCallback();<BR>&nbsp;&nbsp;int m_iNumStorages;<BR>&nbsp;&nbsp;IStorage* pStorage;<BR>&nbsp;&nbsp;DWORD m_dwRef;</P><P>&nbsp;&nbsp;virtual HRESULT STDMETHODCALLTYPE GetNewStorage(LPSTORAGE* lplpstg);<BR>&nbsp;&nbsp;virtual HRESULT STDMETHODCALLTYPE QueryInterface(REFIID iid, void ** ppvObject);<BR>&nbsp;&nbsp;virtual ULONG STDMETHODCALLTYPE AddRef();<BR>&nbsp;&nbsp;virtual ULONG STDMETHODCALLTYPE Release();<BR>&nbsp;&nbsp;virtual HRESULT STDMETHODCALLTYPE GetInPlaceContext(LPOLEINPLACEFRAME. FAR *lplpFrame,<BR>&nbsp;&nbsp;&nbsp;LPOLEINPLACEUIWINDOW FAR *lplpDoc, LPOLEINPLACEFRAMEINFO lpFrameInfo);<BR>&nbsp;&nbsp;&nbsp;virtual HRESULT STDMETHODCALLTYPE ShowContainerUI(BOOL fShow);<BR>&nbsp;&nbsp;&nbsp;virtual HRESULT STDMETHODCALLTYPE QueryInsertObject(LPCLSID lpclsid, LPSTORAGE lpstg, LONG cp);<BR>&nbsp;&nbsp;&nbsp;virtual HRESULT STDMETHODCALLTYPE DeleteObject(LPOLEOBJECT lpoleobj);<BR>&nbsp;&nbsp;&nbsp;virtual HRESULT STDMETHODCALLTYPE QueryAcceptData(LPDATAOBJECT lpdataobj, CLIPFORMAT FAR *lpcfFormat,<BR>&nbsp;&nbsp;&nbsp;DWORD reco, BOOL fReally, HGLOBAL hMetaPict);<BR>&nbsp;&nbsp;&nbsp;virtual HRESULT STDMETHODCALLTYPE ContextSensitiveHelp(BOOL fEnterMode);<BR>&nbsp;&nbsp;&nbsp;virtual HRESULT STDMETHODCALLTYPE GetClipboardData(CHARRANGE FAR *lpchrg, DWORD reco, LPDATAOBJECT FAR *lplpdataobj);<BR>&nbsp;&nbsp;&nbsp;virtual HRESULT STDMETHODCALLTYPE GetDragDropEffect(BOOL fDrag, DWORD grfKeyState, LPDWORD pdwEffect);<BR>&nbsp;&nbsp;&nbsp;virtual HRESULT STDMETHODCALLTYPE GetContextMenu(WORD seltyp, LPOLEOBJECT lpoleobj, CHARRANGE FAR *lpchrg,<BR>&nbsp;&nbsp;&nbsp;HMENU FAR *lphmenu);<BR>&nbsp;};<BR>&nbsp;</P><P>public:</P><P>// Overrides<BR>&nbsp;// ClassWizard generated virtual function overrides<BR>&nbsp;//{{AFX_VIRTUAL(COleRichEditCtrl)<BR>&nbsp;protected:<BR>&nbsp;virtual void PreSubclassWindow();<BR>&nbsp;//}}AFX_VIRTUAL</P><P>// Implementation<BR>public:</P><P><BR>&nbsp;// Generated message map functions<BR>protected:<BR>&nbsp;//{{AFX_MSG(COleRichEditCtrl)<BR>&nbsp;afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);<BR>&nbsp;<BR>&nbsp;//}}AFX_MSG<BR>&nbsp;afx_msg UINT OnGetDlgCode( );<BR>&nbsp;DECLARE_MESSAGE_MAP()<BR>};</P><P>/////////////////////////////////////////////////////////////////////////////</P><P>//}<BR>// Microsoft Visual C++ will insert additional declarations immediately before the previous line.</P><P>#endif // !defined(AFX_OLERICHEDITCTRL_H__3DFF15EE_7336_4297_9620_7F00B611DAA1__INCLUDED_)<BR></P><P>&nbsp;</P><P>.cpp文件</P><P>// OleRichEditCtrl.cpp : implementation file<BR>//</P><P>#include "stdafx.h"<BR>#include "OleRichEditCtrl.h"</P><P>#ifdef _DEBUG<BR>#define new DEBUG_NEW<BR>#undef THIS_FILE<BR>static char THIS_FILE[] = __FILE__;<BR>#endif</P><P>/////////////////////////////////////////////////////////////////////////////<BR>// COleRichEditCtrl</P><P>COleRichEditCtrl::COleRichEditCtrl()<BR>{<BR>&nbsp;m_bCallbackSet = FALSE;<BR>}</P><P>COleRichEditCtrl::~COleRichEditCtrl()<BR>{<BR>&nbsp;// IExRichEditOleCallback class is a reference-counted class&nbsp;<BR>&nbsp;// which deletes itself and for which delete should not be called</P><P>&nbsp;// delete m_pIRichEditOleCallback;<BR>}</P><P><BR>BEGIN_MESSAGE_MAP(COleRichEditCtrl, CRichEditCtrl)<BR>&nbsp;//}AFX_MSG_MAP<BR>&nbsp;ON_WM_GETDLGCODE( )<BR>END_MESSAGE_MAP()<BR>//</P><P><BR>int COleRichEditCtrl::OnCreate(LPCREATESTRUCT lpCreateStruct)<BR>{<BR>&nbsp;&nbsp;if (CRichEditCtrl::OnCreate(lpCreateStruct) == -1)<BR>&nbsp;&nbsp;&nbsp;return -1;<BR>&nbsp;&nbsp;<BR>&nbsp;// m_pIRichEditOleCallback should have been created in PreSubclassWindow</P><P>&nbsp;&nbsp;ASSERT( m_pIRichEditOleCallback != NULL );&nbsp;</P><P>&nbsp;// set the IExRichEditOleCallback pointer if it wasn"t set<BR>&nbsp;// successfully in PreSubclassWindow</P><P>&nbsp;if ( !m_bCallbackSet )<BR>&nbsp;{<BR>&nbsp;&nbsp;SetOLECallback( m_pIRichEditOleCallback );<BR>&nbsp;}<BR>&nbsp;&nbsp;<BR>&nbsp;&nbsp;return 0;<BR>}</P><P>void COleRichEditCtrl::PreSubclassWindow()<BR>{<BR>&nbsp;// base class first<BR>&nbsp;CRichEditCtrl::PreSubclassWindow();&nbsp;</P><P>&nbsp;m_pIRichEditOleCallback = NULL;<BR>&nbsp;m_pIRichEditOleCallback = new IExRichEditOleCallback;<BR>&nbsp;ASSERT( m_pIRichEditOleCallback != NULL );</P><P>&nbsp;m_bCallbackSet = SetOLECallback( m_pIRichEditOleCallback );<BR>}</P><P><BR>long COleRichEditCtrl::StreamInFromResource(int iRes, LPCTSTR sType)<BR>{<BR>&nbsp;HINSTANCE hInst = AfxGetInstanceHandle();<BR>&nbsp;HRSRC hRsrc = ::FindResource(hInst,<BR>&nbsp;&nbsp;MAKEINTRESOURCE(iRes), sType);<BR>&nbsp;<BR>&nbsp;DWORD len = SizeofResource(hInst, hRsrc);<BR>&nbsp;BYTE* lpRsrc = (BYTE*)LoadResource(hInst, hRsrc);<BR>&nbsp;ASSERT(lpRsrc);<BR>&nbsp;<BR>&nbsp;CMemFile mfile;<BR>&nbsp;mfile.Attach(lpRsrc, len);</P><P>&nbsp;EDITSTREAM es;<BR>&nbsp;es.pfnCallback = readFunction;<BR>&nbsp;es.dwError = 0;<BR>&nbsp;es.dwCookie = (DWORD) &amp;mfile;</P><P>&nbsp;return StreamIn( SF_RTF, es );<BR>}</P><P><BR>/* static */<BR>DWORD CALLBACK COleRichEditCtrl::readFunction(DWORD dwCookie,<BR>&nbsp;&nbsp; LPBYTE lpBuf,&nbsp;&nbsp;&nbsp;// the buffer to fill<BR>&nbsp;&nbsp; LONG nCount,&nbsp;&nbsp;&nbsp;// number of bytes to read<BR>&nbsp;&nbsp; LONG* nRead)&nbsp;&nbsp;&nbsp;// number of bytes actually read<BR>{<BR>&nbsp;CFile* fp = (CFile *)dwCookie;<BR>&nbsp;*nRead = fp-&gt;Read(lpBuf,nCount);<BR>&nbsp;return 0;<BR>}</P><P>/////////////////////////////////////////////////////////////////////////////</P><P>COleRichEditCtrl::IExRichEditOleCallback::IExRichEditOleCallback()<BR>{<BR>&nbsp;pStorage = NULL;<BR>&nbsp;m_iNumStorages = 0;<BR>&nbsp;m_dwRef = 0;</P><P>&nbsp;// set up OLE storage</P><P>&nbsp;HRESULT hResult = ::StgCreateDocfile(NULL,<BR>&nbsp;&nbsp;STGM_TRANSACTED | STGM_READWRITE | STGM_SHARE_EXCLUSIVE /*| STGM_DELETEONRELEASE */|STGM_CREATE ,<BR>&nbsp;&nbsp;0, &amp;pStorage );</P><P>&nbsp;if ( pStorage == NULL ||<BR>&nbsp;&nbsp;hResult != S_OK )<BR>&nbsp;{<BR>&nbsp;&nbsp;AfxThrowOleException( hResult );<BR>&nbsp;}<BR>}</P><P>COleRichEditCtrl::IExRichEditOleCallback::~IExRichEditOleCallback()<BR></P><P>HRESULT STDMETHODCALLTYPE<BR>COleRichEditCtrl::IExRichEditOleCallback::GetNewStorage(LPSTORAGE* lplpstg)<BR>{<BR>&nbsp;m_iNumStorages++;<BR>&nbsp;WCHAR tName[50];<BR>&nbsp;swprintf(tName, L"REOLEStorage%d", m_iNumStorages);</P><P>&nbsp;HRESULT hResult = pStorage-&gt;CreateStorage(tName,<BR>&nbsp;&nbsp;STGM_TRANSACTED | STGM_READWRITE | STGM_SHARE_EXCLUSIVE | STGM_CREATE ,<BR>&nbsp;&nbsp;0, 0, lplpstg );</P><P>&nbsp;if (hResult != S_OK )<BR>&nbsp;{<BR>&nbsp;&nbsp;::AfxThrowOleException( hResult );<BR>&nbsp;}</P><P>&nbsp;return hResult;<BR>}</P><P>HRESULT STDMETHODCALLTYPE<BR>COleRichEditCtrl::IExRichEditOleCallback::QueryInterface(REFIID iid, void ** ppvObject)<BR>{</P><P>&nbsp;HRESULT hr = S_OK;<BR>&nbsp;*ppvObject = NULL;<BR>&nbsp;<BR>&nbsp;if ( iid == IID_IUnknown ||<BR>&nbsp;&nbsp;iid == IID_IRichEditOleCallback )<BR>&nbsp;{<BR>&nbsp;&nbsp;*ppvObject = this;<BR>&nbsp;&nbsp;AddRef();<BR>&nbsp;&nbsp;hr = NOERROR;<BR>&nbsp;}<BR>&nbsp;else<BR>&nbsp;{<BR>&nbsp;&nbsp;hr = E_NOINTERFACE;<BR>&nbsp;}</P><P>&nbsp;return hr;<BR>}</P><P>&nbsp;</P><P>ULONG STDMETHODCALLTYPE<BR>COleRichEditCtrl::IExRichEditOleCallback::AddRef()<BR>{<BR>&nbsp;return ++m_dwRef;<BR>}</P><P>&nbsp;</P><P>ULONG STDMETHODCALLTYPE<BR>COleRichEditCtrl::IExRichEditOleCallback::Release()<BR>{<BR>&nbsp;if ( --m_dwRef == 0 )<BR>&nbsp;{<BR>&nbsp;&nbsp;delete this;<BR>&nbsp;&nbsp;return 0;<BR>&nbsp;}</P><P>&nbsp;return m_dwRef;<BR>}</P><P><BR>HRESULT STDMETHODCALLTYPE<BR>COleRichEditCtrl::IExRichEditOleCallback::GetInPlaceContext(LPOLEINPLACEFRAME. FAR *lplpFrame,<BR>&nbsp;LPOLEINPLACEUIWINDOW FAR *lplpDoc, LPOLEINPLACEFRAMEINFO lpFrameInfo)<BR>{<BR>&nbsp;return S_OK;<BR>}</P><P><BR>HRESULT STDMETHODCALLTYPE<BR>COleRichEditCtrl::IExRichEditOleCallback::ShowContainerUI(BOOL fShow)<BR>{<BR>&nbsp;return S_OK;<BR>}</P><P>&nbsp;</P><P>HRESULT STDMETHODCALLTYPE<BR>COleRichEditCtrl::IExRichEditOleCallback::QueryInsertObject(LPCLSID lpclsid, LPSTORAGE lpstg, LONG cp)<BR>{<BR>&nbsp;return S_OK;<BR>}</P><P><BR>HRESULT STDMETHODCALLTYPE<BR>COleRichEditCtrl::IExRichEditOleCallback::DeleteObject(LPOLEOBJECT lpoleobj)<BR>{<BR>&nbsp;return S_OK;<BR>}</P><P>&nbsp;</P><P>HRESULT STDMETHODCALLTYPE<BR>COleRichEditCtrl::IExRichEditOleCallback::QueryAcceptData(LPDATAOBJECT lpdataobj, CLIPFORMAT FAR *lpcfFormat,<BR>&nbsp;DWORD reco, BOOL fReally, HGLOBAL hMetaPict)<BR>{<BR>&nbsp;return S_OK;<BR>}</P><P><BR>HRESULT STDMETHODCALLTYPE<BR>COleRichEditCtrl::IExRichEditOleCallback::ContextSensitiveHelp(BOOL fEnterMode)<BR>{<BR>&nbsp;return S_OK;<BR>}</P><P>&nbsp;</P><P>HRESULT STDMETHODCALLTYPE<BR>COleRichEditCtrl::IExRichEditOleCallback::GetClipboardData(CHARRANGE FAR *lpchrg, DWORD reco, LPDATAOBJECT FAR *lplpdataobj)<BR>{<BR>&nbsp;return E_NOTIMPL;<BR>}</P><P><BR>HRESULT STDMETHODCALLTYPE<BR>COleRichEditCtrl::IExRichEditOleCallback::GetDragDropEffect(BOOL fDrag, DWORD grfKeyState, LPDWORD pdwEffect)<BR>{<BR>&nbsp;return S_OK;<BR>}</P><P>HRESULT STDMETHODCALLTYPE<BR>COleRichEditCtrl::IExRichEditOleCallback::GetContextMenu(WORD seltyp, LPOLEOBJECT lpoleobj, CHARRANGE FAR *lpchrg,<BR>&nbsp;HMENU FAR *lphmenu)<BR>{<BR>&nbsp;return S_OK;<BR>}</P><P>// TabRichEditCtrl 消息处理程序<BR>UINT COleRichEditCtrl::OnGetDlgCode( ){</P><P>&nbsp;return DLGC_WANTTAB;<BR>}</P><P>&nbsp;</P><br />
+<div class="xspace-imginlog">
+</div>
+</div>
+<div id="xspace-relatives" class="xspace-msgmodule">
+<h5>相关阅读:</h5>
+<ul class="xspace-list">
+<li><a href="http://blog.ixpub.net/html/95/13151495-172338.html" target="_blank">作业调度问题深度搜索定界算法</a> <span class="xspace-smalltxt">(<a href="http://blog.ixpub.net/13151495/" target="_blank">蚂蚁当家</a>, 2008-3-21)</span></li>
+<li><a href="http://blog.ixpub.net/html/95/13151495-172339.html" target="_blank">锁定模式下的非锁定实现</a> <span class="xspace-smalltxt">(<a href="http://blog.ixpub.net/13151495/" target="_blank">蚂蚁当家</a>, 2008-3-21)</span></li>
+<li><a href="http://blog.ixpub.net/html/39/13396739-172340.html" target="_blank">网络安全讲座之IDS系统7-安全在线</a> <span class="xspace-smalltxt">(<a href="http://blog.ixpub.net/13396739/" target="_blank">龟兔赛跑</a>, 2008-3-21)</span></li>
+<li><a href="http://blog.ixpub.net/html/95/13151495-172341.html" target="_blank">对张孝祥C语言试题其中一题的探讨</a> <span class="xspace-smalltxt">(<a href="http://blog.ixpub.net/13151495/" target="_blank">蚂蚁当家</a>, 2008-3-21)</span></li>
+<li><a href="http://blog.ixpub.net/html/95/13151495-172342.html" target="_blank">面试系列5--以单词为最小单位翻转字符串(改进版)</a> <span class="xspace-smalltxt">(<a href="http://blog.ixpub.net/13151495/" target="_blank">蚂蚁当家</a>, 2008-3-21)</span></li>
+<li><a href="http://blog.ixpub.net/html/39/13396739-172343.html" target="_blank">网络安全讲座之IDS系统5-安全在线</a> <span class="xspace-smalltxt">(<a href="http://blog.ixpub.net/13396739/" target="_blank">龟兔赛跑</a>, 2008-3-21)</span></li>
+<li><a href="http://blog.ixpub.net/html/95/13151495-172344.html" target="_blank">面试系列1--返回整数中为1的位数</a> <span class="xspace-smalltxt">(<a href="http://blog.ixpub.net/13151495/" target="_blank">蚂蚁当家</a>, 2008-3-21)</span></li>
+<li><a href="http://blog.ixpub.net/html/95/13151495-172345.html" target="_blank">面试系列2--约瑟夫环问题(Josephus)</a> <span class="xspace-smalltxt">(<a href="http://blog.ixpub.net/13151495/" target="_blank">蚂蚁当家</a>, 2008-3-21)</span></li>
+<li><a href="http://blog.ixpub.net/html/95/13151495-172346.html" target="_blank">面试系列3--冒泡算法（优化）</a> <span class="xspace-smalltxt">(<a href="http://blog.ixpub.net/13151495/" target="_blank">蚂蚁当家</a>, 2008-3-21)</span></li>
+<li><a href="http://blog.ixpub.net/html/39/13396739-172347.html" target="_blank">网络安全讲座之IDS系统3-安全在线</a> <span class="xspace-smalltxt">(<a href="http://blog.ixpub.net/13396739/" target="_blank">龟兔赛跑</a>, 2008-3-21)</span></li>
+</ul>
+</div>
+<p class="xspace-itemlinks">
+<a href="javascript:;" onclick="showajaxdiv('http://blog.ixpub.net/blogpost.php?action=import&amp;itemid=172348',400);">导入论坛</a>
+
+<a href="javascript:;" onclick="showajaxdiv('http://blog.ixpub.net/batch.common.php?action=trackback&amp;itemid=172348', 300);">引用链接</a>
+<a href="javascript:;" onclick="joinfavorite(172348);">收藏</a>
+<a href="javascript:;" onclick="showajaxdiv('http://blog.ixpub.net/batch.common.php?action=emailfriend&amp;itemid=172348', 400);">分享给好友</a>
+<a href="http://blog.ixpub.net/batch.manage.php?itemid=172348" target="_blank">管理</a>
+<a href="javascript:;" onclick="report(172348);">举报</a>
+</p>
+
+<p class="xspace-itemtag">TAG:
+<a href="http://blog.ixpub.net/action-tag-tagname-%B0%B2%C8%AB" target="_blank">安全</a>
+</p>
+
+<div id="xspace-itemreply">
+<div id="xspace-multipage-div" class="xspace-multipage"><a href="javascript:;" onclick="javascript:showcomment(1);">查看全部评论</a></div>
+</div>
+
+<div id="xspace-itemform">
+<form id="xspace-commentform" action="http://blog.ixpub.net/batch.comment.php" method="post" target="xspace-phpframe">
+<fieldset id="xspace-rates">
+<div id="xspace-rates-bg">
+<div id="xspace-rates-star" class="xspace-rates0">&nbsp;</div>
+<div id="xspace-rates-a">
+<a href="javascript:;" onmouseover="rateHover(-5);" onmouseout="rateOut();" onclick="setRate('-5', '172348');">-5</a>
+<a href="javascript:;" onmouseover="rateHover(-3);" onmouseout="rateOut();" onclick="setRate('-3', '172348');">-3</a>
+<a href="javascript:;" onmouseover="rateHover(-1);" onmouseout="rateOut();" onclick="setRate('-1', '172348');">-1</a>
+<a href="javascript:;" onmouseover="rateHover(0);" onmouseout="rateOut();" onclick="setRate('0', '172348');">-</a>
+<a href="javascript:;" onmouseover="rateHover(1);" onmouseout="rateOut();" onclick="setRate('1', '172348');">+1</a>
+<a href="javascript:;" onmouseover="rateHover(3);" onmouseout="rateOut();" onclick="setRate('3', '172348');">+3</a>
+<a href="javascript:;" onmouseover="rateHover(5);" onmouseout="rateOut();" onclick="setRate('5', '172348');">+5</a>
+</div>
+<input type="hidden" id="xspace-rates-value" name="rates" value="0" />
+</div>
+<p>评分：<span id="xspace-rates-tip">0</span></p>
+</fieldset>
+<fieldset>
+<legend>我来说两句</legend>
+<p>
+<span onclick="moresmilies();" class="xspace-moresmilies">显示全部</span>
+<div id="xspace-smilies">
+<img src="http://blog.ixpub.net/images/smilies/loveliness.gif" border="0" alt=":loveliness:" id="smilie_0" onClick="insertSmilies(0)" />
+<img src="http://blog.ixpub.net/images/smilies/handshake.gif" border="0" alt=":handshake" id="smilie_1" onClick="insertSmilies(1)" />
+<img src="http://blog.ixpub.net/images/smilies/victory.gif" border="0" alt=":victory:" id="smilie_2" onClick="insertSmilies(2)" />
+<img src="http://blog.ixpub.net/images/smilies/funk.gif" border="0" alt=":funk:" id="smilie_3" onClick="insertSmilies(3)" />
+<img src="http://blog.ixpub.net/images/smilies/time.gif" border="0" alt=":time:" id="smilie_4" onClick="insertSmilies(4)" />
+<img src="http://blog.ixpub.net/images/smilies/kiss.gif" border="0" alt=":kiss:" id="smilie_5" onClick="insertSmilies(5)" />
+<img src="http://blog.ixpub.net/images/smilies/call.gif" border="0" alt=":call:" id="smilie_6" onClick="insertSmilies(6)" />
+<img src="http://blog.ixpub.net/images/smilies/hug.gif" border="0" alt=":hug:" id="smilie_7" onClick="insertSmilies(7)" />
+<img src="http://blog.ixpub.net/images/smilies/lol.gif" border="0" alt=":lol" id="smilie_8" onClick="insertSmilies(8)" />
+<img src="http://blog.ixpub.net/images/smilies/cry.gif" border="0" alt=":'(" id="smilie_9" onClick="insertSmilies(9)" />
+<img src="http://blog.ixpub.net/images/smilies/mad.gif" border="0" alt=":Q" id="smilie_10" onClick="insertSmilies(10)" />
+<img src="http://blog.ixpub.net/images/smilies/sweat.gif" border="0" alt=":L" id="smilie_11" onClick="insertSmilies(11)" />
+<img src="http://blog.ixpub.net/images/smilies/titter.gif" border="0" alt=";P" id="smilie_12" onClick="insertSmilies(12)" />
+<img src="http://blog.ixpub.net/images/smilies/shy.gif" border="0" alt=":$" id="smilie_13" onClick="insertSmilies(13)" />
+<img src="http://blog.ixpub.net/images/smilies/tongue.gif" border="0" alt=":P" id="smilie_14" onClick="insertSmilies(14)" />
+<img src="http://blog.ixpub.net/images/smilies/shocked.gif" border="0" alt=":o" id="smilie_15" onClick="insertSmilies(15)" />
+<img src="http://blog.ixpub.net/images/smilies/huffy.gif" border="0" alt=":@" id="smilie_16" onClick="insertSmilies(16)" />
+<img src="http://blog.ixpub.net/images/smilies/biggrin.gif" border="0" alt=":D" id="smilie_17" onClick="insertSmilies(17)" />
+<img src="http://blog.ixpub.net/images/smilies/sad.gif" border="0" alt=":(" id="smilie_18" onClick="insertSmilies(18)" />
+<img src="http://blog.ixpub.net/images/smilies/smile.gif" border="0" alt=":)" id="smilie_19" onClick="insertSmilies(19)" />
+</div>
+</p>
+<p>
+<label for="xspace-commentmsg">内容</label>
+<textarea id="xspace-commentmsg" name="message"></textarea>
+</p>
+<p>
+<label for="xspace-nickname">昵称</label>
+<input type="text" size="20" id="xspace-nickname" name="nickname" value="" />
+</p>
+<p>
+<label>加入事件</label>
+<input type="checkbox" name="addfeed" checked="checked">
+</p>
+<p id="xspace-seccodeline">
+<label for="xspace-seccode">验证</label>
+<input type="text" size="10" id="xspace-seccode" name="seccode" value="" />
+<label for="xspace-seccode"><img id="xspace-imgseccode" src="http://blog.ixpub.net/batch.seccode.php" onclick="javascript:newseccode(this);" alt="seccode" title="看不清？点击换一个" /></label>
+</p>
+<p>
+<input type="hidden" name="itemid" value="172348" />
+<button value="true" type="submit" name="submitcomment" id="xspace-btncomment">提交评论</button>
+</p>
+</fieldset>
+</form>
+</div>
+
+<script language="javascript" type="text/javascript">
+<!--
+function showcomment(page) {
+var x = new Ajax('statusid', 'XML');
+x.get('http://blog.ixpub.net/batch.comment.php?action=view&itemid=172348&page='+page, function(s) {
+getbyid("xspace-itemreply").innerHTML = s.lastChild.firstChild.nodeValue;
+});
+}
+function deletecomment(cid) {
+var x = new Ajax('statusid', 'XML');
+x.get('http://blog.ixpub.net/batch.comment.php?action=delete&cid='+cid, function(s) {
+alert(s.lastChild.firstChild.nodeValue);
+});
+}
+
+function moresmilies() {
+var smilies = document.getElementById('xspace-smilies');
+if (smilies.style.height=='auto') {
+smilies.style.height = '';
+} else {
+smilies.style.height = 'auto';
+}
+}
+addImgLink("xspace-showmessage");
+addMediaAction('xspace-showmessage');
+//-->
+</script>
+<iframe id="xspace-phpframe" name="xspace-phpframe" width="0" height="0" marginwidth="0" frameborder="0" src="about:blank"></iframe></div>
+					</div>
+
+				<div id="sideleft" class="sidearea">
+			<div id="avatar" class="xspace-sideblock"><div id="xspace-avatar"><img src="http://passport.ixpub.net/avatar.php?uid=13151495" alt="蚂蚁当家" class="xspace-imgstyle" /><p><a href="http://blog.ixpub.net/13151495/action-viewpro-showpro-1">蚂蚁当家</a></p><p class="xspace-selfintro"></p></div></div><div id="action" class="xspace-sideblock">
+			<h3 class="xspace-blocktitle">用户菜单</h3>
+			<ul id="xspace-action">
+			<li><a class="xspace-message" href="http://blog.ixpub.net/13151495/action-viewpro">给我留言</a></li>
+			<li><a class="xspace-addfriend" href="javascript:;" onclick="javascript:joinfriend('13151495');">加入好友</a></li>
+			<li><a class="xspace-sendpm" href="http://www.ixpub.net/pm.php?action=new&amp;uid=13151495" target="_blank">发短消息</a></li>
+			<li><a class="xspace-profile" href="http://blog.ixpub.net/13151495/action-viewpro-showpro-1">我的介绍</a></li>
+			<li><a class="xspace-profile" href="http://www.ixpub.net/viewpro.php?uid=13151495">论坛资料</a></li>
+			<li><a class="xspace-ctrlpannel" href="http://blog.ixpub.net/batch.manage.php?uid=13151495">空间管理</a></li>
+			</ul>
+			</div><div id="search" class="xspace-sideblock">
+			<h3 class="xspace-blocktitle">标题搜索</h3>
+			<form id="xspace-search" action="http://blog.ixpub.net/index.php?uid/13151495/action/spacelist/php/1" method="post">
+			<input type="text" id="xspace-searchkey" name="searchkey" value="" />
+			<input type="hidden" name="searchsubmit" value="yes" />
+			<input type="submit" name="xspace-dosearch" id="xspace-dosearch" value="搜索" />
+			</form>
+			</div><div id="calendar" class="xspace-sideblock">
+				<h3 class="xspace-blocktitle">日历</h3>
+<table id="xspace-calendar" cellspacing="2" cellpadding="2" border="0" width="100%" summary="xspace-Calendar">
+<tr>
+	<td colspan="7" align="center">
+		<table cellspacing="3" cellpadding="3" class="xspace-datenav" summary="xspace-Date nav">
+			<tr>
+				<td align="center"><a href="http://blog.ixpub.net/action-spacelist-uid-13151495-type-blog-starttime-1267372800-endtime-1270051200">&laquo;</a></td>
+				<td align="center" nowrap><a href="http://blog.ixpub.net/action-spacelist-uid-13151495-type-blog-starttime-1270051200-endtime-1272643200">2010-04-14</a></td>
+				<td align="center">&nbsp;</td>
+			</tr>
+		</table>
+	</td>
+</tr>
+<tr align="center" class="xspace-week">
+	<td>日</td>
+	<td>一</td>
+	<td>二</td>
+	<td>三</td>
+	<td>四</td>
+	<td>五</td>
+	<td>六</td>
+</tr>
+<tr align="center"><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>1</td><td>2</td><td>3</td></tr><tr align="center"><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td></tr><tr align="center"><td>11</td><td>12</td><td>13</td><td>14</td><td>15</td><td>16</td><td>17</td></tr><tr align="center"><td>18</td><td>19</td><td>20</td><td>21</td><td>22</td><td>23</td><td>24</td></tr><tr align="center"><td>25</td><td>26</td><td>27</td><td>28</td><td>29</td><td>30</td><td>&nbsp;</td></tr>
+</table>
+</div><div id="archive" class="xspace-sideblock">
+			<h3 class="xspace-blocktitle">我的存档</h3>
+			<ul class="xspace-list"><li><a href="http://blog.ixpub.net/13151495/action-spacelist-starttime-1264953600-endtime-1267372800">2010年02月</a></li><li><a href="http://blog.ixpub.net/13151495/action-spacelist-starttime-1262275200-endtime-1264953600">2010年01月</a></li><li><a href="http://blog.ixpub.net/13151495/action-spacelist-starttime-1259596800-endtime-1262275200">2009年12月</a></li><li><a href="http://blog.ixpub.net/13151495/action-spacelist-starttime-1257004800-endtime-1259596800">2009年11月</a></li><li><a href="http://blog.ixpub.net/13151495/action-spacelist-starttime-1254326400-endtime-1257004800">2009年10月</a></li><li><a href="http://blog.ixpub.net/13151495/action-spacelist-starttime-1251734400-endtime-1254326400">2009年09月</a></li><li><a href="http://blog.ixpub.net/13151495/action-spacelist-starttime-1249056000-endtime-1251734400">2009年08月</a></li><li><a href="http://blog.ixpub.net/13151495/action-spacelist-starttime-1246377600-endtime-1249056000">2009年07月</a></li><li><a href="http://blog.ixpub.net/13151495/action-spacelist-starttime-1243785600-endtime-1246377600">2009年06月</a></li><li><a href="http://blog.ixpub.net/13151495/action-spacelist-starttime-1241107200-endtime-1243785600">2009年05月</a></li><li><a href="http://blog.ixpub.net/13151495/action-spacelist-starttime-1238515200-endtime-1241107200">2009年04月</a></li><li><a href="http://blog.ixpub.net/13151495/action-spacelist-starttime-1235836800-endtime-1238515200">2009年03月</a></li><li><a href="http://blog.ixpub.net/13151495/action-spacelist-starttime-1233417600-endtime-1235836800">2009年02月</a></li><li><a href="http://blog.ixpub.net/13151495/action-spacelist-starttime-1230739200-endtime-1233417600">2009年01月</a></li><li><a href="http://blog.ixpub.net/13151495/action-spacelist-starttime-1228060800-endtime-1230739200">2008年12月</a></li><li><a href="http://blog.ixpub.net/13151495/action-spacelist-starttime-1225468800-endtime-1228060800">2008年11月</a></li><li><a href="http://blog.ixpub.net/13151495/action-spacelist-starttime-1222790400-endtime-1225468800">2008年10月</a></li><li><a href="http://blog.ixpub.net/13151495/action-spacelist-starttime-1220198400-endtime-1222790400">2008年09月</a></li><li><a href="http://blog.ixpub.net/13151495/action-spacelist-starttime-1217520000-endtime-1220198400">2008年08月</a></li><li><a href="http://blog.ixpub.net/13151495/action-spacelist-starttime-1214841600-endtime-1217520000">2008年07月</a></li><li><a href="http://blog.ixpub.net/13151495/action-spacelist-starttime-1212249600-endtime-1214841600">2008年06月</a></li><li><a href="http://blog.ixpub.net/13151495/action-spacelist-starttime-1209571200-endtime-1212249600">2008年05月</a></li><li><a href="http://blog.ixpub.net/13151495/action-spacelist-starttime-1206979200-endtime-1209571200">2008年04月</a></li><li><a href="http://blog.ixpub.net/13151495/action-spacelist-starttime-1204300800-endtime-1206979200">2008年03月</a></li></ul></div><div id="infomation" class="xspace-sideblock">
+			<h3 class="xspace-blocktitle">数据统计</h3>
+			<ul class="xspace-list">
+			<li>访问量: 360271</li><li>日志数: 15839</li><li>建立时间: 2008-02-19</li>
+			<li>更新时间: 2010-02-03</li>
+			</ul></div><div id="rss" class="xspace-sideblock">
+			<h3 class="xspace-blocktitle">RSS订阅</h3>
+			<ul class="xspace-list">
+			<li class="xspace-logo"><a href="http://blog.ixpub.net/13151495/action-rss-type-blog"><img src="http://blog.ixpub.net/images/base/rss.gif" alt="RSS订阅" border="0" /></a></li>
+			</ul>
+			</div>		</div>
+		
+		
+	</div>
+</div>
+
+<div id="xspace-footer">
+	<p id="xspace-footer-ad">
+			</p>
+	<p id="xspace-footer_menu">
+		<a href="http://blog.ixpub.net/batch.login.php?action=logout">清空Cookie</a> -
+		<a href="mailto:support@it168.com">联系我们</a> -
+		<a href="http://blog.ixpub.net/" target="_blank">IXPUB技术博客</a> -
+		<a href="http://www.ixpub.net" target="_blank">交流论坛</a> -
+		<a href="http://blog.ixpub.net/action/spaces">空间列表</a> -
+		<a href="http://blog.ixpub.net/archiver/" target="_blank">站点存档</a> -
+		<a href="http://blog.ixpub.net/action/register" target="_blank">升级自己的空间</a>
+	</p>
+	<p id="xspace-copyright">
+		Powered by <a href="http://www.supesite.com" target="_blank"><strong>X-Space</strong></a>
+		<em>4.0 UC</em>
+		&copy; 2001-2008 <a href="http://www.comsenz.com" target="_blank">Comsenz Inc.</a>
+		<br />
+		<a href="http://www.miibeian.gov.cn" target="_blank">京ICP证060528号</a><br />	</p>
+</div>
+<!-- START STAT PV -->
+		<script src="http://stat.it168.com/pv.js" type="text/javascript"></script>
+		<script src="http://it168.wrating.com/a1.js" type="text/javascript"></script>
+		<script type="text/javascript">
+		
+		function sendPV(){ 
+		var pvTrack = new PvTrack(); 
+		pvTrack.type = 12; // 频道类别ID 
+		pvTrack.channel = 146; // 频道ID 
+		pvTrack.pageType = 0; 
+		pvTrack.track(); 
+		} 
+		window.setTimeout("sendPV()", 3); 
+		
+		var vjAcc="860010-2083120100";
+		var wrUrl="http://it168.wrating.com/";
+		vjTrack("");
+		
+		</script>
+		<noscript><img src="http://it168.wrating.com/a.gif?a=&amp;c=860010-2083120100" width="1" height="1"/></noscript>
+<!-- END STAT PV -->
+<div id="toolbarshowbtn"><a href="javascript:;" onmouseover="showtoolbar();">Open Toolbar</a></div>
+<div id="toolbarframe"><iframe frameborder="0" scrolling="no" src="http://blog.ixpub.net/batch.toolbar.php" width="100%"></iframe></div>
+</body>
+</html>
+			<script language="javascript">
+			<!--
+			var Modified = new Date(document.lastModified);
+			var copyright = document.getElementById("xspace-copyright");
+			if(copyright) {
+				copyright.innerHTML += "Last update: <a href=\"http://blog.ixpub.net/index.php?uid/13151495/action/viewspace/itemid/172348/php/1\" title=\"点击可以立即更新本页面\">"+(Modified.getYear()<200?(Modified.getYear()+1900):Modified.getYear())+"-"+(Modified.getMonth()+1)+"-"+Modified.getDate()+" "+Modified.getHours()+":"+Modified.getMinutes()+":"+Modified.getSeconds() + "</a><br>";
+			}
+			document.write('<script src="http://blog.ixpub.net/batch.html.php?code=http%253A%252F%252Fblog.ixpub.net%252Findex.php%253Fuid%252F13151495%252Faction%252Fviewspace%252Fitemid%252F172348%2F1271240325%2F43200%2F13151495%2F172348%2Fviewspace&amp;lastmodified=' + Modified.getTime() + '" type="text\/javascript" language="javascript"><\/script>');
+			//-->
+			</script>
