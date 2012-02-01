@@ -1,8 +1,30 @@
+10:26 2012-2-1
+http://www.coderupgrade.com/DllToStaticLib.xml
+support@coderupgrade.com
+CoderUpgrade
+37823-1
+
 14:28 2012-1-13
-easykeywordsearch@gmail.com
 http://www.easykeywordsearch.com
 support@easykeywordsearch.com
 Website Finder - Find lots of websites which can not be found with google
+http://www.easykeywordsearch.com/WebsiteFinder.xml
+38300-1
+Easy Keyword Search
+Website Finder
+EasyKeywordSearch
+KeywordSearch
+1328 Bosworth St
+4156597864
+http://www.easykeywordsearch.com/website-finder.html
+
+待解决问题：WebList应无水平滚动条
+
+easykeywordsearch@gmail.com
+
+Automatic Mouse and Keyboard
+http://www.robot-soft.com/AutomaticMouseKeyboard.xml
+30794-1
 
 14:50 2011-12-16
 寻找创业机会，www.coderupgrade.com
@@ -64,3 +86,6 @@ http://www.robot-soft.com
 int __stdcall SDT_GetSAMID(int iPort,unsigned char* pucASMID,int iIfOpen);
 
 int __stdcall (*SDT_GetSAMID)(int iPort,unsigned char* pucASMID,int iIfOpen)
+
+15:47 2012-1-16
+"Everything you need to know is on the Internet. You just can't find it."
