@@ -1,2 +1,24 @@
 1. 打开文件
 FileUtil.cpp ReadAll
+
+2. FlateDecode
+pdf\pdf_stream.c 
+
+3. fz_obj
+
+4. 对象列表
+xref->table
+pdf_load_object
+
+5. 绘制
+RenderedBitmap hbmp
+DrawDocument
+BitmapCacheEntry
+BitmapCacheEntry通过RenderCache.cpp中的 cache[cacheCount] = (BitmapCacheEntry *)_memdup(&entry); 创建
+RenderCacheThread
+
+6. Page
+CPdfEngine::GetPdfPage pdf_load_page pdf_page
+pdf_page** CPdfEngine::_pages
+
+7. 窗口类：CANVAS_CLASS_NAME WndProcCanvas
