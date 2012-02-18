@@ -1,0 +1,527 @@
+﻿# Translations for Korean (한국어) (kr) language
+
+# * Lines starting with # are comments (such as this).
+# * This file must be in UTF-8 encoding. Make sure you use a proper
+#   text editor (Notepad++ or Notepad2) and set UTF-8 encoding.
+# * For lines containing several variables (such as %s, %d or %u), the
+#   variables must remain in that exact order in the translation.
+
+Lang: kr Korean (한국어)
+
+Contributor: Han Seung-ho (silversoul@korea.com)
+Contributor: Hong Seung-geol (hsgno5@hanmir.com)
+Contributor: Karnes Kim (karnes@gmail.com)
+
+&About
+정보(&A)...
+
+&Actual Size\tCtrl+1
+본래 크기(&U)\tCtrl+1
+
+&All selected pages
+선택된 모든 페이지
+
+&Back\tAlt+Left Arrow
+이전\tAlt+Left Arrow
+
+&Close\tCtrl+W
+닫기(&C)\tCtrl+W
+
+&Copy Selection\tCtrl+C
+선택된 영역 복사\tCtrl+C
+
+&Don't ask me again
+다시 묻지 않음
+
+&Even pages only
+짝수 페이지만
+
+&File
+파일(&F)
+
+&Find what:
+찾기:
+
+&First Page\tHome
+첫 장\tHome
+
+&Fit pages to printable area
+인쇄 영역에 맞추기
+
+&Go To
+이동(&G)
+
+&Go to page:
+페이지로 가기:
+
+&Help
+도움말(&H)
+
+&Last Page\tEnd
+마지막 장\tEnd
+
+&Magnification:
+확대:
+
+&Manual
+사용설명서
+
+&Match case
+대소문자 구별
+
+&Next Page\tRight Arrow
+다음 장\t->
+
+&No
+아니오
+
+&No, thanks
+아니오
+
+&Odd pages only
+홀수 페이지만
+
+&Open\tCtrl+O
+열기(&O)...\tCtrl+O
+
+&Options...
+옵션...
+
+&Password:
+비밀번호:
+
+&Previous Page\tLeft Arrow
+이전 장\t<-
+
+&Print...\tCtrl+P
+인쇄(&P)...\tCtrl+P
+
+&Print... (denied)
+인쇄.. (거부됨)
+
+&Remember the password for this document
+이 문서의 암호를 기억함
+
+&Remember these settings for each document
+각 문서의 설정을 기억함
+
+&Save As...\tCtrl+S
+다른 이름으로 저장(&S)...\tCtrl+S
+
+&Settings
+설정
+
+&Shrink pages to printable area (if necessary)
+필요한 경우 인쇄 영역에 맞추어 페이지 축소
+
+&Skip this version
+이 버전 무시
+
+&View
+보기(&V)
+
+&Yes
+예
+
+&Zoom
+확대(&Z)
+
+(of %d)
+(총 %d 중)
+
+About SumatraPDF
+SumatraPDF 정보
+
+Advanced
+고급
+
+All files
+모든 파일
+
+Application:
+애플리케이션:
+
+Associate with PDF files?
+PDF 파일 연결을 설정할까요?
+
+Attachment: %s
+첨부: %s
+
+Author:
+제작자:
+
+Automatic
+자동
+
+Automatically check for &updates
+업데이트 자동 검사
+
+Book View
+책으로 보기
+
+Book&marks\tF12
+책갈피\tF12
+
+Bookmarks
+즐겨찾기
+
+Bytes
+바이트
+
+Can't connect to the Internet (error %#x).
+인터넷에 접속할 수 없습니다 (error %#x).
+
+Cancel
+취소
+
+Cannot print this file
+현재 파일을 인쇄할 수 없습니다
+
+Change Language
+언어 변경 (Change Language)
+
+Check for &Updates
+새 버전 확인
+
+Continuous
+한 장씩 연속
+
+Continuous Facing
+여러 장씩 연속
+
+Contribute Translation
+번역 기여
+
+Copying text was denied (copying as image only)
+텍스트 복사가 거부되었습니다 (이미지로 복사됩니다)
+
+Could not open Printer
+프린터를 열 수 없습니다.
+
+Couldn't initialize printer
+프린터를 초기화할 수 없습니다
+
+Couldn't render the page
+페이지 렌더링에 실패하였습니다
+
+Created:
+생성:
+
+Custom &Zoom...\tCtrl+Y
+사용자 지정 확대율\tCtrl+Y
+
+Default &Layout:
+기본 구성:
+
+Default &Zoom:
+기본 확대:
+
+Document Properties
+문서 속성
+
+Download
+다운로드
+
+E&xit\tCtrl+Q
+끝내기(&X)\tCtrl+Q
+
+Enter password
+패스워드 입력
+
+Enter password for %s
+%s의 패스워드를 입력하십시오
+
+F&ullscreen\tCtrl+Shift+L
+전체 화면\tCtrl+Shift+L
+
+Facing
+여러 장씩
+
+Failed to save a file
+파일을 저장할 수 없습니다.
+
+File Size:
+파일 크기:
+
+File:
+파일:
+
+Fin&d...\tCtrl+F
+찾기...\tCtrl+F
+
+Find
+찾기
+
+Find Next
+다음 찾기
+
+Find Previous
+이전 찾기
+
+Find:
+찾기:
+
+Fit &Page\tCtrl+0
+창 크기에 맞춤(&P)\tCtrl+0
+
+Fit &Width\tCtrl+2
+꽉 찬 화면(&H)\tCtrl+2
+
+Fit Page
+창 크기에 맞춤
+
+Fit Width
+꽉 찬 화면
+
+Found text at page %s
+%s 페이지에서 찾았습니다
+
+GB
+GB
+
+Go to page
+페이지로 가기
+
+Hint: Use the F3 key for finding again
+계속 찾으려면 F3을 누르십시오
+
+KB
+KB
+
+MB
+MB
+
+Make SumatraPDF default application for PDF files?
+SumatraPDF를 기본 PDF 뷰어로 설정할까요?
+
+Make SumatraPDF my default PDF reader
+SumatraPDF를 기본 PDF 뷰어로 설정
+
+Match Case
+대/소문자 구분
+
+Modified:
+수정됨:
+
+New version %s is available. Download new version?
+새 버전 %s 이 나왔습니다. 다운로드하시겠습니까?
+
+Next Page
+다음 장
+
+Number of Pages:
+총 페이지 수:
+
+OK
+OK
+
+Open
+열기
+
+Open in &Adobe Reader
+&Adobe Reader 에서 열기
+
+Open in &Foxit Reader
+&Foxit Reader 에서 열기
+
+Open in PDF-XChange
+PDF-XChange 에서 열기
+
+P&roperties\tCtrl+D
+속성\tCtrl+D
+
+PDF Document
+PDF 문서
+
+PDF Producer:
+PDF 생성자:
+
+PDF Version:
+PDF 버전:
+
+PDF documents
+PDF 문서들
+
+Pa&ge...\tCtrl+G
+쪽...\tCtrl+G
+
+Page Size:
+페이지 크기:
+
+Page number %u inexistant
+%u번 페이지가 존재하지 않습니다
+
+Page scaling
+페이지 크기 맞춤 중
+
+Page:
+페이지:
+
+Please wait - rendering...
+렌더링 중... 잠시만 기다리십시오
+
+Previous Page
+이전 장
+
+Print range
+인쇄 범위
+
+Printing problem.
+인쇄를 할 수 없습니다.
+
+Remember &opened files
+열었던 파일들을 기억함
+
+Rotate &Left\tCtrl+Shift+-
+왼쪽으로 회전\tCtrl+Shift+-
+
+Rotate &Right\tCtrl+Shift++
+오른쪽으로 회전\tCtrl+Shift++
+
+Save As
+다른 이름으로 저장
+
+Searching %d of %d...
+(%d / %d) 를 검색하고 있습니다...
+
+Send by &E-mail...
+&E-mail로 보내기
+
+Set inverse search command-line
+역탐색 명령 설정
+
+Show &Toolbar
+도구 모음 보기
+
+Single Page
+한 장씩
+
+Subject:
+주제:
+
+SumatraPDF Options
+SumatraPDF 옵션
+
+SumatraPDF is your default PDF reader
+SumatraPDF가 현재 기본 PDF 뷰어입니다
+
+Text documents
+텍스트 문서
+
+Title:
+제목:
+
+Unknown source file (%s)
+알 수 없는 원본 파일 (%s)
+
+View
+보기
+
+Visit &Website
+웹 사이트 방문(&V)
+
+Warning
+경고
+
+You have the latest version.
+최신 버전입니다.
+
+You have version %s
+현재 버전은 %s 입니다.
+
+Zoom
+확대
+
+Zoom In
+확대
+
+Zoom Out
+축소
+
+Zoom factor
+확대율
+
+[Changes detected; refreshing] %s
+[변경이 발견됨. 갱신중입니다...] %s
+
+copying text
+텍스트 복사중
+
+printing document
+문서 인쇄중
+
+# Untranslated:
+#&Book View\tCtrl+8
+#&Copy Selection
+#&Facing\tCtrl+7
+#&Open Document
+#&Pin Document
+#&Print...
+#&Remove Document
+#&Save As...
+#&Single Page\tCtrl+6
+#&Use original page sizes
+#(page %s)
+#Add Favorite
+#Add page %s to favorites
+#Add page %s to favorites with (optional) name:
+#Add to favorites
+#All supported documents
+#Bookmark Shortcuts
+#Bookmark shortcut to page %s of %s
+#CHM documents
+#Cannot start inverse search command. Please check the command line in the settings.
+#Comic books
+#Continuous Book View
+#Copy &Link Address
+#Copy Co&mment
+#Could not obtain Printer properties
+#Current file
+#Default PDF reader can't be changed in portable mode
+#Denied Permissions:
+#DjVu documents
+#Enter the command-line to invoke when you double-click on the PDF document:
+#Error loading %s
+#F&avorites
+#F&orward\tAlt+Right Arrow
+#Favorites
+#File %s not found
+#Fit &Content\tCtrl+3
+#Fit Content
+#Fit Width and Show Pages Continuously
+#Fit a Single Page
+#Found text at page %s (again)
+#Frequently Read
+#Hide frequently read
+#Image files (*.%s)
+#No matches were found
+#No result found around line %u in file %s
+#No synchronization file found
+#No synchronization info at this position
+#Open a document...
+#P&roperties
+#Page %s
+#Postscript documents
+#Pr&esentation\tCtrl+L
+#Print
+#Printer with given name doesn't exist
+#Printing is still in progress. Abort and start over?
+#Printing page %d of %d...
+#Remove from favorites
+#Remove page %s from favorites
+#Save S&hortcut...\tCtrl+Shift+S
+#Select &All
+#Select &All\tCtrl+A
+#Select content with Ctrl+left mouse button
+#Show &pages continuously
+#Show Favorites
+#Show frequently read
+#Show the &bookmarks sidebar when available
+#Sorry, that shouldn't have happened!\n\nPlease press 'Cancel', if you want to help us fix the cause of this crash.
+#Source file %s has no synchronization point
+#SumatraPDF Update
+#SumatraPDF crashed
+#SumatraPDF should now be your default PDF reader
+#Synchronization file cannot be opened
+#XPS documents
+
