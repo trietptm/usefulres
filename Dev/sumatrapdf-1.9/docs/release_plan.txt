@@ -1,0 +1,11 @@
+Things to do before 1.9 release:
+
+Things to do before 2.0 release:
+* (?) ebook support
+* installer and settings: UI for registering other supported file types http://code.google.com/p/sumatrapdf/issues/detail?id=1365
+* bug: focus captured by web control when clicking on "Related Topics" button in 010Editor.chm from
+  http://code.google.com/p/sumatrapdf/issues/detail?id=1579
+  I don't know how to fix this. It seems that the problem really is that a button window inside browser
+  control captures the focus. I tried hack it by detecting frame window loosing focus (via WM_KILLFOCUS) and
+  doing delayed re-capture of focus to frame window, but it doesn't work and it's not the right time to do
+  it (it might kill the pop-up menu on the button).
