@@ -1,0 +1,523 @@
+﻿# Translations for Persian (فارسی) (fa) language
+
+# * Lines starting with # are comments (such as this).
+# * This file must be in UTF-8 encoding. Make sure you use a proper
+#   text editor (Notepad++ or Notepad2) and set UTF-8 encoding.
+# * For lines containing several variables (such as %s, %d or %u), the
+#   variables must remain in that exact order in the translation.
+
+Lang: fa Persian (فارسی)
+
+Contributor: Adham Beyki (odinay@gmail.com)
+Contributor: Mardi Az Pansad Dastgah Artesh
+Contributor: Ali Nayeri
+
+&About
+درباره
+
+&Actual Size\tCtrl+1
+ابعاد اصلی‌\tCtrl+1
+
+&Back\tAlt+Left Arrow
+عقب\tAlt+Left Arrow
+
+&Close\tCtrl+W
+بستن\tCtrl+W
+
+&Copy Selection\tCtrl+C
+رونوشت مورد منتخب
+
+&Don't ask me again
+این پاسخ را به یاد بسپار و دوباره از من نپرس
+
+&File
+فايل
+
+&Find what:
+:جستجو برای
+
+&First Page\tHome
+صفحه نخست\tHome
+
+&Go To
+برو به
+
+&Go to page:
+:برو به صفحه
+
+&Help
+راهنما
+
+&Last Page\tEnd
+صفحه آخر\tEnd
+
+&Magnification:
+درشت نمایی
+
+&Manual
+کتابچه راهنما در اینترنت
+
+&Match case
+با توجه به قالب حروف
+
+&Next Page\tRight Arrow
+صفحه بعدی\t->
+
+&No
+خیر
+
+&No, thanks
+نه، متشکرم
+
+&Open\tCtrl+O
+باز کردن\tCtrl+O
+
+&Options...
+گزینه ها
+
+&Password:
+کلمه عبور
+
+&Previous Page\tLeft Arrow
+صفحه قبلی\t<-
+
+&Print...\tCtrl+P
+چاپ\tCtrl+P
+
+&Print... (denied)
+(چاپ ... (رد شد
+
+&Remember these settings for each document
+این تنظیمات را برای هر سند بخاطر بسپار
+
+&Save As...\tCtrl+S
+...ذخیره بعنوان\tCtrl+S
+
+&Settings
+تنظیمات
+
+&Skip this version
+از این نسخه چشم پوشی کن
+
+&View
+نمايش
+
+&Yes
+بلی
+
+&Zoom
+تغییر ابعاد نمایش
+
+(of %d)
+(%d از)
+
+About SumatraPDF
+SumatraPDF درباره برنامه
+
+Advanced
+امکانات پیشرفته
+
+All files
+تمام فایلها
+
+Application:
+:نرم‌افزار
+
+Associate with PDF files?
+قرار بدهیم ؟ PDF ایا این برنامه را نمایشگر همیشگی فایل های
+
+Author:
+:مولف
+
+Automatic
+خودکار
+
+Automatically check for &updates
+جستجو خودکار برای نسخه جدید
+
+Book View
+نمایش کتابی‌
+
+Book&marks\tF12
+نشان یادگاری سرکتاب\tF12
+
+Bytes
+Bytes
+
+Cancel
+لغو
+
+Cannot print this file
+این فایل قابل به چاپ نیست
+
+Cannot start inverse search command. Please check the command line in the settings.
+.جستجو معکوس قابل اجرا نیست. لطفا تنظیمات خط فرمان را بازبینی کنید
+
+Change Language
+تغییر زبان (Change Language)
+
+Check for &Updates
+چک کردن نسخه تازه تر
+
+Continuous
+نمايش پيوسته
+
+Continuous Book View
+نمایش کتابی‌ پیوسته
+
+Continuous Facing
+نمایش دو صفحه‌ای پیوسته
+
+Contribute Translation
+در ترجمه این برنامه کمک کنید
+
+Could not open Printer
+برنامه قادر به يافتن چاپگر نيست
+
+Couldn't initialize printer
+متأسفانه چاپگر منتخب در دسترس نیست
+
+Couldn't render the page
+متأسفانه صفحه قابل نمایش نیست
+
+Created:
+:بوجود آمده
+
+Custom &Zoom...\tCtrl+Y
+ابعاد نمایش مخصوص\tCtrl+Y
+
+Default &Layout:
+:نحوه نمایش
+
+Default &Zoom:
+:ابعاد نمایش
+
+Default PDF reader can't be changed in portable mode
+باشد PDF نسخه همراه برنامه نمی‌تواند مجری استاندارد فایلهای
+
+Denied Permissions:
+:دسترسی ممنوع
+
+Document Properties
+ویژگیهای سند
+
+Download
+بارگیری
+
+E&xit\tCtrl+Q
+خروج\tCtrl+Q
+
+Enter password
+کلمه عبور را وارد کنید
+
+Enter password for %s
+را وارد کنید %s کلمه عبور برای
+
+F&orward\tAlt+Right Arrow
+جلو\tAlt+Right Arrow
+
+F&ullscreen\tCtrl+Shift+L
+تمام‌صفحه\tCtrl+Shift+L
+
+Facing
+نمایش دو صفحه‌ای
+
+Failed to save a file
+ذخيره کردن فايل با مشکل روبرو شد
+
+File Size:
+:حجم فایل
+
+File:
+:فايل
+
+Fin&d...\tCtrl+F
+...جستجو\tCtrl+F
+
+Find
+جستجو
+
+Find Next
+جستجو روبه جلو
+
+Find Previous
+جستجو روبه عقب
+
+Find:
+جستجو:
+
+Fit &Page\tCtrl+0
+به بزرگی پنجره\tCtrl+0
+
+Fit &Width\tCtrl+2
+به بزرگی پهنای پنجره\tCtrl+2
+
+Fit Page
+به بزرگی پنجره
+
+Fit Width
+به بزرگی پهنای پنجره
+
+Found text at page %s
+پیدا شد %s متن در صفحه
+
+GB
+GB
+
+Go to page
+برو به صفحه
+
+Hint: Use the F3 key for finding again
+استفاده کنید F3 اشاره: برای جستجو مجدد از کلید
+
+KB
+KB
+
+MB
+MB
+
+Make SumatraPDF default application for PDF files?
+قرار بدهیم؟ PDF ایا این برنامه را مجری استاندارد فایل های
+
+Make SumatraPDF my default PDF reader
+PDF بعنوان مرورگر اصلی‌ اسناد SumatraPDF انتخاب
+
+Match Case
+با توجه به قالب حروف
+
+Modified:
+:اصلاح شده
+
+New version %s is available. Download new version?
+موجود می‌باشد. آیا می‌خواهید آن را بارگیری کنید؟ (%s) نسخه تازه
+
+Next Page
+صفحه بعدی
+
+No synchronization file found
+فایل همگام سازی موجود نیست
+
+Number of Pages:
+تعداد صفحات
+
+OK
+قبول
+
+Open
+باز کردن
+
+Open in &Adobe Reader
+Adobe Reader باز کردن در
+
+Open in &Foxit Reader
+Foxit Reader باز کردن در
+
+Open in PDF-XChange
+PDF-XChange باز کردن در
+
+P&roperties\tCtrl+D
+...ویزگیها\tCtrl+D
+
+PDF Document
+PDF سند
+
+PDF Producer:
+:PDF برنامه مبدل
+
+PDF Version:
+:PDF نسخه
+
+PDF documents
+PDF اسناد
+
+Pa&ge...\tCtrl+G
+...صفحه\tCtrl+G
+
+Page Size:
+:ابعاد صفحه
+
+Page number %u inexistant
+موجود نیست %u صفحه
+
+Page:
+صفحه:
+
+Please wait - rendering...
+... لطفا صبر کنید
+
+Previous Page
+صفحه قبلی
+
+Printing problem.
+مشکل در چاپ
+
+Remember &opened files
+فایلهای باز شده را بخاطر بسپار
+
+Rotate &Left\tCtrl+Shift+-
+چرخاندن به چپ\tCtrl+Shift+-
+
+Rotate &Right\tCtrl+Shift++
+چرخاندن به راست\tCtrl+Shift++
+
+Searching %d of %d...
+... %d از %d در حال جستجو
+
+Select content with Ctrl+left mouse button
+و دکمه سمت چپ موس انتخاب کنید Ctrl متن مورد نظر را با
+
+Send by &E-mail...
+... ارسال با پست الکترونیکی‌
+
+Set inverse search command-line
+تنظیم وارانه جستجو
+
+Show &Toolbar
+نمايش نوار ابزار
+
+Show &pages continuously
+نمایش پیوسته صفحات
+
+Single Page
+نمایش تک صفحه‌ای
+
+Source file %s has no synchronization point
+نقاط همگام سازی ندارد %s فایل
+
+Subject:
+:موضوع
+
+SumatraPDF Options
+SumatraPDF گزینه ها
+
+SumatraPDF is your default PDF reader
+شماست PDF مرورگر اصلی SumatraPDF
+
+SumatraPDF should now be your default PDF reader
+شماست PDF اکنون مرورگر اصلی SumatraPDF
+
+Synchronization file cannot be opened
+فایل همگام سازی باز نمی‌شود
+
+Text documents
+سند متنی
+
+Title:
+:عنوان
+
+Unknown source file (%s)
+نامعلوم است (%s) فایل منبع
+
+View
+نمايش
+
+Visit &Website
+بازديد از وب‌سايت
+
+Warning
+هشدار
+
+You have the latest version.
+.نسخه شما تازه‌ترین نسخه می‌باشد
+
+You have version %s
+را استفاد می‌کنید %s شما هماکنون نسکه شماره
+
+Zoom
+ابعاد نمایش
+
+Zoom In
+بزرگ نمایی
+
+Zoom Out
+کوچک نمایی
+
+Zoom factor
+ضریب ابعاد نمایش
+
+[Changes detected; refreshing] %s
+%s [تغییرات شناسایی شد]
+
+copying text
+در حل رونوش متن
+
+printing document
+در حل چاپ سند
+
+# Untranslated:
+#&All selected pages
+#&Book View\tCtrl+8
+#&Copy Selection
+#&Even pages only
+#&Facing\tCtrl+7
+#&Fit pages to printable area
+#&Odd pages only
+#&Open Document
+#&Pin Document
+#&Print...
+#&Remember the password for this document
+#&Remove Document
+#&Save As...
+#&Shrink pages to printable area (if necessary)
+#&Single Page\tCtrl+6
+#&Use original page sizes
+#(page %s)
+#Add Favorite
+#Add page %s to favorites
+#Add page %s to favorites with (optional) name:
+#Add to favorites
+#All supported documents
+#Attachment: %s
+#Bookmark Shortcuts
+#Bookmark shortcut to page %s of %s
+#Bookmarks
+#CHM documents
+#Can't connect to the Internet (error %#x).
+#Comic books
+#Copy &Link Address
+#Copy Co&mment
+#Copying text was denied (copying as image only)
+#Could not obtain Printer properties
+#Current file
+#DjVu documents
+#Enter the command-line to invoke when you double-click on the PDF document:
+#Error loading %s
+#F&avorites
+#Favorites
+#File %s not found
+#Fit &Content\tCtrl+3
+#Fit Content
+#Fit Width and Show Pages Continuously
+#Fit a Single Page
+#Found text at page %s (again)
+#Frequently Read
+#Hide frequently read
+#Image files (*.%s)
+#No matches were found
+#No result found around line %u in file %s
+#No synchronization info at this position
+#Open a document...
+#P&roperties
+#Page %s
+#Page scaling
+#Postscript documents
+#Pr&esentation\tCtrl+L
+#Print
+#Print range
+#Printer with given name doesn't exist
+#Printing is still in progress. Abort and start over?
+#Printing page %d of %d...
+#Remove from favorites
+#Remove page %s from favorites
+#Save As
+#Save S&hortcut...\tCtrl+Shift+S
+#Select &All
+#Select &All\tCtrl+A
+#Show Favorites
+#Show frequently read
+#Show the &bookmarks sidebar when available
+#Sorry, that shouldn't have happened!\n\nPlease press 'Cancel', if you want to help us fix the cause of this crash.
+#SumatraPDF Update
+#SumatraPDF crashed
+#XPS documents
+
