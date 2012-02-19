@@ -70,7 +70,7 @@
 				BuildCommandLine="nmake -f makefile_lib.msvc CFG=dbg NASM=$(ProjectDir)bin\nasm.exe"
 				ReBuildCommandLine="nmake -f makefile_lib.msvc CFG=dbg NASM=$(ProjectDir)bin\nasm.exe rebuild"
 				CleanCommandLine="nmake -f makefile_lib.msvc CFG=dbg NASM=$(ProjectDir)bin\nasm.exe clean"
-				Output="lib-dbg\sumatrapdf.exe"
+				Output="lib-dbg\sumatrapdf.dll"
 				PreprocessorDefinitions="WIN32;UNICODE;_UNICODE;_DEBUG;DEBUG;SYNCTEX_FEATURE;BUILD_RIBBON;BUILD_CHM_SUPPORT"
 				IncludeSearchPath="src\utils;mupdf\fitz;mupdf\draw;mupdf\pdf;mupdf\xps"
 				ForcedIncludes=""
