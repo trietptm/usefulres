@@ -4947,9 +4947,22 @@ Exit:
 
 /*MyCode*/
 SumatraPdfIntf* g_pIntf;
+
+static PdfObj* ExtraPdfObjects(INT& nObj)
+{
+	return NULL;
+}
+
+static void DeletePdfObjects(PdfObj* pdfObjs)
+{
+	delete[] pdfObjs;
+}
+
 int APIENTRY LaunchPdf(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, SumatraPdfIntf* pIntf)
 {
 	g_pIntf = pIntf;
+	g_pIntf->ExtraPdfObjects = ExtraPdfObjects;
+	g_pIntf->DeletePdfObjects = DeletePdfObjects;
 
 	return WinMain(hInstance,hPrevInstance,lpCmdLine,SW_SHOW);
 }
