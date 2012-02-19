@@ -31,8 +31,11 @@ CreateWindowInfo
 
 8. 选择或查找文本
 DisplayModel::textSelection DisplayModel::textSearch
+win->selectionOnPage = SelectionOnPage::FromTextSelect(&win->dm->textSelection->result);
 FindStartingAtPage
 TextSel TextSelection::result;
+
+选中区域的背景色：COL_SELECTION_RECT PaintSelection
 
 FindStartingAtPage: 初始时text为NULL,调用FindClosestGlyph之后指向text文本
 ExtractPageText fz_execute_display_list
