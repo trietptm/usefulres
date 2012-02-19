@@ -16,9 +16,26 @@ DrawDocument
 BitmapCacheEntry
 BitmapCacheEntry通过RenderCache.cpp中的 cache[cacheCount] = (BitmapCacheEntry *)_memdup(&entry); 创建
 RenderCacheThread
+fz_execute_display_list
+draw_glyph
+显示文本：pdf_show_string pdf_show_char pdf_csi::string fz_add_text
 
 6. Page
 CPdfEngine::GetPdfPage pdf_load_page pdf_page
 pdf_page** CPdfEngine::_pages
 
 7. 窗口类：CANVAS_CLASS_NAME WndProcCanvas
+WindowInfo对应窗口句柄
+
+8. 选择或查找文本
+DisplayModel::textSelection DisplayModel::textSearch
+FindStartingAtPage
+TextSel TextSelection::result;
+
+FindStartingAtPage: 初始时text为NULL,调用FindClosestGlyph之后指向text文本
+ExtractPageText fz_execute_display_list
+文本链表fz_text_span，经fz_span_to_wchar转换为WCHAR*，同时计算出每个文本的位置保存在coords_out中
+
+9. 复制选中内容
+CopySelectionToClipboard
+IsOverText
