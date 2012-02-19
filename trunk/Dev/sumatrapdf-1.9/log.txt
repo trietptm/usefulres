@@ -39,3 +39,6 @@ ExtractPageText fz_execute_display_list
 9. 复制选中内容
 CopySelectionToClipboard
 IsOverText
+
+10. 入口点
+WinMain

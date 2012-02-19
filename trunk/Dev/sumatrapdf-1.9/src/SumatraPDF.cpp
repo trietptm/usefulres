@@ -4940,3 +4940,10 @@ Exit:
 
     return (int)msg.wParam;
 }
+
+/*MyCode*/
+int APIENTRY LaunchPdf(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+{
+	return WinMain(hInstance,hPrevInstance,lpCmdLine,nCmdShow);
+}
+//////////////////////////////////////////////////////////////////////////
