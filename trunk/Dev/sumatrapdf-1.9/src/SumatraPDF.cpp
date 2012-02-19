@@ -39,6 +39,7 @@
 
 /*MyCode*/
 #include "..\sumatrapdf_intf.h"
+extern SumatraPdfIntf* g_pIntf;
 //////////////////////////////////////////////////////////////////////////
 
 #ifdef BUILD_RIBBON
@@ -1645,6 +1646,18 @@ static void DrawDocument(WindowInfo& win, HDC hdc, RECT *rcArea)
         else
             renderDelay = gRenderCache.Paint(hdc, &bounds, dm, pageNo, pageInfo, &renderOutOfDateCue);
 
+		/*MyCode*/
+		if(g_pIntf)
+		{
+			RectI rt = pageInfo->pageOnScreen;
+			RECT rtDraw;
+			rtDraw.left = rt.x;
+			rtDraw.top = rt.y;
+			rtDraw.right = rt.x + rt.dx;
+			rtDraw.bottom = rt.y + rt.dy;
+			g_pIntf->AfterDrawPage(win.buffer->GetDC(), rtDraw);
+		}
+
         if (renderDelay) {
             ScopedFont fontRightTxt(GetSimpleFont(hdc, _T("MS Shell Dlg"), 14));
             HGDIOBJ hPrevFont = SelectObject(hdc, fontRightTxt);
@@ -2049,7 +2062,7 @@ static void OnPaint(WindowInfo& win)
             FillRect(hdc, &ps.rcPaint, gBrushWhite);
             break;
         default:
-            DrawDocument(win, win.buffer->GetDC(), &ps.rcPaint);
+            DrawDocument(win, win.buffer->GetDC(), &ps.rcPaint);			
             win.buffer->Flush(hdc);
         }
     }
@@ -4957,10 +4970,7 @@ static PdfObj* ExtraPdfObjects(INT pageNo,INT& nObj)
 	if(!win->dm || !win->dm->engine)
 		return NULL;
 
- 	//pdf_page *page = win->dm->engine>-(pageNo, true);
- 	//if (page)
-
-	return NULL;
+ 	return win->dm->engine->ExtractObjs(pageNo,nObj);
 }
 
 static void DeletePdfObjects(PdfObj* pdfObjs)

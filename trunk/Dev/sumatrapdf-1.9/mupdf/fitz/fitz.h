@@ -1145,6 +1145,8 @@ void fz_synchronize_end();
 /*MyCode*/
 typedef struct fz_display_node_s fz_display_node;
 
+#define STACK_SIZE 96
+
 /*MyCode*/
 typedef enum fz_display_command_e
 {
@@ -1188,6 +1190,19 @@ struct fz_display_node_s
 	fz_colorspace *colorspace;
 	float alpha;
 	float color[FZ_MAX_COLORS];
+};
+
+struct fz_display_list_s
+{
+	fz_display_node *first;
+	fz_display_node *last;
+
+	int top;
+	struct {
+		fz_rect *update;
+		fz_rect rect;
+	} stack[STACK_SIZE];
+	int tiled;
 };
 //////////////////////////////////////////////////////////////////////////
 

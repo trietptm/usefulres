@@ -637,10 +637,7 @@ UINT RenderCache::PaintTile(HDC hdc, RectI *bounds, DisplayModel *dm, int pageNo
                 (int)(bounds->dx * factor), (int)(bounds->dy * factor), SRCCOPY);
         else
             BitBlt(hdc, bounds->x, bounds->y, bounds->dx, bounds->dy,
-                bmpDC, xSrc, ySrc, SRCCOPY);
-
-		if(g_pIntf)
-			g_pIntf->AfterDrawPage(hdc, bounds->x, bounds->y, bounds->dx, bounds->dy);
+                bmpDC, xSrc, ySrc, SRCCOPY);		
 
         DeleteDC(bmpDC);
     }
