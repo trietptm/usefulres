@@ -58,6 +58,27 @@
 				CompileAsManaged=""
 			/>
 		</Configuration>
+		<Configuration
+			Name="Debug_Lib|Win32"
+			OutputDirectory="$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="0"
+			BuildLogFile="lib-dbg\BuildLog.htm"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="nmake -f makefile_lib.msvc CFG=dbg NASM=$(ProjectDir)bin\nasm.exe"
+				ReBuildCommandLine="nmake -f makefile_lib.msvc CFG=dbg NASM=$(ProjectDir)bin\nasm.exe rebuild"
+				CleanCommandLine="nmake -f makefile_lib.msvc CFG=dbg NASM=$(ProjectDir)bin\nasm.exe clean"
+				Output="lib-dbg\sumatrapdf.exe"
+				PreprocessorDefinitions="WIN32;UNICODE;_UNICODE;_DEBUG;DEBUG;SYNCTEX_FEATURE;BUILD_RIBBON;BUILD_CHM_SUPPORT"
+				IncludeSearchPath="src\utils;mupdf\fitz;mupdf\draw;mupdf\pdf;mupdf\xps"
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+		</Configuration>
 	</Configurations>
 	<References>
 	</References>
