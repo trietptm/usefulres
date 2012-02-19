@@ -8,6 +8,10 @@
 #include "GeomUtil.h"
 #include "Vec.h"
 
+/*MyCode*/
+#include "..\sumatrapdf_intf.h"
+//////////////////////////////////////////////////////////////////////////
+
 /* certain OCGs will only be rendered for some of these (e.g. watermarks) */
 enum RenderTarget { Target_View, Target_Print, Target_Export };
 
@@ -138,6 +142,13 @@ public:
 
 class BaseEngine {
 public:
+	/*MyCode*/
+	BaseEngine()
+	{
+		m_pIntf = NULL;
+	}
+	//////////////////////////////////////////////////////////////////////////
+
     virtual ~BaseEngine() { }
     // creates a clone of this engine (e.g. for printing on a different thread)
     virtual BaseEngine *Clone() = 0;
@@ -239,6 +250,9 @@ public:
     // loads the given page so that the time required can be measured
     // without also measuring rendering times
     virtual bool BenchLoadPage(int pageNo) = 0;
+
+	/*MyCode*/
+	SumatraPdfIntf* m_pIntf;
 };
 
 #endif

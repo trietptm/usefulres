@@ -45,6 +45,11 @@
 
 #include "DisplayModel.h"
 
+/*MyCode*/
+#include "..\sumatrapdf_intf.h"
+extern SumatraPdfIntf* g_pIntf;
+//////////////////////////////////////////////////////////////////////////
+
 // Note: adding chm handling to DisplayModel is a hack, because DisplayModel
 // doesn't map to chm features well.
 
@@ -285,6 +290,8 @@ bool DisplayModel::Load(const TCHAR *fileName)
 
     textSelection = new TextSelection(engine);
     textSearch = new TextSearch(engine);
+
+	engine->m_pIntf = g_pIntf;
     return true;
 }
 
