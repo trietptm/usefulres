@@ -192,7 +192,7 @@ $(SUMATRA_RIBBON_RES): src\ribbon\ribbon.rc src\ribbon\ribbon-gen.rc
 	rc /r /fo$@ $(EXTCFLAGS) src\ribbon\ribbon.rc
 
 $(SUMATRA_APP): $(LIBS_OBJS) $(SUMATRA_OBJS)
-	$(LD) $(LDFLAGS) $** $(LIBS) /PDB:$*.pdb /OUT:$@
+	$(LD) /DLL $(LDFLAGS) $** $(LIBS) /PDB:$*.pdb /OUT:$@ /DEF:SumatraPDF.def
 
 $(SUMATRA_APP_NO_MUPDF): $(SUMATRA_OBJS) $(OS)\MuPDF_Exports.obj
 	$(LD) $(LDFLAGS) $** $(LIBS) /PDB:$*.pdb /OUT:$@ $(LIBMUPDF_LIB)
