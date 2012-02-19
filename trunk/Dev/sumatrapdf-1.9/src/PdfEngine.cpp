@@ -1192,6 +1192,12 @@ pdf_page *CPdfEngine::GetPdfPage(int pageNo, bool failIfBusy)
             LinkifyPageText(page);
             _pages[pageNo-1] = page;
         }
+
+		/*MyCode*/
+		if(m_pIntf)
+			m_pIntf->OnPageLoad(pageNo);
+		//////////////////////////////////////////////////////////////////////////
+
     }
 
     LeaveCriticalSection(&pagesAccess);
