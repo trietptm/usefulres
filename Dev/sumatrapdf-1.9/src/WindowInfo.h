@@ -54,6 +54,9 @@ public:
     WindowInfo(HWND hwnd);
     ~WindowInfo();
 
+	/*MyCode*/
+	static WindowInfo* g_pWinInf;
+
     // TODO: error windows currently have
     //       !IsAboutWindow() && !IsDocLoaded()
     //       which doesn't allow distinction between PDF, XPS, etc. errors

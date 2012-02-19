@@ -13,6 +13,8 @@
 #include "Selection.h"
 #include "translations.h"
 
+WindowInfo* WindowInfo::g_pWinInf;
+
 WindowInfo::WindowInfo(HWND hwnd) :
     dm(NULL), menu(NULL), hwndFrame(hwnd),
     linkOnLastButtonDown(NULL), url(NULL), selectionOnPage(NULL),
@@ -45,10 +47,15 @@ WindowInfo::WindowInfo(HWND hwnd) :
     linkHandler = new LinkHandler(*this);
     notifications = new Notifications();
     fwdSearchMark.show = false;
+
+	/*MyCode*/
+	g_pWinInf = this;
 }
 
 WindowInfo::~WindowInfo() 
 {
+	g_pWinInf = NULL; /*MyCode*/
+
     delete stressTest;
 
     delete dm;

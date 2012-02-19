@@ -26,7 +26,8 @@ CPdfEngine::GetPdfPage pdf_load_page pdf_page
 pdf_page** CPdfEngine::_pages
 
 7. 窗口类：CANVAS_CLASS_NAME WndProcCanvas
-WindowInfo对应窗口句柄
+WindowInfo
+CreateWindowInfo
 
 8. 选择或查找文本
 DisplayModel::textSelection DisplayModel::textSearch

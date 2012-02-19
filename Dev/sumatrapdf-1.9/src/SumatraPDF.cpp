@@ -4948,8 +4948,18 @@ Exit:
 /*MyCode*/
 SumatraPdfIntf* g_pIntf;
 
-static PdfObj* ExtraPdfObjects(INT& nObj)
+static PdfObj* ExtraPdfObjects(INT pageNo,INT& nObj)
 {
+	WindowInfo* win = WindowInfo::g_pWinInf;
+	if(!win)
+		return NULL;
+
+	if(!win->dm || !win->dm->engine)
+		return NULL;
+
+ 	//pdf_page *page = win->dm->engine>-(pageNo, true);
+ 	//if (page)
+
 	return NULL;
 }
 
