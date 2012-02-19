@@ -1,10 +1,10 @@
 #include "fitz.h"
 
+#if 0 /*MyCode*/
 typedef struct fz_display_node_s fz_display_node;
 
 #define STACK_SIZE 96
 
-#if 0 /*MyCode*/
 typedef enum fz_display_command_e
 {
 	FZ_CMD_FILL_PATH,
@@ -48,7 +48,6 @@ struct fz_display_node_s
 	float alpha;
 	float color[FZ_MAX_COLORS];
 };
-#endif
 
 struct fz_display_list_s
 {
@@ -62,6 +61,8 @@ struct fz_display_list_s
 	} stack[STACK_SIZE];
 	int tiled;
 };
+
+#endif
 
 enum { ISOLATED = 1, KNOCKOUT = 2 };
 

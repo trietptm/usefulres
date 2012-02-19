@@ -1281,6 +1281,8 @@ PdfObj* CPdfEngine::ExtractObjs(int pageNo,int& nObj)
 	if(!page)
 		return NULL;
 
+	PdfObj* pObjs = NULL;
+
 	PdfPageRun *run;
 	run = GetPageRun(page, true);
 	if(run)
@@ -1288,12 +1290,33 @@ PdfObj* CPdfEngine::ExtractObjs(int pageNo,int& nObj)
 		EnterCriticalSection(&xrefAccess);
 		{
 			fz_display_node *node = NULL;
+
+			nObj = 0;
+			for (node = run->list->first; node; node = node->next)
+			{
+				nObj++;
+			}
+			if(nObj > 0)
+			{
+				pObjs = new PdfObj[nObj];
+				if(pObjs)
+				{
+					int iObj = 0;
+					for (node = run->list->first; node; iObj++, node = node->next)
+					{
+						pObjs[iObj].rect.x0 = node->rect.x0;
+						pObjs[iObj].rect.y0 = node->rect.y0;
+						pObjs[iObj].rect.x1 = node->rect.x1;
+						pObjs[iObj].rect.y1 = node->rect.y1;
+					}
+				}
+			}
 		}
 		LeaveCriticalSection(&xrefAccess);
 		DropPageRun(run);
 	}
 
-	return NULL;
+	return pObjs;
 }
 
 void CPdfEngine::DropPageRun(PdfPageRun *run, bool forceRemove)

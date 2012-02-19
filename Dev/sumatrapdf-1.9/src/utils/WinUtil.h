@@ -202,6 +202,9 @@ public:
 
     HDC GetDC() const { return hdcBuffer ? hdcBuffer : hdcCanvas; }
     void Flush(HDC hdc);
+
+	/*MyCode*/
+	const RectI& GetRect()const{return rect;}
 };
 
 inline SizeI GetBitmapSize(HBITMAP hbmp)

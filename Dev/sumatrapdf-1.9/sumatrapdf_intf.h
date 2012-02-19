@@ -32,6 +32,6 @@ public:
 		ExtraPdfObjects = NULL;
 		DeletePdfObjects = NULL;
 	}
-	virtual void AfterDrawPage(HDC hdc,INT x,INT y,INT cx,INT cy){};
+	virtual void AfterDrawPage(HDC hdc,const RECT& pageOnScreen){};
 	virtual void OnPageLoad(INT pageNo){}
 };
