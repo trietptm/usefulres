@@ -4946,8 +4946,11 @@ Exit:
 }
 
 /*MyCode*/
+SumatraPdfIntf* g_pIntf;
 int APIENTRY LaunchPdf(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, SumatraPdfIntf* pIntf)
 {
+	g_pIntf = pIntf;
+
 	return WinMain(hInstance,hPrevInstance,lpCmdLine,SW_SHOW);
 }
 //////////////////////////////////////////////////////////////////////////

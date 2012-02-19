@@ -6,6 +6,11 @@
 #include "Scopes.h"
 #include "WinUtil.h"
 
+/*MyCode*/
+#include "..\sumatrapdf_intf.h"
+extern SumatraPdfIntf* g_pIntf;
+//////////////////////////////////////////////////////////////////////////
+
 /* Define if you want to conserve memory by always freeing cached bitmaps
    for pages not visible. Disabling this might lead to pages not rendering
    due to insufficient (GDI) memory. */
@@ -633,6 +638,9 @@ UINT RenderCache::PaintTile(HDC hdc, RectI *bounds, DisplayModel *dm, int pageNo
         else
             BitBlt(hdc, bounds->x, bounds->y, bounds->dx, bounds->dy,
                 bmpDC, xSrc, ySrc, SRCCOPY);
+
+		if(g_pIntf)
+			g_pIntf->AfterDrawPage(hdc, bounds->x, bounds->y, bounds->dx, bounds->dy);
 
         DeleteDC(bmpDC);
     }
