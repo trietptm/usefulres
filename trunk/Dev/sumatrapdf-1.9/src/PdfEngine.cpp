@@ -735,6 +735,8 @@ public:
     virtual char *GetDecryptionKey() const;
     virtual void RunGC();
 
+	/*MyCode*/
+	virtual PdfObj* ExtractObjs(int pageNo,int& nObj);
 protected:
     const TCHAR *_fileName;
     char *_decryptionKey;
@@ -1270,6 +1272,28 @@ fz_error CPdfEngine::RunPage(pdf_page *page, fz_device *dev, fz_matrix ctm, Rend
     fz_free_device(dev);
 
     return error;
+}
+
+/*MyCode*/
+PdfObj* CPdfEngine::ExtractObjs(int pageNo,int& nObj)
+{
+	pdf_page *page = GetPdfPage(pageNo, true);
+	if(!page)
+		return NULL;
+
+	PdfPageRun *run;
+	run = GetPageRun(page, true);
+	if(run)
+	{
+		EnterCriticalSection(&xrefAccess);
+		{
+			fz_display_node *node = NULL;
+		}
+		LeaveCriticalSection(&xrefAccess);
+		DropPageRun(run);
+	}
+
+	return NULL;
 }
 
 void CPdfEngine::DropPageRun(PdfPageRun *run, bool forceRemove)
