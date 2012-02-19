@@ -13,6 +13,7 @@ pdf_load_object
 5. 绘制
 RenderedBitmap hbmp
 DrawDocument
+DBG_OUT("page %d ", pageNo);
 BitmapCacheEntry
 BitmapCacheEntry通过RenderCache.cpp中的 cache[cacheCount] = (BitmapCacheEntry *)_memdup(&entry); 创建
 RenderCacheThread
