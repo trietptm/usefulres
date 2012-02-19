@@ -37,6 +37,10 @@
 #include "Touch.h"
 #include "HtmlWindow.h"
 
+/*MyCode*/
+#include "..\sumatrapdf_intf.h"
+//////////////////////////////////////////////////////////////////////////
+
 #ifdef BUILD_RIBBON
 #include "Ribbon.h"
 // uncomment to actually use the (incomplete) ribbon
@@ -4942,8 +4946,8 @@ Exit:
 }
 
 /*MyCode*/
-int APIENTRY LaunchPdf(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+int APIENTRY LaunchPdf(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, SumatraPdfIntf* pIntf)
 {
-	return WinMain(hInstance,hPrevInstance,lpCmdLine,nCmdShow);
+	return WinMain(hInstance,hPrevInstance,lpCmdLine,SW_SHOW);
 }
 //////////////////////////////////////////////////////////////////////////
