@@ -736,7 +736,7 @@ public:
     virtual void RunGC();
 
 	/*MyCode*/
-	virtual PdfObj* ExtractObjs(int pageNo,int& nObj);
+	virtual PdfObj* ExtractObjs(int pageNo);
 protected:
     const TCHAR *_fileName;
     char *_decryptionKey;
@@ -1275,13 +1275,13 @@ fz_error CPdfEngine::RunPage(pdf_page *page, fz_device *dev, fz_matrix ctm, Rend
 }
 
 /*MyCode*/
-PdfObj* CPdfEngine::ExtractObjs(int pageNo,int& nObj)
+PdfObj* CPdfEngine::ExtractObjs(int pageNo)
 {
 	pdf_page *page = GetPdfPage(pageNo, true);
 	if(!page)
 		return NULL;
 
-	PdfObj* pObjs = NULL;
+	PdfObj* pHead = NULL;
 
 	PdfPageRun *run;
 	run = GetPageRun(page, true);
@@ -1290,33 +1290,34 @@ PdfObj* CPdfEngine::ExtractObjs(int pageNo,int& nObj)
 		EnterCriticalSection(&xrefAccess);
 		{
 			fz_display_node *node = NULL;
-
-			nObj = 0;
+			
+			PdfObj* pObj = NULL;
 			for (node = run->list->first; node; node = node->next)
 			{
-				nObj++;
-			}
-			if(nObj > 0)
-			{
-				pObjs = new PdfObj[nObj];
-				if(pObjs)
+				PdfObj* pNewObj = new PdfObj();
+
+				pNewObj->rect.x0 = node->rect.x0;
+				pNewObj->rect.y0 = node->rect.y0;
+				pNewObj->rect.x1 = node->rect.x1;
+				pNewObj->rect.y1 = node->rect.y1;
+
+				if(pObj)
 				{
-					int iObj = 0;
-					for (node = run->list->first; node; iObj++, node = node->next)
-					{
-						pObjs[iObj].rect.x0 = node->rect.x0;
-						pObjs[iObj].rect.y0 = node->rect.y0;
-						pObjs[iObj].rect.x1 = node->rect.x1;
-						pObjs[iObj].rect.y1 = node->rect.y1;
-					}
+					pObj->m_pNext = pNewObj;
+					pObj = pObj->m_pNext;
 				}
-			}
+				else
+				{
+					pObj = pNewObj;
+					pHead = pObj;
+				}
+			}		
 		}
 		LeaveCriticalSection(&xrefAccess);
 		DropPageRun(run);
 	}
 
-	return pObjs;
+	return pHead;
 }
 
 void CPdfEngine::DropPageRun(PdfPageRun *run, bool forceRemove)

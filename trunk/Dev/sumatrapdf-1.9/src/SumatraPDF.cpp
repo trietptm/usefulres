@@ -4961,7 +4961,7 @@ Exit:
 /*MyCode*/
 SumatraPdfIntf* g_pIntf;
 
-static PdfObj* ExtraPdfObjects(INT pageNo,INT& nObj)
+static PdfObj* ExtraPdfObjects(INT pageNo)
 {
 	WindowInfo* win = WindowInfo::g_pWinInf;
 	if(!win)
@@ -4970,12 +4970,20 @@ static PdfObj* ExtraPdfObjects(INT pageNo,INT& nObj)
 	if(!win->dm || !win->dm->engine)
 		return NULL;
 
- 	return win->dm->engine->ExtractObjs(pageNo,nObj);
+ 	return win->dm->engine->ExtractObjs(pageNo);
 }
 
 static void DeletePdfObjects(PdfObj* pdfObjs)
 {
-	delete[] pdfObjs;
+	//delete[] pdfObjs;
+
+	PdfObj* p = pdfObjs;
+	while(p)
+	{
+		PdfObj* pNext = p->m_pNext;		
+		delete p;
+		p = pNext;
+	}
 }
 
 static RECT CvtToScreen(int pageNo, const FRect& r)

@@ -254,7 +254,7 @@ public:
 	/*MyCode*/
 	SumatraPdfIntf* m_pIntf;
 
-	virtual PdfObj* ExtractObjs(int pageNo,int& nObj) {return NULL;};
+	virtual PdfObj* ExtractObjs(int pageNo) {return NULL;};
 	//////////////////////////////////////////////////////////////////////////
 };
 
