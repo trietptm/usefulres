@@ -4979,8 +4979,6 @@ static PdfObj* ExtraPdfObjects(INT pageNo)
 
 static void DeletePdfObjects(PdfObj* pdfObjs)
 {
-	//delete[] pdfObjs;
-
 	PdfObj* p = pdfObjs;
 	while(p)
 	{
@@ -5036,6 +5034,15 @@ static FPoint CvtFromScreen(const POINT& pt, int pageNo)
 	return ret;
 }
 
+static void UpdateView()
+{
+	WindowInfo* win = WindowInfo::g_pWinInf;
+	if(!win || !win->hwndCanvas)
+		return;
+
+	::InvalidateRect(win->hwndCanvas,NULL,TRUE);
+}
+
 static INT GetPageNoByPoint(INT x, INT y)
 {
 	WindowInfo* win = WindowInfo::g_pWinInf;
@@ -5060,6 +5067,7 @@ int APIENTRY LaunchPdf(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmd
 	g_pIntf->CvtToScreen = CvtToScreen;
 	g_pIntf->CvtFromScreen = CvtFromScreen;
 	g_pIntf->GetPageNoByPoint = GetPageNoByPoint;
+	g_pIntf->UpdateView = UpdateView;
 
 	return WinMain(hInstance,hPrevInstance,lpCmdLine,SW_SHOW);
 }
