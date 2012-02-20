@@ -770,7 +770,7 @@ protected:
     PdfPageRun    * GetPageRun(pdf_page *page, bool tryOnly=false);
     fz_error        RunPage(pdf_page *page, fz_device *dev, fz_matrix ctm,
                             RenderTarget target=Target_View,
-                            fz_bbox clipbox=fz_infinite_bbox, bool cacheRun=true);
+                            fz_bbox clipbox=fz_infinite_bbox, bool cacheRun=true, fz_display_node *nodeOnly = NULL);
     void            DropPageRun(PdfPageRun *run, bool forceRemove=false);
 
     PdfTocItem   *  BuildTocTree(pdf_outline *entry, int& idCounter);
@@ -1253,14 +1253,14 @@ PdfPageRun *CPdfEngine::GetPageRun(pdf_page *page, bool tryOnly)
     return result;
 }
 
-fz_error CPdfEngine::RunPage(pdf_page *page, fz_device *dev, fz_matrix ctm, RenderTarget target, fz_bbox clipbox, bool cacheRun)
+fz_error CPdfEngine::RunPage(pdf_page *page, fz_device *dev, fz_matrix ctm, RenderTarget target, fz_bbox clipbox, bool cacheRun, fz_display_node *nodeOnly)
 {
     fz_error error = fz_okay;
     PdfPageRun *run;
 
     if (Target_View == target && (run = GetPageRun(page, !cacheRun))) {
         EnterCriticalSection(&xrefAccess);
-        fz_execute_display_list(run->list, dev, ctm, clipbox, NULL);
+        fz_execute_display_list(run->list, dev, ctm, clipbox, nodeOnly);
         LeaveCriticalSection(&xrefAccess);
         DropPageRun(run);
     }
@@ -1328,7 +1328,21 @@ TCHAR* CPdfEngine::ExtractObjText(int pageNo, HXOBJ hObj)
 	if(!page)
 		return NULL;
 
-	return NULL;
+	fz_text_span *text = fz_new_text_span();
+	// use an infinite rectangle as bounds (instead of page->mediabox) to ensure that
+	// the extracted text is consistent between cached runs using a list device and
+	// fresh runs (otherwise the list device omits text outside the mediabox bounds)
+	fz_error error = RunPage(page, fz_new_text_device(text), fz_identity, Target_View, fz_infinite_bbox, true, static_cast<fz_display_node*>(hObj));
+
+	WCHAR *content = NULL;
+	if (!error)
+		content = fz_span_to_wchar(text, _T("\n"));
+
+	EnterCriticalSection(&xrefAccess);
+	fz_free_text_span(text);
+	LeaveCriticalSection(&xrefAccess);
+
+	return str::conv::FromWStrQ(content);
 }
 //////////////////////////////////////////////////////////////////////////
 
