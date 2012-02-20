@@ -38,7 +38,7 @@
 #include "HtmlWindow.h"
 
 /*MyCode*/
-#include "..\sumatrapdf_intf.h"
+#include "..\..\..\..\biggod.app\PDFEditor\sumatrapdf_intf.h"
 extern SumatraPdfIntf* g_pIntf;
 //////////////////////////////////////////////////////////////////////////
 
