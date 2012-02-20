@@ -36,6 +36,7 @@ FindStartingAtPage
 TextSel TextSelection::result;
 
 选中区域的背景色：COL_SELECTION_RECT PaintSelection
+SelectionOnPage::GetRect CvtToScreen
 
 FindStartingAtPage: 初始时text为NULL,调用FindClosestGlyph之后指向text文本
 ExtractPageText fz_execute_display_list

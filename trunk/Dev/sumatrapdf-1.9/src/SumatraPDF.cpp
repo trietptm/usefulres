@@ -4978,11 +4978,37 @@ static void DeletePdfObjects(PdfObj* pdfObjs)
 	delete[] pdfObjs;
 }
 
+static RECT CvtToScreen(int pageNo, const FRect& r)
+{
+	RECT ret = {0};
+
+	WindowInfo* win = WindowInfo::g_pWinInf;
+	if(!win)
+		return ret;
+
+	if(!win->dm)
+		return ret;
+
+	RectD rd;
+	rd.x = r.x0;
+	rd.y = r.y0;
+	rd.dx = r.x1 - r.x0;
+	rd.dy = r.y1 - r.y0;
+	RectI ri = win->dm->CvtToScreen(pageNo,rd);
+
+	ret.left = ri.x;
+	ret.top = ri.y;
+	ret.right = ri.x + ri.dx;
+	ret.bottom = ri.y + ri.dy;
+	return ret;
+}
+
 int APIENTRY LaunchPdf(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, SumatraPdfIntf* pIntf)
 {
 	g_pIntf = pIntf;
 	g_pIntf->ExtraPdfObjects = ExtraPdfObjects;
 	g_pIntf->DeletePdfObjects = DeletePdfObjects;
+	g_pIntf->CvtToScreen = CvtToScreen;
 
 	return WinMain(hInstance,hPrevInstance,lpCmdLine,SW_SHOW);
 }
