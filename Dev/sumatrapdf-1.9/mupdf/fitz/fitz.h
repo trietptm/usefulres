@@ -1075,10 +1075,14 @@ fz_device *fz_new_text_device(fz_text_span *text);
 
 typedef struct fz_display_list_s fz_display_list;
 
+/*MyCode*/
+typedef struct fz_display_node_s fz_display_node;
+
 fz_display_list *fz_new_display_list(void);
 void fz_free_display_list(fz_display_list *list);
 fz_device *fz_new_list_device(fz_display_list *list);
-void fz_execute_display_list(fz_display_list *list, fz_device *dev, fz_matrix ctm, fz_bbox area);
+/*MyCode 如果nodeOnly不为NULL,则只运行nodeOnly,否则运行整个list*/
+void fz_execute_display_list(fz_display_list *list, fz_device *dev, fz_matrix ctm, fz_bbox area, fz_display_node *nodeOnly);
 /* SumatraPDF: allow to optimize handling of single-image pages */
 int fz_list_is_single_image(fz_display_list *list);
 /* SumatraPDF: allow to detect pages requiring blending */
@@ -1143,8 +1147,6 @@ void fz_synchronize_begin();
 void fz_synchronize_end();
 
 /*MyCode*/
-typedef struct fz_display_node_s fz_display_node;
-
 #define STACK_SIZE 96
 
 /*MyCode*/
