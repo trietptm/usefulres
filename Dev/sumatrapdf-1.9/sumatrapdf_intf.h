@@ -26,11 +26,14 @@ class SumatraPdfIntf
 public:
 	PdfObj* (*ExtraPdfObjects)(INT pageNo,INT& nObj); //返回的指针要用DeletePdfObjects释放
 	void (*DeletePdfObjects)(PdfObj* pdfObjs); //delete PdfObj数组
+
+	RECT (*CvtToScreen)(int pageNo, const FRect& r);
 public:
 	SumatraPdfIntf()
 	{
 		ExtraPdfObjects = NULL;
 		DeletePdfObjects = NULL;
+		CvtToScreen = NULL;
 	}
 	virtual void AfterDrawPage(HDC hdc,const RECT& pageOnScreen){};
 	virtual void OnPageLoad(INT pageNo){}
