@@ -1846,6 +1846,10 @@ static void OnMouseLeftButtonDown(WindowInfo& win, int x, int y, WPARAM key)
         OnDraggingStart(win, x, y);
     else
         OnSelectionStart(&win, x, y, key);
+
+	/*MyCode*/
+	if(g_pIntf)
+		g_pIntf->OnMouseLeftButtonDown(x,y,key);
 }
 
 static void OnMouseLeftButtonUp(WindowInfo& win, int x, int y, WPARAM key)
@@ -5011,12 +5015,51 @@ static RECT CvtToScreen(int pageNo, const FRect& r)
 	return ret;
 }
 
+static FPoint CvtFromScreen(const POINT& pt, int pageNo)
+{
+	FPoint ret;
+
+	WindowInfo* win = WindowInfo::g_pWinInf;
+	if(!win)
+		return ret;
+
+	if(!win->dm)
+		return ret;
+
+	PointI ptI;
+	ptI.x = pt.x;
+	ptI.y = pt.y;
+	PointD ptD = win->dm->CvtFromScreen(ptI,pageNo);
+
+	ret.x = ptD.x;
+	ret.y = ptD.y;
+	return ret;
+}
+
+static INT GetPageNoByPoint(INT x, INT y)
+{
+	WindowInfo* win = WindowInfo::g_pWinInf;
+	if(!win)
+		return 0;
+
+	if(!win->dm)
+		return 0;
+
+	int pageNo = win->dm->GetPageNoByPoint(PointI(x, y));
+	if (win->dm->ValidPageNo(pageNo))
+		return pageNo;
+
+	return 0;
+}
+
 int APIENTRY LaunchPdf(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, SumatraPdfIntf* pIntf)
 {
 	g_pIntf = pIntf;
 	g_pIntf->ExtraPdfObjects = ExtraPdfObjects;
 	g_pIntf->DeletePdfObjects = DeletePdfObjects;
 	g_pIntf->CvtToScreen = CvtToScreen;
+	g_pIntf->CvtFromScreen = CvtFromScreen;
+	g_pIntf->GetPageNoByPoint = GetPageNoByPoint;
 
 	return WinMain(hInstance,hPrevInstance,lpCmdLine,SW_SHOW);
 }
