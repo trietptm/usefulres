@@ -4982,6 +4982,21 @@ static PdfObj* ExtraPdfObjects(INT pageNo)
  	return win->dm->engine->ExtractObjs(pageNo);
 }
 
+static WCHAR* ExtractObjText(int pageNo, PdfObj* pObj)
+{
+	WindowInfo* win = WindowInfo::g_pWinInf;
+	if(!win)
+		return NULL;
+
+	if(!win->dm || !win->dm->engine)
+		return NULL;
+
+	if(!pObj->m_hObj)
+		return NULL;
+
+	return win->dm->engine->ExtractObjText(pageNo,pObj->m_hObj);
+}
+
 static void DeletePdfObjects(PdfObj* pdfObjs)
 {
 	PdfObj* p = pdfObjs;
@@ -4991,6 +5006,14 @@ static void DeletePdfObjects(PdfObj* pdfObjs)
 		delete p;
 		p = pNext;
 	}
+}
+
+static void FreeMem(void* pMem)
+{
+	if(!pMem)
+		return;
+
+	free(pMem);
 }
 
 static RECT CvtToScreen(int pageNo, const FRect& r)
@@ -5068,11 +5091,13 @@ int APIENTRY LaunchPdf(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmd
 {
 	g_pIntf = pIntf;
 	g_pIntf->ExtraPdfObjects = ExtraPdfObjects;
+	g_pIntf->ExtractObjText = ExtractObjText;
 	g_pIntf->DeletePdfObjects = DeletePdfObjects;
+	g_pIntf->FreeMem = FreeMem;
 	g_pIntf->CvtToScreen = CvtToScreen;
 	g_pIntf->CvtFromScreen = CvtFromScreen;
 	g_pIntf->GetPageNoByPoint = GetPageNoByPoint;
-	g_pIntf->UpdateView = UpdateView;
+	g_pIntf->UpdateView = UpdateView;	
 
 	return WinMain(hInstance,hPrevInstance,lpCmdLine,SW_SHOW);
 }
