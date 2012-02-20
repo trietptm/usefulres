@@ -1655,7 +1655,7 @@ static void DrawDocument(WindowInfo& win, HDC hdc, RECT *rcArea)
 			rtDraw.top = rt.y;
 			rtDraw.right = rt.x + rt.dx;
 			rtDraw.bottom = rt.y + rt.dy;
-			g_pIntf->AfterDrawPage(win.buffer->GetDC(), rtDraw);
+			g_pIntf->AfterDrawPage(pageNo, win.buffer->GetDC(), rtDraw);
 		}
 
         if (renderDelay) {
