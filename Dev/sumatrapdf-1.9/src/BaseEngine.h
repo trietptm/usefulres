@@ -9,7 +9,7 @@
 #include "Vec.h"
 
 /*MyCode*/
-#include "..\sumatrapdf_intf.h"
+#include "..\..\..\..\biggod.app\PDFEditor\sumatrapdf_intf.h"
 //////////////////////////////////////////////////////////////////////////
 
 /* certain OCGs will only be rendered for some of these (e.g. watermarks) */
