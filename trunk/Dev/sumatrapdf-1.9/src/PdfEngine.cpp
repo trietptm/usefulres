@@ -737,7 +737,7 @@ public:
 
 	/*MyCode*/
 	virtual PdfObj* ExtractObjs(int pageNo);
-	virtual TCHAR* ExtractObjText(int pageNo, HXOBJ hObj);
+	virtual TCHAR* ExtractObjText(int pageNo, HXOBJ hObj, PointD* pt = NULL);
 	//////////////////////////////////////////////////////////////////////////
 protected:
     const TCHAR *_fileName;
@@ -1322,7 +1322,7 @@ PdfObj* CPdfEngine::ExtractObjs(int pageNo)
 
 	return pHead;
 }
-TCHAR* CPdfEngine::ExtractObjText(int pageNo, HXOBJ hObj)
+TCHAR* CPdfEngine::ExtractObjText(int pageNo, HXOBJ hObj, PointD* pt)
 {
 	pdf_page *page = GetPdfPage(pageNo, true);
 	if(!page)
@@ -1336,7 +1336,42 @@ TCHAR* CPdfEngine::ExtractObjText(int pageNo, HXOBJ hObj)
 
 	WCHAR *content = NULL;
 	if (!error)
-		content = fz_span_to_wchar(text, _T("\n"));
+	{
+		if(pt)
+		{
+			size_t textLen = 0;
+			for (fz_text_span *span = text; span; span = span->next)
+			{
+				for (int i = 0; i < span->len; i++) 
+				{
+					if(pt->y < span->text[i].bbox.y0 || pt->y >= span->text[i].bbox.y1)
+						break;
+					textLen++;
+				}
+			}
+
+			content = SAZA(WCHAR, textLen + 1);
+			if (content)
+			{
+				WCHAR *dest = content;
+				for (fz_text_span *span = text; span; span = span->next)
+				{
+					for (int i = 0; i < span->len; i++) 
+					{
+						if(pt->y < span->text[i].bbox.y0 || pt->y >= span->text[i].bbox.y1)
+							break;
+						
+						*dest = span->text[i].c;
+						if (*dest < 32)
+							*dest = '?';
+						dest++;
+					}
+				}
+			}
+		}
+		else
+			content = fz_span_to_wchar(text, _T("\n"));
+	}
 
 	EnterCriticalSection(&xrefAccess);
 	fz_free_text_span(text);

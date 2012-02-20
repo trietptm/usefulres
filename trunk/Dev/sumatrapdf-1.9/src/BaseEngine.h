@@ -255,7 +255,7 @@ public:
 	SumatraPdfIntf* m_pIntf;
 
 	virtual PdfObj* ExtractObjs(int pageNo) {return NULL;};
-	virtual TCHAR* ExtractObjText(int pageNo, HXOBJ hObj){return NULL;}
+	virtual TCHAR* ExtractObjText(int pageNo, HXOBJ hObj, PointD* pt = NULL){return NULL;}
 	//////////////////////////////////////////////////////////////////////////
 };
 
