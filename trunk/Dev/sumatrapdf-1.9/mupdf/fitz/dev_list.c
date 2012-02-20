@@ -517,7 +517,7 @@ fz_free_display_list(fz_display_list *list)
 }
 
 void
-fz_execute_display_list(fz_display_list *list, fz_device *dev, fz_matrix top_ctm, fz_bbox scissor)
+fz_execute_display_list(fz_display_list *list, fz_device *dev, fz_matrix top_ctm, fz_bbox scissor, fz_display_node *nodeOnly)
 {
 	fz_display_node *node;
 	fz_matrix ctm;
@@ -535,8 +535,19 @@ fz_execute_display_list(fz_display_list *list, fz_device *dev, fz_matrix top_ctm
 		scissor.x1 += 20; scissor.y1 += 20;
 	}
 
-	for (node = list->first; node; node = node->next)
+	if(nodeOnly)
+		node = nodeOnly;
+	else
+		node = list->first;
+
+	for (; node; node = node->next)
 	{
+		if(nodeOnly)
+		{
+			if(node != nodeOnly)
+				break;
+		}
+
 		/* cull objects to draw using a quick visibility test */
 
 		if (tiled || node->cmd == FZ_CMD_BEGIN_TILE || node->cmd == FZ_CMD_END_TILE)

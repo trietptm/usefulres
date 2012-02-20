@@ -737,6 +737,8 @@ public:
 
 	/*MyCode*/
 	virtual PdfObj* ExtractObjs(int pageNo);
+	virtual TCHAR* ExtractObjText(int pageNo, HXOBJ hObj);
+	//////////////////////////////////////////////////////////////////////////
 protected:
     const TCHAR *_fileName;
     char *_decryptionKey;
@@ -1258,7 +1260,7 @@ fz_error CPdfEngine::RunPage(pdf_page *page, fz_device *dev, fz_matrix ctm, Rend
 
     if (Target_View == target && (run = GetPageRun(page, !cacheRun))) {
         EnterCriticalSection(&xrefAccess);
-        fz_execute_display_list(run->list, dev, ctm, clipbox);
+        fz_execute_display_list(run->list, dev, ctm, clipbox, NULL);
         LeaveCriticalSection(&xrefAccess);
         DropPageRun(run);
     }
@@ -1296,6 +1298,7 @@ PdfObj* CPdfEngine::ExtractObjs(int pageNo)
 			{
 				PdfObj* pNewObj = new PdfObj();
 
+				pNewObj->m_hObj = node;
 				pNewObj->rect.x0 = node->rect.x0;
 				pNewObj->rect.y0 = node->rect.y0;
 				pNewObj->rect.x1 = node->rect.x1;
@@ -1319,6 +1322,15 @@ PdfObj* CPdfEngine::ExtractObjs(int pageNo)
 
 	return pHead;
 }
+TCHAR* CPdfEngine::ExtractObjText(int pageNo, HXOBJ hObj)
+{
+	pdf_page *page = GetPdfPage(pageNo, true);
+	if(!page)
+		return NULL;
+
+	return NULL;
+}
+//////////////////////////////////////////////////////////////////////////
 
 void CPdfEngine::DropPageRun(PdfPageRun *run, bool forceRemove)
 {
@@ -2409,7 +2421,7 @@ void CXpsEngine::runPage(xps_page *page, fz_device *dev, fz_matrix ctm, fz_bbox 
     XpsPageRun *run = getPageRun(page, !cacheRun);
     if (run) {
         EnterCriticalSection(&_ctxAccess);
-        fz_execute_display_list(run->list, dev, ctm, clipbox);
+        fz_execute_display_list(run->list, dev, ctm, clipbox, NULL);
         LeaveCriticalSection(&_ctxAccess);
         dropPageRun(run);
     }

@@ -1942,6 +1942,11 @@ static void OnMouseLeftButtonDblClk(WindowInfo& win, int x, int y, WPARAM key)
     }
 
     UpdateTextSelection(&win, false);
+
+	/*MyCode*/
+	if(g_pIntf)
+		g_pIntf->OnMouseLeftButtonDblClk(x,y,key);
+
     win.RepaintAsync();
 }
 
