@@ -4982,7 +4982,7 @@ static PdfObj* ExtraPdfObjects(INT pageNo)
  	return win->dm->engine->ExtractObjs(pageNo);
 }
 
-static WCHAR* ExtractObjText(int pageNo, PdfObj* pObj)
+static WCHAR* ExtractObjText(int pageNo, PdfObj* pObj, const FPoint* fPt)
 {
 	WindowInfo* win = WindowInfo::g_pWinInf;
 	if(!win)
@@ -4994,7 +4994,16 @@ static WCHAR* ExtractObjText(int pageNo, PdfObj* pObj)
 	if(!pObj->m_hObj)
 		return NULL;
 
-	return win->dm->engine->ExtractObjText(pageNo,pObj->m_hObj);
+	PointD* pPtD = NULL;
+	PointD ptD;
+	if(fPt)
+	{
+		ptD.x = fPt->x;
+		ptD.y = fPt->y;
+		pPtD = &ptD;
+	}
+
+	return win->dm->engine->ExtractObjText(pageNo,pObj->m_hObj,pPtD);
 }
 
 static void DeletePdfObjects(PdfObj* pdfObjs)
