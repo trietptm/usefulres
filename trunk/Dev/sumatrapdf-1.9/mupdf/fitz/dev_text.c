@@ -461,6 +461,10 @@ fz_text_extract_span(fz_text_span **last, fz_text *text, fz_matrix ctm, fz_point
 	{
 		if (text->items[i].gid < 0)
 		{
+			/*MyCode*/
+			(*last)->iItem = i;
+			//////////////////////////////////////////////////////////////////////////			
+
 			fz_add_text_char(last, font, size, text->wmode, text->items[i].ucs, fz_round_rect(rect));
 			multi ++;
 			fz_divide_text_chars(last, multi, fz_round_rect(rect));
@@ -489,6 +493,10 @@ fz_text_extract_span(fz_text_span **last, fz_text *text, fz_matrix ctm, fz_point
 
 			if (dist > size * LINE_DIST)
 			{
+				/*MyCode*/
+				(*last)->iItem = -1;
+				//////////////////////////////////////////////////////////////////////////
+
 				fz_add_text_newline(last, font, size, text->wmode);
 			}
 			else if (fabsf(dot) > 0.95f && dist > size * SPACE_DIST)
@@ -501,6 +509,11 @@ fz_text_extract_span(fz_text_span **last, fz_text *text, fz_matrix ctm, fz_point
 					spacerect.x1 = 0;
 					spacerect.y1 = 1;
 					spacerect = fz_transform_rect(trm, spacerect);
+
+					/*MyCode*/
+					(*last)->iItem = -1;
+					//////////////////////////////////////////////////////////////////////////
+
 					fz_add_text_char(last, font, size, text->wmode, ' ', fz_round_rect(spacerect));
 				}
 			}
@@ -535,6 +548,10 @@ fz_text_extract_span(fz_text_span **last, fz_text *text, fz_matrix ctm, fz_point
 		rect = fz_transform_rect(trm, rect);
 		pen->x = trm.e + dir.x * adv;
 		pen->y = trm.f + dir.y * adv;
+
+		/*MyCode*/
+		(*last)->iItem = i;
+		//////////////////////////////////////////////////////////////////////////
 
 		fz_add_text_char(last, font, size, text->wmode, text->items[i].ucs, fz_round_rect(rect));
 	}

@@ -1060,6 +1060,9 @@ struct fz_text_span_s
 	fz_text_char *text;
 	fz_text_span *next;
 	int eol;
+
+	/*MyCode*/
+	int iItem; //对应的fz_text_item索引值
 };
 
 fz_text_span *fz_new_text_span(void);

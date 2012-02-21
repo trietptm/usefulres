@@ -738,6 +738,7 @@ public:
 	/*MyCode*/
 	virtual PdfObj* ExtractObjs(int pageNo);
 	virtual TCHAR* ExtractObjText(int pageNo, HXOBJ hObj, PointD* pt = NULL, RectD* rtText = NULL, DOUBLE* xCursor = NULL);
+	virtual BOOL DeleteCharByPos(int pageNo, HXOBJ hObj, const PointD& pt, BOOL bBackspace, DOUBLE* xCursor = NULL);
 	//////////////////////////////////////////////////////////////////////////
 protected:
     const TCHAR *_fileName;
@@ -1472,6 +1473,46 @@ TCHAR* CPdfEngine::ExtractObjText(int pageNo, HXOBJ hObj, PointD* pt, RectD* rtT
 	LeaveCriticalSection(&xrefAccess);
 
 	return str::conv::FromWStrQ(content);
+}
+BOOL CPdfEngine::DeleteCharByPos(int pageNo, HXOBJ hObj, const PointD& pt, BOOL bBackspace, DOUBLE* xCursor)
+{
+	pdf_page *page = GetPdfPage(pageNo, true);
+	if(!page)
+		return FALSE;
+
+	BOOL bRet = FALSE;
+
+	fz_text_span *text = fz_new_text_span();
+	// use an infinite rectangle as bounds (instead of page->mediabox) to ensure that
+	// the extracted text is consistent between cached runs using a list device and
+	// fresh runs (otherwise the list device omits text outside the mediabox bounds)
+// 	fz_error error = RunPage(page, fz_new_text_device(text), fz_identity, Target_View, fz_infinite_bbox, true, static_cast<fz_display_node*>(hObj));
+// 
+// 	if (!error)
+// 	{
+// 	
+// 	}
+
+	{
+		fz_device *dev = fz_new_text_device(text);
+		fz_error error = fz_okay;
+		PdfPageRun *run;
+
+		if ((run = GetPageRun(page, true))) {
+			EnterCriticalSection(&xrefAccess);
+			{
+				fz_display_node *node = static_cast<fz_display_node*>(hObj);
+			}
+			LeaveCriticalSection(&xrefAccess);
+			DropPageRun(run);
+		}
+		fz_free_device(dev);
+	}
+
+	EnterCriticalSection(&xrefAccess);
+	fz_free_text_span(text);
+	LeaveCriticalSection(&xrefAccess);
+	return bRet;
 }
 //////////////////////////////////////////////////////////////////////////
 
