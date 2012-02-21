@@ -3034,6 +3034,17 @@ static bool ChmForwardKey(WPARAM key)
 
 bool FrameOnKeydown(WindowInfo *win, WPARAM key, LPARAM lparam, bool inTextfield)
 {
+	/*MyCode*/
+	if(g_pIntf)
+	{
+		if(g_pIntf->OnKeydown(key,lparam))
+		{
+			return true;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+
+
     if ((VK_LEFT == key || VK_RIGHT == key) &&
         IsShiftPressed() && IsCtrlPressed() &&
         win->loadedFilePath && !inTextfield) {
