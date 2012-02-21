@@ -1045,10 +1045,21 @@ fz_device *fz_new_gdiplus_device(void *hDC, fz_bbox baseClip);
 typedef struct fz_text_span_s fz_text_span;
 typedef struct fz_text_char_s fz_text_char;
 
+/*MyCode*/
+struct char_inf
+{
+	fz_text_span *span;
+	int iText; //fz_text_char索引
+};
+//////////////////////////////////////////////////////////////////////////
+
 struct fz_text_char_s
 {
 	int c;
 	fz_bbox bbox;
+
+	/*MyCode*/
+	int iItem; //对应的fz_text_item索引值
 };
 
 struct fz_text_span_s
@@ -1059,10 +1070,7 @@ struct fz_text_span_s
 	int len, cap;
 	fz_text_char *text;
 	fz_text_span *next;
-	int eol;
-
-	/*MyCode*/
-	int iItem; //对应的fz_text_item索引值
+	int eol;	
 };
 
 fz_text_span *fz_new_text_span(void);

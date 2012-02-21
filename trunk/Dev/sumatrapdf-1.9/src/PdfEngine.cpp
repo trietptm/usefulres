@@ -231,7 +231,8 @@ void fz_stream_fingerprint(fz_stream *file, unsigned char digest[16])
     fz_drop_buffer(buffer);
 }
 
-WCHAR *fz_span_to_wchar(fz_text_span *text, TCHAR *lineSep, RectI **coords_out=NULL)
+//pSpan_out(MyCode)：字符对应的fz_text_span*
+WCHAR *fz_span_to_wchar(fz_text_span *text, TCHAR *lineSep, RectI **coords_out=NULL, char_inf** ch_inf_out = NULL)
 {
     size_t lineSepLen = str::Len(lineSep);
     size_t textLen = 0;
@@ -251,6 +252,20 @@ WCHAR *fz_span_to_wchar(fz_text_span *text, TCHAR *lineSep, RectI **coords_out=N
         }
     }
 
+	/*MyCode*/
+	char_inf* destChInf = NULL;
+	if(ch_inf_out)
+	{
+		destChInf = *ch_inf_out = new char_inf[textLen];
+		if(!*ch_inf_out)
+		{
+			free(content);
+			free(*coords_out);
+			return NULL;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+
     WCHAR *dest = content;
     for (fz_text_span *span = text; span; span = span->next) {
         for (int i = 0; i < span->len; i++) {
@@ -260,6 +275,16 @@ WCHAR *fz_span_to_wchar(fz_text_span *text, TCHAR *lineSep, RectI **coords_out=N
             dest++;
             if (destRect)
                 *destRect++ = fz_bbox_to_RectI(span->text[i].bbox);
+
+			/*MyCode*/
+			if(destChInf)
+			{
+				destChInf->span = span;
+				destChInf->iText = i;
+
+				destChInf++;
+			} 
+			//////////////////////////////////////////////////////////////////////////
         }
         if (!span->eol && span->next)
             continue;
@@ -273,6 +298,19 @@ WCHAR *fz_span_to_wchar(fz_text_span *text, TCHAR *lineSep, RectI **coords_out=N
             ZeroMemory(destRect, lineSepLen * sizeof(fz_bbox)); //Me: bug??? 应该是sizeof(RectI)??? sizeof(RectI)==sizeof(fz_bbox)
             destRect += lineSepLen;
         }
+
+		/*MyCode*/
+		if(destChInf)
+		{
+			for(int i = 0;i < (int)lineSepLen;i++)
+			{
+				destChInf->span = NULL;
+				destChInf->iText = -1;
+
+				destChInf++;
+			}
+		} 
+		//////////////////////////////////////////////////////////////////////////
     }
 
     return content;
