@@ -270,7 +270,7 @@ WCHAR *fz_span_to_wchar(fz_text_span *text, TCHAR *lineSep, RectI **coords_out=N
         dest += MultiByteToWideChar(CP_ACP, 0, lineSep, -1, dest, lineSepLen + 1);
 #endif
         if (destRect) {
-            ZeroMemory(destRect, lineSepLen * sizeof(fz_bbox));
+            ZeroMemory(destRect, lineSepLen * sizeof(fz_bbox)); //Me: bug??? Ó¦¸ÃÊÇsizeof(RectI)??? sizeof(RectI)==sizeof(fz_bbox)
             destRect += lineSepLen;
         }
     }
@@ -737,7 +737,7 @@ public:
 
 	/*MyCode*/
 	virtual PdfObj* ExtractObjs(int pageNo);
-	virtual TCHAR* ExtractObjText(int pageNo, HXOBJ hObj, PointD* pt = NULL);
+	virtual TCHAR* ExtractObjText(int pageNo, HXOBJ hObj, PointD* pt = NULL, RectD* rtText = NULL);
 	//////////////////////////////////////////////////////////////////////////
 protected:
     const TCHAR *_fileName;
@@ -1322,7 +1322,7 @@ PdfObj* CPdfEngine::ExtractObjs(int pageNo)
 
 	return pHead;
 }
-TCHAR* CPdfEngine::ExtractObjText(int pageNo, HXOBJ hObj, PointD* pt)
+TCHAR* CPdfEngine::ExtractObjText(int pageNo, HXOBJ hObj, PointD* pt, RectD* rtText)
 {
 	pdf_page *page = GetPdfPage(pageNo, true);
 	if(!page)
@@ -1339,6 +1339,12 @@ TCHAR* CPdfEngine::ExtractObjText(int pageNo, HXOBJ hObj, PointD* pt)
 	{
 		if(pt)
 		{
+#if 0
+			double left = 0.0;
+			double top = 0.0;
+			double right = 0.0;
+			double bottom = 0.0;
+
 			size_t textLen = 0;
 			for (fz_text_span *span = text; span; span = span->next)
 			{
@@ -1346,8 +1352,36 @@ TCHAR* CPdfEngine::ExtractObjText(int pageNo, HXOBJ hObj, PointD* pt)
 				{
 					if(pt->y < span->text[i].bbox.y0 || pt->y >= span->text[i].bbox.y1)
 						break;
+
 					textLen++;
+
+					if(textLen==1)
+					{
+						left = span->text[i].bbox.x0;
+						top = span->text[i].bbox.y0;
+						right = span->text[i].bbox.x1;
+						bottom = span->text[i].bbox.y1;
+					}
+					else
+					{
+						if(span->text[i].bbox.x0 < left)
+							left = span->text[i].bbox.x0;
+						if(span->text[i].bbox.y0 < top)
+							top = span->text[i].bbox.y0;
+						if(span->text[i].bbox.x1 > right)
+							right = span->text[i].bbox.x1;
+						if(span->text[i].bbox.y1 > bottom)
+							bottom = span->text[i].bbox.y1;
+					}
 				}
+			}
+
+			if(rtText)
+			{
+				rtText->x = left;
+				rtText->y = top;
+				rtText->dx = right - left;
+				rtText->dy = bottom - top;
 			}
 
 			content = SAZA(WCHAR, textLen + 1);
@@ -1368,6 +1402,107 @@ TCHAR* CPdfEngine::ExtractObjText(int pageNo, HXOBJ hObj, PointD* pt)
 					}
 				}
 			}
+#else
+			RectI* coords = NULL;
+			content = fz_span_to_wchar(text, _T("\n"),&coords);
+			if(coords)
+			{
+				//if(rtText)
+				{
+					if(rtText)
+					{
+						rtText->x = 0.0;
+						rtText->y = 0.0;
+						rtText->dx = 0.0;
+						rtText->dy = 0.0;
+					}
+
+					if(content)
+					{
+						INT textLen = str::Len(content);
+						INT iLineIn = 0;
+						for(INT i = 0;i < textLen;i++)
+						{
+							if(content[i]=='\n')
+								iLineIn++;
+							else
+							{
+								if(pt->y >= coords[i].y)
+								{
+									break;
+								}
+							}
+						}
+
+						double left = 0.0;
+						double top = 0.0;
+						double right = 0.0;
+						double bottom = 0.0;
+
+						INT iLine = 0;
+						size_t lineTextLen = 0;
+						WCHAR* pLineText = NULL;
+						for(INT i = 0;i < textLen;i++)
+						{
+							if(iLine > iLineIn)
+								break;
+
+							if(content[i]=='\n')
+								iLine++;
+							else
+							{
+								if(iLine < iLineIn)
+									continue;
+
+								lineTextLen++;
+
+								if(lineTextLen==1)
+								{
+									pLineText = &content[i];
+
+									left = coords[i].x;
+									top = coords[i].y;
+									right = coords[i].x + coords[i].dx;
+									bottom = coords[i].y + coords[i].dy;
+								}
+								else
+								{
+									if(coords[i].x < left)
+										left = coords[i].x;
+									if(coords[i].y < top)
+										top = coords[i].y;
+									if(coords[i].x + coords[i].dx > right)
+										right = coords[i].x + coords[i].dx;
+									if(coords[i].y + coords[i].dy > bottom)
+										bottom = coords[i].y + coords[i].dy;
+								}
+							}
+						}
+
+						if(rtText)
+						{
+							rtText->x = left;
+							rtText->y = top;
+							rtText->dx = right - left;
+							rtText->dy = bottom - top;
+						}
+
+						if(pLineText)
+						{
+							WCHAR *content1 = SAZA(WCHAR, lineTextLen + 1);
+							if (content1)
+							{
+								memcpy(content1,pLineText,lineTextLen * sizeof(WCHAR));
+
+								free(content);
+								content = content1;
+							}
+						}
+					}
+				}
+				delete[] coords;
+			}
+#endif
 		}
 		else
 			content = fz_span_to_wchar(text, _T("\n"));
