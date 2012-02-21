@@ -739,6 +739,8 @@ public:
 	virtual PdfObj* ExtractObjs(int pageNo);
 	virtual TCHAR* ExtractObjText(int pageNo, HXOBJ hObj, PointD* pt = NULL, RectD* rtText = NULL, DOUBLE* xCursor = NULL);
 	virtual BOOL DeleteCharByPos(int pageNo, HXOBJ hObj, const PointD& pt, BOOL bBackspace, DOUBLE* xCursor = NULL);
+
+	TCHAR* GetObjLineText(fz_text_span *text, PointD* pt, RectD* rtText = NULL, DOUBLE* xCursor = NULL);
 	//////////////////////////////////////////////////////////////////////////
 protected:
     const TCHAR *_fileName;
@@ -1323,6 +1325,136 @@ PdfObj* CPdfEngine::ExtractObjs(int pageNo)
 
 	return pHead;
 }
+TCHAR* CPdfEngine::GetObjLineText(fz_text_span *text, PointD* pt, RectD* rtText, DOUBLE* xCursor)
+{
+	WCHAR *content = NULL;
+
+	RectI* coords = NULL;
+	content = fz_span_to_wchar(text, _T("\n"),&coords);
+	if(coords)
+	{
+		//if(rtText)
+		{
+			if(rtText)
+			{
+				rtText->x = 0.0;
+				rtText->y = 0.0;
+				rtText->dx = 0.0;
+				rtText->dy = 0.0;
+			}
+
+			if(content)
+			{
+				INT textLen = str::Len(content);
+				INT iLineIn = 0;
+				for(INT i = 0;i < textLen;i++)
+				{
+					if(content[i]=='\n')
+						iLineIn++;
+					else
+					{
+						if(pt->y >= coords[i].y)
+						{
+							break;
+						}
+					}
+				}
+
+				double left = 0.0;
+				double top = 0.0;
+				double right = 0.0;
+				double bottom = 0.0;
+
+				//BOOL bSetXCursor = FALSE; //已设置光标位置
+				DOUBLE cursorDist = 10000.0;
+
+				INT iLine = 0;
+				size_t lineTextLen = 0;
+				WCHAR* pLineText = NULL;
+				for(INT i = 0;i < textLen;i++)
+				{
+					if(iLine > iLineIn)
+						break;
+
+					if(content[i]=='\n')
+						iLine++;
+					else
+					{
+						if(iLine < iLineIn)
+							continue;
+
+						lineTextLen++;
+
+						if(lineTextLen==1)
+						{
+							pLineText = &content[i];
+
+							left = coords[i].x;
+							top = coords[i].y;
+							right = coords[i].x + coords[i].dx;
+							bottom = coords[i].y + coords[i].dy;									
+						}
+						else
+						{
+							if(coords[i].x < left)
+								left = coords[i].x;
+							if(coords[i].y < top)
+								top = coords[i].y;
+							if(coords[i].x + coords[i].dx > right)
+								right = coords[i].x + coords[i].dx;
+							if(coords[i].y + coords[i].dy > bottom)
+								bottom = coords[i].y + coords[i].dy;									
+						}
+
+						if(xCursor)
+						{
+							DOUBLE dist = fabs(coords[i].x - pt->x);
+							if(dist < cursorDist)
+							{
+								*xCursor = coords[i].x;
+								cursorDist = dist;
+							}
+
+							dist = fabs((coords[i].x + coords[i].dx) - pt->x);
+							if(dist < cursorDist)
+							{
+								if(i + 1 < textLen && content[i + 1]!='\n')
+									*xCursor = coords[i + 1].x;
+								else
+									*xCursor = coords[i].x + coords[i].dx;
+
+								cursorDist = dist;
+							}
+						}
+					}
+				}
+
+				if(rtText)
+				{
+					rtText->x = left;
+					rtText->y = top;
+					rtText->dx = right - left;
+					rtText->dy = bottom - top;
+				}
+
+				if(pLineText)
+				{
+					WCHAR *content1 = SAZA(WCHAR, lineTextLen + 1);
+					if (content1)
+					{
+						memcpy(content1,pLineText,lineTextLen * sizeof(WCHAR));
+
+						free(content);
+						content = content1;
+					}
+				}
+			}
+		}
+		delete[] coords;
+	}
+
+	return content;
+}
 TCHAR* CPdfEngine::ExtractObjText(int pageNo, HXOBJ hObj, PointD* pt, RectD* rtText, DOUBLE* xCursor)
 {
 	pdf_page *page = GetPdfPage(pageNo, true);
@@ -1339,131 +1471,7 @@ TCHAR* CPdfEngine::ExtractObjText(int pageNo, HXOBJ hObj, PointD* pt, RectD* rtT
 	if (!error)
 	{
 		if(pt)
-		{
-			RectI* coords = NULL;
-			content = fz_span_to_wchar(text, _T("\n"),&coords);
-			if(coords)
-			{
-				//if(rtText)
-				{
-					if(rtText)
-					{
-						rtText->x = 0.0;
-						rtText->y = 0.0;
-						rtText->dx = 0.0;
-						rtText->dy = 0.0;
-					}
-
-					if(content)
-					{
-						INT textLen = str::Len(content);
-						INT iLineIn = 0;
-						for(INT i = 0;i < textLen;i++)
-						{
-							if(content[i]=='\n')
-								iLineIn++;
-							else
-							{
-								if(pt->y >= coords[i].y)
-								{
-									break;
-								}
-							}
-						}
-
-						double left = 0.0;
-						double top = 0.0;
-						double right = 0.0;
-						double bottom = 0.0;
-
-						//BOOL bSetXCursor = FALSE; //已设置光标位置
-						DOUBLE cursorDist = 10000.0;
-						
-						INT iLine = 0;
-						size_t lineTextLen = 0;
-						WCHAR* pLineText = NULL;
-						for(INT i = 0;i < textLen;i++)
-						{
-							if(iLine > iLineIn)
-								break;
-
-							if(content[i]=='\n')
-								iLine++;
-							else
-							{
-								if(iLine < iLineIn)
-									continue;
-
-								lineTextLen++;
-
-								if(lineTextLen==1)
-								{
-									pLineText = &content[i];
-
-									left = coords[i].x;
-									top = coords[i].y;
-									right = coords[i].x + coords[i].dx;
-									bottom = coords[i].y + coords[i].dy;									
-								}
-								else
-								{
-									if(coords[i].x < left)
-										left = coords[i].x;
-									if(coords[i].y < top)
-										top = coords[i].y;
-									if(coords[i].x + coords[i].dx > right)
-										right = coords[i].x + coords[i].dx;
-									if(coords[i].y + coords[i].dy > bottom)
-										bottom = coords[i].y + coords[i].dy;									
-								}
-
-								if(xCursor)
-								{
-									DOUBLE dist = fabs(coords[i].x - pt->x);
-									if(dist < cursorDist)
-									{
-										*xCursor = coords[i].x;
-										cursorDist = dist;
-									}
-
-									dist = fabs((coords[i].x + coords[i].dx) - pt->x);
-									if(dist < cursorDist)
-									{
-										if(i + 1 < textLen && content[i + 1]!='\n')
-											*xCursor = coords[i + 1].x;
-										else
-											*xCursor = coords[i].x + coords[i].dx;
-
-										cursorDist = dist;
-									}
-								}
-							}
-						}
-
-						if(rtText)
-						{
-							rtText->x = left;
-							rtText->y = top;
-							rtText->dx = right - left;
-							rtText->dy = bottom - top;
-						}
-
-						if(pLineText)
-						{
-							WCHAR *content1 = SAZA(WCHAR, lineTextLen + 1);
-							if (content1)
-							{
-								memcpy(content1,pLineText,lineTextLen * sizeof(WCHAR));
-
-								free(content);
-								content = content1;
-							}
-						}
-					}
-				}
-				delete[] coords;
-			}
-		}
+			content = GetObjLineText(text,pt,rtText,xCursor);
 		else
 			content = fz_span_to_wchar(text, _T("\n"));
 	}
