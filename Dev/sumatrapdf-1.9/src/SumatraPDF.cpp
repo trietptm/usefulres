@@ -5032,6 +5032,24 @@ static WCHAR* ExtractObjText(int pageNo, PdfObj* pObj, const FPoint* fPt, FRect*
 	return rText;
 }
 
+static BOOL DeleteCharByPos(int pageNo, PdfObj* pObj, const FPoint& fPt, BOOL bBackspace, DOUBLE* xCursor)
+{
+	WindowInfo* win = WindowInfo::g_pWinInf;
+	if(!win)
+		return FALSE;
+
+	if(!win->dm || !win->dm->engine)
+		return FALSE;
+
+	if(!pObj->m_hObj)
+		return FALSE;
+
+	PointD ptD;
+	ptD.x = fPt.x;
+	ptD.y = fPt.y;	
+	return win->dm->engine->DeleteCharByPos(pageNo,pObj->m_hObj,ptD,bBackspace,xCursor);
+}
+
 static void DeletePdfObjects(PdfObj* pdfObjs)
 {
 	PdfObj* p = pdfObjs;
@@ -5132,7 +5150,8 @@ int APIENTRY LaunchPdf(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmd
 	g_pIntf->CvtToScreen = CvtToScreen;
 	g_pIntf->CvtFromScreen = CvtFromScreen;
 	g_pIntf->GetPageNoByPoint = GetPageNoByPoint;
-	g_pIntf->UpdateView = UpdateView;	
+	g_pIntf->UpdateView = UpdateView;
+	g_pIntf->DeleteCharByPos = DeleteCharByPos;
 
 	return WinMain(hInstance,hPrevInstance,lpCmdLine,SW_SHOW);
 }
