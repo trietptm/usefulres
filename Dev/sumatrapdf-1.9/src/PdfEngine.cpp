@@ -1976,6 +1976,7 @@ TCHAR *CPdfEngine::ExtractPageText(pdf_page *page, TCHAR *lineSep, RectI **coord
 
 TCHAR *CPdfEngine::ExtractPageText(int pageNo, TCHAR *lineSep, RectI **coords_out, RenderTarget target, char_inf** ch_inf_out)
 {
+#if 0
     pdf_page *page = GetPdfPage(pageNo, true);
     if (page)
         return ExtractPageText(page, lineSep, coords_out, target, false, ch_inf_out);
@@ -1993,6 +1994,14 @@ TCHAR *CPdfEngine::ExtractPageText(int pageNo, TCHAR *lineSep, RectI **coords_ou
     LeaveCriticalSection(&xrefAccess);
 
     return result;
+#else
+	/*MyCode*/
+	//只允许GetPdfPage中调用pdf_load_page
+	pdf_page *page = GetPdfPage(pageNo, false);
+	if (page)
+		return ExtractPageText(page, lineSep, coords_out, target, false, ch_inf_out);
+	return NULL;
+#endif
 }
 
 TCHAR *CPdfEngine::GetProperty(char *name)
