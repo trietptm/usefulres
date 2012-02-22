@@ -904,7 +904,7 @@ bool DisplayModel::IsOverText(PointI pt)
     return textSelection->IsOverGlyph(pageNo, pos.x, pos.y);
 }
 
-void DisplayModel::RenderVisibleParts()
+void DisplayModel::RenderVisibleParts(bool bForceRender)
 {
     int firstVisible = 0;
     int lastVisible = 0;
@@ -913,7 +913,7 @@ void DisplayModel::RenderVisibleParts()
         PageInfo *pageInfo = GetPageInfo(pageNo);
         if (pageInfo->visibleRatio > 0.0) {
             assert(pageInfo->shown);
-            dmCb->RenderPage(pageNo);
+            dmCb->RenderPage(pageNo, bForceRender);
             if (0 == firstVisible)
                 firstVisible = pageNo;
             lastVisible = pageNo;
@@ -924,11 +924,18 @@ void DisplayModel::RenderVisibleParts()
         // as a trade-off, we don't prerender two pages each in Facing
         // and Book View modes (else 4 of 8 potential request slots would be taken)
         if (lastVisible < PageCount())
-            dmCb->RenderPage(lastVisible + 1);
+            dmCb->RenderPage(lastVisible + 1, bForceRender);
         if (firstVisible > 1)
-            dmCb->RenderPage(firstVisible - 1);
+            dmCb->RenderPage(firstVisible - 1, bForceRender);
     }
 }
+
+/*MyCode*/
+void DisplayModel::Redraw()
+{
+	RenderVisibleParts(true);
+}
+//////////////////////////////////////////////////////////////////////////
 
 void DisplayModel::ChangeViewPortSize(SizeI newViewPortSize)
 {

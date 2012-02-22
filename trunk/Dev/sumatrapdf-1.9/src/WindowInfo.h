@@ -228,7 +228,7 @@ public:
     virtual void FocusFrame(bool always);
     virtual void Repaint() { RepaintAsync(); };
     virtual void UpdateScrollbars(SizeI canvas);
-    virtual void RenderPage(int pageNo);
+    virtual void RenderPage(int pageNo, bool bForceRender = false);
     virtual void CleanUp(DisplayModel *dm);
 };
 

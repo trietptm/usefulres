@@ -87,7 +87,7 @@ class DisplayModelCallback : public PasswordUI, public ChmNavigationCallback {
 public:
     virtual void Repaint() = 0;
     virtual void UpdateScrollbars(SizeI canvas) = 0;
-    virtual void RenderPage(int pageNo) = 0;
+    virtual void RenderPage(int pageNo, bool bForceRender = false) = 0;
     virtual void CleanUp(DisplayModel *dm) = 0;
 };
 
@@ -209,6 +209,9 @@ public:
 
     ChmEngine *     AsChmEngine() const;
 
+	/*MyCode*/
+	void Redraw();
+	//////////////////////////////////////////////////////////////////////////	
 protected:
 
     bool            Load(const TCHAR *fileName);
@@ -219,7 +222,7 @@ protected:
     PointI          GetContentStart(int pageNo);
     void            SetZoomVirtual(float zoomVirtual);
     void            RecalcVisibleParts();
-    void            RenderVisibleParts();
+    void            RenderVisibleParts(bool bForceRender = false);
 
     void            AddNavPoint(bool keepForward=false);
     RectD           GetContentBox(int pageNo, RenderTarget target=Target_View);

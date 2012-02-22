@@ -88,7 +88,7 @@ public:
     RenderCache();
     ~RenderCache();
 
-    void    Render(DisplayModel *dm, int pageNo, RenderingCallback *callback=NULL);
+    void    Render(DisplayModel *dm, int pageNo, bool bForceRender, RenderingCallback *callback=NULL);
     void    Render(DisplayModel *dm, int pageNo, int rotation, float zoom,
                    RectD pageRect, RenderingCallback& callback);
     void    CancelRendering(DisplayModel *dm);
@@ -117,7 +117,7 @@ private:
             }
     UINT    GetRenderDelay(DisplayModel *dm, int pageNo, TilePosition tile);
     void    Render(DisplayModel *dm, int pageNo, TilePosition tile,
-                   bool clearQueue=true, RenderingCallback *callback=NULL);
+                   bool clearQueue=true, RenderingCallback *callback=NULL, bool bForceRender = false); //bForceRender(MyCode)
     bool    Render(DisplayModel *dm, int pageNo, int rotation, float zoom,
                    TilePosition *tile=NULL, RectD *pageRect=NULL,
                    RenderingCallback *callback=NULL);
