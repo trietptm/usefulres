@@ -40,6 +40,7 @@ public:
 
 	/*MyCode*/
 	TCHAR* ExtractObjText(int pageNo, HXOBJ hObj, const PointD* pt = NULL, RectD* rtText = NULL, DOUBLE* xCursor = NULL);
+	BOOL DeleteCharByPos(int pageNo, HXOBJ hObj, const PointD& pt, BOOL bBackspace, DOUBLE* xCursor = NULL);
 	//////////////////////////////////////////////////////////////////////////
 protected:
     BaseEngine* engine;
