@@ -1278,7 +1278,7 @@ bool DoCachePageRendering(WindowInfo *win, int pageNo)
 }
 
 /* Send the request to render a given page to a rendering thread */
-void WindowInfo::RenderPage(int pageNo)
+void WindowInfo::RenderPage(int pageNo, bool bForceRender)
 {
     assert(dm);
     if (!dm)
@@ -1289,7 +1289,7 @@ void WindowInfo::RenderPage(int pageNo)
     if (!DoCachePageRendering(this, pageNo))
         return;
 
-    gRenderCache.Render(dm, pageNo, NULL);
+    gRenderCache.Render(dm, pageNo, bForceRender, NULL);
 }
 
 void WindowInfo::CleanUp(DisplayModel *dm)
@@ -5047,7 +5047,13 @@ static BOOL DeleteCharByPos(int pageNo, PdfObj* pObj, const FPoint& fPt, BOOL bB
 	PointD ptD;
 	ptD.x = fPt.x;
 	ptD.y = fPt.y;	
-	return win->dm->engine->DeleteCharByPos(pageNo,pObj->m_hObj,ptD,bBackspace,xCursor);
+	BOOL bRet = win->dm->engine->DeleteCharByPos(pageNo,pObj->m_hObj,ptD,bBackspace,xCursor);
+	if(bRet)
+	{
+		win->dm->Redraw();
+		win->RepaintAsync();
+	}
+	return bRet;
 }
 
 static void DeletePdfObjects(PdfObj* pdfObjs)

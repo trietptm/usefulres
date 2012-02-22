@@ -282,6 +282,8 @@ WCHAR *fz_span_to_wchar(fz_text_span *text, TCHAR *lineSep, RectI **coords_out=N
 				destChInf->span = span;
 				destChInf->iText = i;
 
+				destChInf->bbox = span->text[i].bbox;
+
 				destChInf++;
 			} 
 			//////////////////////////////////////////////////////////////////////////
@@ -306,6 +308,8 @@ WCHAR *fz_span_to_wchar(fz_text_span *text, TCHAR *lineSep, RectI **coords_out=N
 			{
 				destChInf->span = NULL;
 				destChInf->iText = -1;
+
+				destChInf->bbox.x0 = destChInf->bbox.y0 = destChInf->bbox.x1 = destChInf->bbox.y1 = 0;
 
 				destChInf++;
 			}
@@ -1477,15 +1481,6 @@ TCHAR* CPdfEngine::GetObjLineText(fz_text_span *text, const PointD* pt, RectD* r
 
 				if(pLineText)
 				{
-					WCHAR *content1 = SAZA(WCHAR, lineTextLen + 1);
-					if (content1)
-					{
-						memcpy(content1,pLineText,lineTextLen * sizeof(WCHAR));
-
-						free(content);
-						content = content1;
-					}
-
 					if(ch_inf_out && *ch_inf_out)
 					{
 						char_inf* pLineChInf = &(*ch_inf_out)[pLineText - content];
@@ -1498,6 +1493,15 @@ TCHAR* CPdfEngine::GetObjLineText(fz_text_span *text, const PointD* pt, RectD* r
 							*ch_inf_out = chInf1;
 						}
 					}
+
+					WCHAR *content1 = SAZA(WCHAR, lineTextLen + 1);
+					if (content1)
+					{
+						memcpy(content1,pLineText,lineTextLen * sizeof(WCHAR));
+
+						free(content);
+						content = content1;
+					}					
 				}
 			}
 		}
@@ -1554,8 +1558,30 @@ BOOL CPdfEngine::DeleteCharByPos(int pageNo, HXOBJ hObj, const PointD& pt, BOOL 
 		content = GetObjLineText(text,&pt,NULL,NULL,&chInf);
 		if(content)
 		{
-			int textLen = str::Len(content);
-			
+			if(chInf)
+			{
+				int textLen = str::Len(content);
+				for(int i = 0;i < textLen;i++)
+				{
+					if(chInf->iText != -1)
+					{
+						if(chInf->span)
+						{
+							fz_text_char* ch = &chInf->span->text[chInf->iText];
+
+							fz_display_node* node = static_cast<fz_display_node*>(hObj);
+							if(ch->iItem != -1)
+							{
+								node->item.text->items[i].gid = 2;
+								node->item.text->items[i].ucs = 'C';
+								bRet = TRUE;
+							}
+						}
+
+						break;
+					}
+				}
+			}
 
 			free(content);
 		}

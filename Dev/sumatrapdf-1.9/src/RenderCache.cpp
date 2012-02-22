@@ -302,21 +302,22 @@ bool RenderCache::ReduceTileSize()
     return true;
 }
 
-void RenderCache::Render(DisplayModel *dm, int pageNo, RenderingCallback *callback)
+void RenderCache::Render(DisplayModel *dm, int pageNo, bool bForceRender, RenderingCallback *callback)
 {
     TilePosition tile = { GetTileRes(dm, pageNo), 0, 0 };
-    Render(dm, pageNo, tile, true, callback);
+    Render(dm, pageNo, tile, true, callback, bForceRender);
 
     // render both tiles of the first row when splitting a page in four
     // (which always happens on larger displays for Fit Width)
     if (tile.res == 1 && !IsRenderQueueFull()) {
         tile.col = 1;
-        Render(dm, pageNo, tile, false);
+        Render(dm, pageNo, tile, false, NULL, bForceRender);
     }
 }
 
+//bForceRender(MyCode)
 /* Render a bitmap for page <pageNo> in <dm>. */
-void RenderCache::Render(DisplayModel *dm, int pageNo, TilePosition tile, bool clearQueue, RenderingCallback *callback)
+void RenderCache::Render(DisplayModel *dm, int pageNo, TilePosition tile, bool clearQueue, RenderingCallback *callback, bool bForceRender)
 {
     DBG_OUT("RenderCache::Render(pageNo=%d)\n", pageNo);
     assert(dm);
@@ -370,11 +371,14 @@ void RenderCache::Render(DisplayModel *dm, int pageNo, TilePosition tile, bool c
         }
     }
 
-    if (Exists(dm, pageNo, rotation, zoom, &tile)) {
-        /* This page has already been rendered in the correct dimensions
-           and isn't about to be rerendered in different dimensions */
-        goto Exit;
-    }
+	if(bForceRender==false)
+	{
+		if (Exists(dm, pageNo, rotation, zoom, &tile)) {
+			/* This page has already been rendered in the correct dimensions
+			   and isn't about to be rerendered in different dimensions */
+			goto Exit;
+		}
+	}
 
     ok = Render(dm, pageNo, rotation, zoom, &tile, NULL, callback);
 

@@ -1050,6 +1050,8 @@ struct char_inf
 {
 	fz_text_span *span;
 	int iText; //fz_text_charË÷Òý
+
+	fz_bbox bbox;
 };
 //////////////////////////////////////////////////////////////////////////
 
