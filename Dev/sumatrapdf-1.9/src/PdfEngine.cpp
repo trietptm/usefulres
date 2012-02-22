@@ -278,11 +278,11 @@ WCHAR *fz_span_to_wchar(fz_text_span *text, TCHAR *lineSep, RectI **coords_out=N
 
 			/*MyCode*/
 			if(destChInf)
-			{
-				destChInf->node = span->node;
+			{				
 				destChInf->span = span;
 				destChInf->iText = i;				
 
+				destChInf->node = span->text[i].node;
 				destChInf->bbox = span->text[i].bbox;
 
 				destChInf++;
@@ -1975,7 +1975,7 @@ TCHAR *CPdfEngine::ExtractPageText(int pageNo, TCHAR *lineSep, RectI **coords_ou
 {
     pdf_page *page = GetPdfPage(pageNo, true);
     if (page)
-        return ExtractPageText(page, lineSep, coords_out, target, ch_inf_out);
+        return ExtractPageText(page, lineSep, coords_out, target, false, ch_inf_out);
 
     EnterCriticalSection(&xrefAccess);
     fz_error error = pdf_load_page(&page, _xref, pageNo - 1);
@@ -1983,7 +1983,7 @@ TCHAR *CPdfEngine::ExtractPageText(int pageNo, TCHAR *lineSep, RectI **coords_ou
     if (error)
         return NULL;
 
-    TCHAR *result = ExtractPageText(page, lineSep, coords_out, target, ch_inf_out);
+    TCHAR *result = ExtractPageText(page, lineSep, coords_out, target, false, ch_inf_out);
 
     EnterCriticalSection(&xrefAccess);
     pdf_free_page(page);

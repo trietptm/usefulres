@@ -227,3 +227,140 @@ TCHAR *TextSelection::ExtractText(TCHAR *lineSep)
 
     return lines.Join(lineSep);
 }
+
+/*MyCode*/
+TCHAR* TextSelection::ExtractObjText(int pageNo, HXOBJ hObj, const PointD* pt, RectD* rtText, DOUBLE* xCursor)
+{
+	assert(1 <= pageNo && pageNo <= engine->PageCount());
+	if (!coords[pageNo - 1])
+		FindClosestGlyph(pageNo, 0, 0);
+
+	WCHAR* pLineText = NULL;
+
+	if(text[pageNo - 1] && chInf[pageNo - 1])
+	{
+		WCHAR* pageText = text[pageNo - 1];
+		RectI* pageCoords = coords[pageNo - 1];
+		char_inf* pageChInf = chInf[pageNo - 1];
+
+		int textLen = str::Len(pageText);
+		if(textLen > 0)
+		{
+			int iPos = 0;
+			while(iPos < textLen)
+			{
+				if(pLineText)
+					break;
+
+				int iObjFirstCh = -1;
+				for(int i = iPos;i < textLen;i++)
+				{
+					const char_inf& ci = pageChInf[i];
+
+					if(ci.node != hObj)
+						continue;
+
+					iObjFirstCh = i;
+					break;
+				}
+
+				if(iObjFirstCh == -1)
+					break;
+			
+				int iFirstGoodCh = -1;
+				for(int i = iObjFirstCh;i < textLen;i++)
+				{
+					const char_inf& ci = pageChInf[i];
+
+					if(ci.node != hObj)
+					{
+						iPos = i;
+						break;
+					}
+
+					if(pt->y >= pageCoords[i].y)
+					{
+						iFirstGoodCh = i;
+						break;
+					}
+				}
+
+				if(iFirstGoodCh != -1)
+				{
+					double left = 0.0;
+					double top = 0.0;
+					double right = 0.0;
+					double bottom = 0.0;
+
+					DOUBLE cursorDist = 10000.0;
+
+					for(int i = iFirstGoodCh;i < textLen;i++)
+					{
+						const char_inf& ci = pageChInf[i];
+
+						if(ci.node != hObj || pageText[i]=='\n')
+						{
+							iPos = i;
+							break;
+						}
+
+						//计算行矩形范围
+						if(i==iFirstGoodCh)
+						{
+							pLineText = &pageText[i];
+
+							left = pageCoords[i].x;
+							top = pageCoords[i].y;
+							right = pageCoords[i].x + pageCoords[i].dx;
+							bottom = pageCoords[i].y + pageCoords[i].dy;									
+						}
+						else
+						{
+							if(pageCoords[i].x < left)
+								left = pageCoords[i].x;
+							if(pageCoords[i].y < top)
+								top = pageCoords[i].y;
+							if(pageCoords[i].x + pageCoords[i].dx > right)
+								right = pageCoords[i].x + pageCoords[i].dx;
+							if(pageCoords[i].y + pageCoords[i].dy > bottom)
+								bottom = pageCoords[i].y + pageCoords[i].dy;									
+						}
+
+						//计算光标位置
+						if(xCursor)
+						{
+							DOUBLE dist = fabs(pageCoords[i].x - pt->x);
+							if(dist < cursorDist)
+							{
+								*xCursor = pageCoords[i].x;
+								cursorDist = dist;
+							}
+
+							dist = fabs((pageCoords[i].x + pageCoords[i].dx) - pt->x);
+							if(dist < cursorDist)
+							{
+								if(i + 1 < textLen && pageText[i + 1]!='\n')
+									*xCursor = pageCoords[i + 1].x;
+								else
+									*xCursor = pageCoords[i].x + pageCoords[i].dx;
+
+								cursorDist = dist;
+							}
+						}
+					}
+
+					if(rtText)
+					{
+						rtText->x = left;
+						rtText->y = top;
+						rtText->dx = right - left;
+						rtText->dy = bottom - top;
+					}
+				}
+			}
+		}
+	}
+
+	return pLineText;
+}
+//////////////////////////////////////////////////////////////////////////

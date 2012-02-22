@@ -1065,6 +1065,7 @@ struct fz_text_char_s
 	fz_bbox bbox;
 
 	/*MyCode*/
+	fz_display_node* node;
 	int iItem; //对应的fz_text_item索引值	
 	//////////////////////////////////////////////////////////////////////////
 };
@@ -1078,9 +1079,6 @@ struct fz_text_span_s
 	fz_text_char *text;
 	fz_text_span *next;
 	int eol;
-
-	/*MyCode*/
-	fz_display_node* node;
 };
 
 fz_text_span *fz_new_text_span(void);

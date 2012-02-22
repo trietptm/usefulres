@@ -38,6 +38,9 @@ public:
 
     TextSel result;
 
+	/*MyCode*/
+	TCHAR* ExtractObjText(int pageNo, HXOBJ hObj, const PointD* pt = NULL, RectD* rtText = NULL, DOUBLE* xCursor = NULL);
+	//////////////////////////////////////////////////////////////////////////
 protected:
     BaseEngine* engine;
     RectI    ** coords;
