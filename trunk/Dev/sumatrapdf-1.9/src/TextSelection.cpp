@@ -8,6 +8,7 @@ TextSelection::TextSelection(BaseEngine *engine) : engine(engine)
 {
     int count = engine->PageCount();
     coords = SAZA(RectI *, count);
+	chInf = SAZA(char_inf *, count); //MyCode
     text = SAZA(TCHAR *, count);
     lens = SAZA(int, count);
 
@@ -29,9 +30,14 @@ TextSelection::~TextSelection()
         delete[] coords[i];
         coords[i] = NULL;
         str::ReplacePtr(&text[i], NULL);
+
+		/*MyCode*/
+		delete[] chInf[i];
+		chInf[i] = NULL;
     }
 
     free(coords);
+	free(chInf); //MyCode
     free(text);
     free(lens);
 }
@@ -52,7 +58,7 @@ int TextSelection::FindClosestGlyph(int pageNo, double x, double y)
 {
     assert(1 <= pageNo && pageNo <= engine->PageCount());
     if (!text[pageNo - 1]) {
-        text[pageNo - 1] = engine->ExtractPageText(pageNo, _T("\n"), &coords[pageNo - 1]);
+        text[pageNo - 1] = engine->ExtractPageText(pageNo, _T("\n"), &coords[pageNo - 1], Target_View, &chInf[pageNo - 1]);
         if (!text[pageNo - 1]) {
             text[pageNo - 1] = str::Dup(_T(""));
             lens[pageNo - 1] = 0;

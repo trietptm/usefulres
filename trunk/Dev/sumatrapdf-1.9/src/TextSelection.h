@@ -41,6 +41,7 @@ public:
 protected:
     BaseEngine* engine;
     RectI    ** coords;
+	char_inf ** chInf; //MyCode
     TCHAR    ** text;
     int       * lens;
 
