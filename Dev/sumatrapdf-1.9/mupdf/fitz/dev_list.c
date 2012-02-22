@@ -290,7 +290,7 @@ fz_list_clip_stroke_path(void *user, fz_path *path, fz_rect *rect, fz_stroke_sta
 
 static void
 fz_list_fill_text(void *user, fz_text *text, fz_matrix ctm,
-	fz_colorspace *colorspace, float *color, float alpha)
+	fz_colorspace *colorspace, float *color, float alpha, void *_node)
 {
 	fz_display_node *node;
 	node = fz_new_display_node(FZ_CMD_FILL_TEXT, ctm, colorspace, color, alpha);
@@ -620,7 +620,7 @@ visible:
 		}
 		case FZ_CMD_FILL_TEXT:
 			fz_fill_text(dev, node->item.text, ctm,
-				node->colorspace, node->color, node->alpha);
+				node->colorspace, node->color, node->alpha, node);
 			break;
 		case FZ_CMD_STROKE_TEXT:
 			fz_stroke_text(dev, node->item.text, node->stroke, ctm,

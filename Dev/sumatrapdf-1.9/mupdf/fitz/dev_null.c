@@ -51,10 +51,10 @@ fz_clip_stroke_path(fz_device *dev, fz_path *path, fz_rect *rect, fz_stroke_stat
 
 void
 fz_fill_text(fz_device *dev, fz_text *text, fz_matrix ctm,
-	fz_colorspace *colorspace, float *color, float alpha)
+	fz_colorspace *colorspace, float *color, float alpha, void *node)
 {
 	if (dev->fill_text)
-		dev->fill_text(dev->user, text, ctm, colorspace, color, alpha);
+		dev->fill_text(dev->user, text, ctm, colorspace, color, alpha, node);
 }
 
 void

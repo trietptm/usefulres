@@ -29,6 +29,10 @@ fz_new_text_span(void)
 	span->text = NULL;
 	span->next = NULL;
 	span->eol = 0;
+
+	/*MyCode*/
+	span->node = NULL;
+
 	return span;
 }
 
@@ -550,9 +554,10 @@ fz_text_extract_span(fz_text_span **last, fz_text *text, fz_matrix ctm, fz_point
 
 static void
 fz_text_fill_text(void *user, fz_text *text, fz_matrix ctm,
-	fz_colorspace *colorspace, float *color, float alpha)
+	fz_colorspace *colorspace, float *color, float alpha, void *node)
 {
 	fz_text_device *tdev = user;
+	tdev->span->node = node; //MyCode
 	fz_text_extract_span(&tdev->span, text, ctm, &tdev->point);
 }
 

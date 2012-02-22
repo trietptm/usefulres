@@ -1174,7 +1174,7 @@ gdiplus_run_t3_text(void *user, fz_text *text, fz_matrix ctm,
 
 extern "C" static void
 fz_gdiplus_fill_text(void *user, fz_text *text, fz_matrix ctm,
-	fz_colorspace *colorspace, float *color, float alpha)
+	fz_colorspace *colorspace, float *color, float alpha, void *node)
 {
 	Brush *brush = gdiplus_get_brush(user, colorspace, color, alpha);
 	if (text->font->ft_face)

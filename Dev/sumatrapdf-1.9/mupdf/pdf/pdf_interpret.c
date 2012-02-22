@@ -461,7 +461,7 @@ pdf_flush_text(pdf_csi *csi)
 			break;
 		case PDF_MAT_COLOR:
 			fz_fill_text(csi->dev, text, gstate->ctm,
-				gstate->fill.colorspace, gstate->fill.v, gstate->fill.alpha);
+				gstate->fill.colorspace, gstate->fill.v, gstate->fill.alpha, NULL); //NULL(MyCode)
 			break;
 		case PDF_MAT_PATTERN:
 			if (gstate->fill.pattern)
