@@ -5019,7 +5019,11 @@ static WCHAR* ExtractObjText(int pageNo, PdfObj* pObj, const FPoint* fPt, FRect*
 	if(rtText)
 		pRtD = &rtD;
 	
+#if 0
 	WCHAR* rText = win->dm->engine->ExtractObjText(pageNo,pObj->m_hObj,pPtD,pRtD,xCursor);
+#else
+	WCHAR* rText = win->dm->textSelection->ExtractObjText(pageNo,pObj->m_hObj,pPtD,pRtD,xCursor);
+#endif
 
 	if(rtText)
 	{

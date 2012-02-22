@@ -29,10 +29,6 @@ fz_new_text_span(void)
 	span->text = NULL;
 	span->next = NULL;
 	span->eol = 0;
-
-	/*MyCode*/
-	span->node = NULL;
-
 	return span;
 }
 
@@ -58,7 +54,7 @@ free_without_recursion:
 
 //iItem(MyCode):对应的fz_text_item索引值
 static void
-fz_add_text_char_imp(fz_text_span *span, int c, fz_bbox bbox, int iItem)
+fz_add_text_char_imp(fz_text_span *span, int c, fz_bbox bbox, int iItem, fz_display_node* node)
 {
 	if (span->len + 1 >= span->cap)
 	{
@@ -70,6 +66,7 @@ fz_add_text_char_imp(fz_text_span *span, int c, fz_bbox bbox, int iItem)
 
 	/*MyCode*/
 	span->text[span->len].iItem = iItem;
+	span->text[span->len].node = node;
 	//////////////////////////////////////////////////////////////////////////	
 
 	span->len ++;
@@ -87,7 +84,7 @@ fz_split_bbox(fz_bbox bbox, int i, int n)
 
 //iItem(MyCode):对应的fz_text_item索引值
 static void
-fz_add_text_char(fz_text_span **last, fz_font *font, float size, int wmode, int c, fz_bbox bbox, int iItem)
+fz_add_text_char(fz_text_span **last, fz_font *font, float size, int wmode, int c, fz_bbox bbox, int iItem, fz_display_node* node)
 {
 	fz_text_span *span = *last;
 
@@ -112,34 +109,34 @@ fz_add_text_char(fz_text_span **last, fz_font *font, float size, int wmode, int 
 	case -1: /* ignore when one unicode character maps to multiple glyphs */
 		break;
 	case 0xFB00: /* ff */
-		fz_add_text_char_imp(span, 'f', fz_split_bbox(bbox, 0, 2), iItem);
-		fz_add_text_char_imp(span, 'f', fz_split_bbox(bbox, 1, 2), iItem);
+		fz_add_text_char_imp(span, 'f', fz_split_bbox(bbox, 0, 2), iItem, node);
+		fz_add_text_char_imp(span, 'f', fz_split_bbox(bbox, 1, 2), iItem, node);
 		break;
 	case 0xFB01: /* fi */
-		fz_add_text_char_imp(span, 'f', fz_split_bbox(bbox, 0, 2), iItem);
-		fz_add_text_char_imp(span, 'i', fz_split_bbox(bbox, 1, 2), iItem);
+		fz_add_text_char_imp(span, 'f', fz_split_bbox(bbox, 0, 2), iItem, node);
+		fz_add_text_char_imp(span, 'i', fz_split_bbox(bbox, 1, 2), iItem, node);
 		break;
 	case 0xFB02: /* fl */
-		fz_add_text_char_imp(span, 'f', fz_split_bbox(bbox, 0, 2), iItem);
-		fz_add_text_char_imp(span, 'l', fz_split_bbox(bbox, 1, 2), iItem);
+		fz_add_text_char_imp(span, 'f', fz_split_bbox(bbox, 0, 2), iItem, node);
+		fz_add_text_char_imp(span, 'l', fz_split_bbox(bbox, 1, 2), iItem, node);
 		break;
 	case 0xFB03: /* ffi */
-		fz_add_text_char_imp(span, 'f', fz_split_bbox(bbox, 0, 3), iItem);
-		fz_add_text_char_imp(span, 'f', fz_split_bbox(bbox, 1, 3), iItem);
-		fz_add_text_char_imp(span, 'i', fz_split_bbox(bbox, 2, 3), iItem);
+		fz_add_text_char_imp(span, 'f', fz_split_bbox(bbox, 0, 3), iItem, node);
+		fz_add_text_char_imp(span, 'f', fz_split_bbox(bbox, 1, 3), iItem, node);
+		fz_add_text_char_imp(span, 'i', fz_split_bbox(bbox, 2, 3), iItem, node);
 		break;
 	case 0xFB04: /* ffl */
-		fz_add_text_char_imp(span, 'f', fz_split_bbox(bbox, 0, 3), iItem);
-		fz_add_text_char_imp(span, 'f', fz_split_bbox(bbox, 1, 3), iItem);
-		fz_add_text_char_imp(span, 'l', fz_split_bbox(bbox, 2, 3), iItem);
+		fz_add_text_char_imp(span, 'f', fz_split_bbox(bbox, 0, 3), iItem, node);
+		fz_add_text_char_imp(span, 'f', fz_split_bbox(bbox, 1, 3), iItem, node);
+		fz_add_text_char_imp(span, 'l', fz_split_bbox(bbox, 2, 3), iItem, node);
 		break;
 	case 0xFB05: /* long st */
 	case 0xFB06: /* st */
-		fz_add_text_char_imp(span, 's', fz_split_bbox(bbox, 0, 2), iItem);
-		fz_add_text_char_imp(span, 't', fz_split_bbox(bbox, 1, 2), iItem);
+		fz_add_text_char_imp(span, 's', fz_split_bbox(bbox, 0, 2), iItem, node);
+		fz_add_text_char_imp(span, 't', fz_split_bbox(bbox, 1, 2), iItem, node);
 		break;
 	default:
-		fz_add_text_char_imp(span, c, bbox, iItem);
+		fz_add_text_char_imp(span, c, bbox, iItem, node);
 		break;
 	}
 }
@@ -413,7 +410,7 @@ fixup_delete_duplicates:
 /***** various string fixups *****/
 
 static void
-fz_text_extract_span(fz_text_span **last, fz_text *text, fz_matrix ctm, fz_point *pen)
+fz_text_extract_span(fz_text_span **last, fz_text *text, fz_matrix ctm, fz_point *pen, fz_display_node* node)
 {
 	fz_font *font = text->font;
 	FT_Face face = font->ft_face;
@@ -472,7 +469,7 @@ fz_text_extract_span(fz_text_span **last, fz_text *text, fz_matrix ctm, fz_point
 	{
 		if (text->items[i].gid < 0)
 		{
-			fz_add_text_char(last, font, size, text->wmode, text->items[i].ucs, fz_round_rect(rect), i);
+			fz_add_text_char(last, font, size, text->wmode, text->items[i].ucs, fz_round_rect(rect), i, node);
 			multi ++;
 			fz_divide_text_chars(last, multi, fz_round_rect(rect));
 			continue;
@@ -513,7 +510,7 @@ fz_text_extract_span(fz_text_span **last, fz_text *text, fz_matrix ctm, fz_point
 					spacerect.y1 = 1;
 					spacerect = fz_transform_rect(trm, spacerect);
 
-					fz_add_text_char(last, font, size, text->wmode, ' ', fz_round_rect(spacerect), -1);
+					fz_add_text_char(last, font, size, text->wmode, ' ', fz_round_rect(spacerect), -1, node);
 				}
 			}
 		}
@@ -548,7 +545,7 @@ fz_text_extract_span(fz_text_span **last, fz_text *text, fz_matrix ctm, fz_point
 		pen->x = trm.e + dir.x * adv;
 		pen->y = trm.f + dir.y * adv;
 
-		fz_add_text_char(last, font, size, text->wmode, text->items[i].ucs, fz_round_rect(rect), i);
+		fz_add_text_char(last, font, size, text->wmode, text->items[i].ucs, fz_round_rect(rect), i, node);
 	}
 }
 
@@ -557,8 +554,7 @@ fz_text_fill_text(void *user, fz_text *text, fz_matrix ctm,
 	fz_colorspace *colorspace, float *color, float alpha, void *node)
 {
 	fz_text_device *tdev = user;
-	tdev->span->node = node; //MyCode
-	fz_text_extract_span(&tdev->span, text, ctm, &tdev->point);
+	fz_text_extract_span(&tdev->span, text, ctm, &tdev->point, node);
 }
 
 static void
@@ -566,28 +562,28 @@ fz_text_stroke_text(void *user, fz_text *text, fz_stroke_state *stroke, fz_matri
 	fz_colorspace *colorspace, float *color, float alpha)
 {
 	fz_text_device *tdev = user;
-	fz_text_extract_span(&tdev->span, text, ctm, &tdev->point);
+	fz_text_extract_span(&tdev->span, text, ctm, &tdev->point, NULL);
 }
 
 static void
 fz_text_clip_text(void *user, fz_text *text, fz_matrix ctm, int accumulate)
 {
 	fz_text_device *tdev = user;
-	fz_text_extract_span(&tdev->span, text, ctm, &tdev->point);
+	fz_text_extract_span(&tdev->span, text, ctm, &tdev->point, NULL);
 }
 
 static void
 fz_text_clip_stroke_text(void *user, fz_text *text, fz_stroke_state *stroke, fz_matrix ctm)
 {
 	fz_text_device *tdev = user;
-	fz_text_extract_span(&tdev->span, text, ctm, &tdev->point);
+	fz_text_extract_span(&tdev->span, text, ctm, &tdev->point, NULL);
 }
 
 static void
 fz_text_ignore_text(void *user, fz_text *text, fz_matrix ctm)
 {
 	fz_text_device *tdev = user;
-	fz_text_extract_span(&tdev->span, text, ctm, &tdev->point);
+	fz_text_extract_span(&tdev->span, text, ctm, &tdev->point, NULL);
 }
 
 static void
