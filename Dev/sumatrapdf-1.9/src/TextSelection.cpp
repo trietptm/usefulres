@@ -59,6 +59,13 @@ int TextSelection::FindClosestGlyph(int pageNo, double x, double y)
     assert(1 <= pageNo && pageNo <= engine->PageCount());
     if (!text[pageNo - 1]) {
         text[pageNo - 1] = engine->ExtractPageText(pageNo, _T("\n"), &coords[pageNo - 1], Target_View, &chInf[pageNo - 1]);
+
+		/*MyCode*/
+		if(chInf[pageNo - 1])
+		{
+			assert(chInf[pageNo - 1][0].node);
+		}
+
         if (!text[pageNo - 1]) {
             text[pageNo - 1] = str::Dup(_T(""));
             lens[pageNo - 1] = 0;

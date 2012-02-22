@@ -1305,6 +1305,9 @@ fz_error CPdfEngine::RunPage(pdf_page *page, fz_device *dev, fz_matrix ctm, Rend
     fz_error error = fz_okay;
     PdfPageRun *run;
 
+	if(m_pIntf)
+		cacheRun = true;
+
     if (Target_View == target && (run = GetPageRun(page, !cacheRun))) {
         EnterCriticalSection(&xrefAccess);
         fz_execute_display_list(run->list, dev, ctm, clipbox, nodeOnly);
@@ -1333,7 +1336,7 @@ PdfObj* CPdfEngine::ExtractObjs(int pageNo)
 	PdfObj* pHead = NULL;
 
 	PdfPageRun *run;
-	run = GetPageRun(page, true);
+	run = GetPageRun(page, false);
 	if(run)
 	{
 		EnterCriticalSection(&xrefAccess);
