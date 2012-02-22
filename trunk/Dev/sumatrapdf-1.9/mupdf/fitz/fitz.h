@@ -969,6 +969,9 @@ enum
 	FZ_CHARPROC_COLOR = 2,
 };
 
+/*MyCode*/
+typedef struct fz_display_node_s fz_display_node;
+
 typedef struct fz_device_s fz_device;
 
 struct fz_device_s
@@ -984,7 +987,7 @@ struct fz_device_s
 	void (*clip_path)(void *, fz_path *, fz_rect *rect, int even_odd, fz_matrix);
 	void (*clip_stroke_path)(void *, fz_path *, fz_rect *rect, fz_stroke_state *, fz_matrix);
 
-	void (*fill_text)(void *, fz_text *, fz_matrix, fz_colorspace *, float *color, float alpha);
+	void (*fill_text)(void *, fz_text *, fz_matrix, fz_colorspace *, float *color, float alpha, void *node);
 	void (*stroke_text)(void *, fz_text *, fz_stroke_state *, fz_matrix, fz_colorspace *, float *color, float alpha);
 	void (*clip_text)(void *, fz_text *, fz_matrix, int accumulate);
 	void (*clip_stroke_text)(void *, fz_text *, fz_stroke_state *, fz_matrix);
@@ -1010,7 +1013,7 @@ void fz_fill_path(fz_device *dev, fz_path *path, int even_odd, fz_matrix ctm, fz
 void fz_stroke_path(fz_device *dev, fz_path *path, fz_stroke_state *stroke, fz_matrix ctm, fz_colorspace *colorspace, float *color, float alpha);
 void fz_clip_path(fz_device *dev, fz_path *path, fz_rect *rect, int even_odd, fz_matrix ctm);
 void fz_clip_stroke_path(fz_device *dev, fz_path *path, fz_rect *rect, fz_stroke_state *stroke, fz_matrix ctm);
-void fz_fill_text(fz_device *dev, fz_text *text, fz_matrix ctm, fz_colorspace *colorspace, float *color, float alpha);
+void fz_fill_text(fz_device *dev, fz_text *text, fz_matrix ctm, fz_colorspace *colorspace, float *color, float alpha, void *node);
 void fz_stroke_text(fz_device *dev, fz_text *text, fz_stroke_state *stroke, fz_matrix ctm, fz_colorspace *colorspace, float *color, float alpha);
 void fz_clip_text(fz_device *dev, fz_text *text, fz_matrix ctm, int accumulate);
 void fz_clip_stroke_text(fz_device *dev, fz_text *text, fz_stroke_state *stroke, fz_matrix ctm);
@@ -1048,6 +1051,7 @@ typedef struct fz_text_char_s fz_text_char;
 /*MyCode*/
 struct char_inf
 {
+	fz_display_node* node;
 	fz_text_span *span;
 	int iText; //fz_text_char索引
 
@@ -1061,7 +1065,8 @@ struct fz_text_char_s
 	fz_bbox bbox;
 
 	/*MyCode*/
-	int iItem; //对应的fz_text_item索引值
+	int iItem; //对应的fz_text_item索引值	
+	//////////////////////////////////////////////////////////////////////////
 };
 
 struct fz_text_span_s
@@ -1072,7 +1077,10 @@ struct fz_text_span_s
 	int len, cap;
 	fz_text_char *text;
 	fz_text_span *next;
-	int eol;	
+	int eol;
+
+	/*MyCode*/
+	fz_display_node* node;
 };
 
 fz_text_span *fz_new_text_span(void);
@@ -1087,9 +1095,6 @@ fz_device *fz_new_text_device(fz_text_span *text);
  */
 
 typedef struct fz_display_list_s fz_display_list;
-
-/*MyCode*/
-typedef struct fz_display_node_s fz_display_node;
 
 fz_display_list *fz_new_display_list(void);
 void fz_free_display_list(fz_display_list *list);

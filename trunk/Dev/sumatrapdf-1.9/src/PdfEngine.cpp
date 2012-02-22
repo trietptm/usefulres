@@ -279,8 +279,9 @@ WCHAR *fz_span_to_wchar(fz_text_span *text, TCHAR *lineSep, RectI **coords_out=N
 			/*MyCode*/
 			if(destChInf)
 			{
+				destChInf->node = span->node;
 				destChInf->span = span;
-				destChInf->iText = i;
+				destChInf->iText = i;				
 
 				destChInf->bbox = span->text[i].bbox;
 
@@ -306,6 +307,7 @@ WCHAR *fz_span_to_wchar(fz_text_span *text, TCHAR *lineSep, RectI **coords_out=N
 		{
 			for(int i = 0;i < (int)lineSepLen;i++)
 			{
+				destChInf->node = NULL;
 				destChInf->span = NULL;
 				destChInf->iText = -1;
 

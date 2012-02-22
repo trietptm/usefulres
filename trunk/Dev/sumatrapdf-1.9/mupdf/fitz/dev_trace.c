@@ -138,7 +138,7 @@ fz_trace_clip_stroke_path(void *user, fz_path *path, fz_rect *rect, fz_stroke_st
 
 static void
 fz_trace_fill_text(void *user, fz_text *text, fz_matrix ctm,
-	fz_colorspace *colorspace, float *color, float alpha)
+	fz_colorspace *colorspace, float *color, float alpha, fz_display_node *node)
 {
 	printf("<fill_text font=\"%s\" wmode=\"%d\" ", text->font->name, text->wmode);
 	fz_trace_color(colorspace, color, alpha);

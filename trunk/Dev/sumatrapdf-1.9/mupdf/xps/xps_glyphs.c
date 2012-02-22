@@ -564,7 +564,7 @@ xps_parse_glyphs(xps_context *ctx, fz_matrix ctm,
 		xps_set_color(ctx, colorspace, samples);
 
 		fz_fill_text(ctx->dev, text, ctm,
-			ctx->colorspace, ctx->color, ctx->alpha);
+			ctx->colorspace, ctx->color, ctx->alpha, NULL); //NULL(MyCode)
 	}
 
 	/* If it's a complex brush, use the charpath as a clip mask */
