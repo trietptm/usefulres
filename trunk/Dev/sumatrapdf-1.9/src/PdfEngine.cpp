@@ -744,7 +744,7 @@ public:
 
     virtual unsigned char *GetFileData(size_t *cbCount);
     virtual TCHAR * ExtractPageText(int pageNo, TCHAR *lineSep, RectI **coords_out=NULL,
-                                    RenderTarget target=Target_View);
+                                    RenderTarget target=Target_View, char_inf** ch_inf_out = NULL);
     virtual bool IsImagePage(int pageNo);
     virtual PageLayoutType PreferredLayout();
     virtual TCHAR *GetProperty(char *name);
@@ -809,7 +809,7 @@ protected:
                                RectD *pageRect, RenderTarget target);
     bool            RequiresBlending(pdf_page *page);
     TCHAR         * ExtractPageText(pdf_page *page, TCHAR *lineSep, RectI **coords_out=NULL,
-                                    RenderTarget target=Target_View, bool cacheRun=false);
+                                    RenderTarget target=Target_View, bool cacheRun=false, char_inf** ch_inf_out = NULL);
 
     PdfPageRun    * runCache[MAX_PAGE_RUN_CACHE];
     PdfPageRun    * GetPageRun(pdf_page *page, bool tryOnly=false);
@@ -1947,7 +1947,7 @@ void CPdfEngine::LinkifyPageText(pdf_page *page)
     free(pageText);
 }
 
-TCHAR *CPdfEngine::ExtractPageText(pdf_page *page, TCHAR *lineSep, RectI **coords_out, RenderTarget target, bool cacheRun)
+TCHAR *CPdfEngine::ExtractPageText(pdf_page *page, TCHAR *lineSep, RectI **coords_out, RenderTarget target, bool cacheRun, char_inf** ch_inf_out)
 {
     if (!page)
         return NULL;
@@ -1969,7 +1969,7 @@ TCHAR *CPdfEngine::ExtractPageText(pdf_page *page, TCHAR *lineSep, RectI **coord
     return str::conv::FromWStrQ(content);
 }
 
-TCHAR *CPdfEngine::ExtractPageText(int pageNo, TCHAR *lineSep, RectI **coords_out, RenderTarget target)
+TCHAR *CPdfEngine::ExtractPageText(int pageNo, TCHAR *lineSep, RectI **coords_out, RenderTarget target, char_inf** ch_inf_out)
 {
     pdf_page *page = GetPdfPage(pageNo, true);
     if (page)
@@ -2360,7 +2360,7 @@ public:
 
     virtual unsigned char *GetFileData(size_t *cbCount);
     virtual TCHAR * ExtractPageText(int pageNo, TCHAR *lineSep, RectI **coords_out=NULL,
-                                    RenderTarget target=Target_View);
+                                    RenderTarget target=Target_View, char_inf** ch_inf_out = NULL);
     virtual bool IsImagePage(int pageNo) { return false; }
     virtual TCHAR *GetProperty(char *name);
 
@@ -2950,7 +2950,7 @@ TCHAR *CXpsEngine::ExtractPageText(xps_page *page, TCHAR *lineSep, RectI **coord
     return str::conv::FromWStrQ(content);
 }
 
-TCHAR *CXpsEngine::ExtractPageText(int pageNo, TCHAR *lineSep, RectI **coords_out, RenderTarget target)
+TCHAR *CXpsEngine::ExtractPageText(int pageNo, TCHAR *lineSep, RectI **coords_out, RenderTarget target, char_inf** ch_inf_out)
 {
     xps_page *page = getXpsPage(pageNo, true);
     if (page)

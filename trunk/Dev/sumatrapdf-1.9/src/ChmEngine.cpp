@@ -96,7 +96,7 @@ public:
     virtual unsigned char *GetFileData(size_t *cbCount);
 
     virtual TCHAR * ExtractPageText(int pageNo, TCHAR *lineSep, RectI **coords_out=NULL,
-                                    RenderTarget target=Target_View) {
+                                    RenderTarget target=Target_View, char_inf** ch_inf_out = NULL) {
         return NULL;
     }
 
