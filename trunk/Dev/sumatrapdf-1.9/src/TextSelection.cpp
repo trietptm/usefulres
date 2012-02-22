@@ -236,13 +236,9 @@ TCHAR *TextSelection::ExtractText(TCHAR *lineSep)
 }
 
 /*MyCode*/
-TCHAR* TextSelection::ExtractObjText(int pageNo, HXOBJ hObj, const PointD* pt, RectD* rtText, DOUBLE* xCursor)
+INT TextSelection::GetObjLineText(int pageNo, HXOBJ hObj, const PointD* pt, RectD* rtText, DOUBLE* xCursor)
 {
-	assert(1 <= pageNo && pageNo <= engine->PageCount());
-	if (!coords[pageNo - 1])
-		FindClosestGlyph(pageNo, 0, 0);
-
-	WCHAR* pLineText = NULL;
+	INT lineTextPos = -1;
 
 	if(text[pageNo - 1] && chInf[pageNo - 1])
 	{
@@ -256,7 +252,7 @@ TCHAR* TextSelection::ExtractObjText(int pageNo, HXOBJ hObj, const PointD* pt, R
 			int iPos = 0;
 			while(iPos < textLen)
 			{
-				if(pLineText)
+				if(lineTextPos != -1)
 					break;
 
 				int iObjFirstCh = -1;
@@ -273,7 +269,7 @@ TCHAR* TextSelection::ExtractObjText(int pageNo, HXOBJ hObj, const PointD* pt, R
 
 				if(iObjFirstCh == -1)
 					break;
-			
+
 				int iFirstGoodCh = -1;
 				for(int i = iObjFirstCh;i < textLen;i++)
 				{
@@ -314,7 +310,7 @@ TCHAR* TextSelection::ExtractObjText(int pageNo, HXOBJ hObj, const PointD* pt, R
 						//¼ÆËãÐÐ¾ØÐÎ·¶Î§
 						if(i==iFirstGoodCh)
 						{
-							pLineText = &pageText[i];
+							lineTextPos = i;
 
 							left = pageCoords[i].x;
 							top = pageCoords[i].y;
@@ -368,6 +364,41 @@ TCHAR* TextSelection::ExtractObjText(int pageNo, HXOBJ hObj, const PointD* pt, R
 		}
 	}
 
-	return pLineText;
+	return lineTextPos;
+}
+TCHAR* TextSelection::ExtractObjText(int pageNo, HXOBJ hObj, const PointD* pt, RectD* rtText, DOUBLE* xCursor)
+{
+	assert(1 <= pageNo && pageNo <= engine->PageCount());
+	if (!coords[pageNo - 1])
+		FindClosestGlyph(pageNo, 0, 0);
+
+	INT lineTextPos = GetObjLineText(pageNo,hObj,pt,rtText,xCursor);
+	if(lineTextPos==-1)
+		return NULL;
+
+	WCHAR* pageText = text[pageNo - 1];
+	return &pageText[lineTextPos];
+}
+BOOL TextSelection::DeleteCharByPos(int pageNo, HXOBJ hObj, const PointD& pt, BOOL bBackspace, DOUBLE* xCursor)
+{
+	assert(1 <= pageNo && pageNo <= engine->PageCount());
+	if (!coords[pageNo - 1])
+		FindClosestGlyph(pageNo, 0, 0);
+
+	INT lineTextPos = GetObjLineText(pageNo,hObj,&pt,NULL,NULL);
+	if(lineTextPos==-1)
+		return NULL;
+
+	WCHAR* pageText = text[pageNo - 1];
+	char_inf* pageChInf = chInf[pageNo - 1];
+
+	char_inf& ci = pageChInf[lineTextPos];
+	assert(ci.node == hObj);
+
+	ci.node->item.text->items[0].gid = 2;
+	ci.node->item.text->items[0].ucs = 'C';
+	pageText[lineTextPos] = 'C';
+
+	return TRUE;
 }
 //////////////////////////////////////////////////////////////////////////
