@@ -245,7 +245,7 @@ public:
         return fileName ? (unsigned char *)file::ReadAll(fileName, cbCount) : NULL;
     }
     virtual TCHAR * ExtractPageText(int pageNo, TCHAR *lineSep, RectI **coords_out=NULL,
-                                    RenderTarget target=Target_View) {
+                                    RenderTarget target=Target_View, char_inf** ch_inf_out = NULL) {
         return pdfEngine ? pdfEngine->ExtractPageText(pageNo, lineSep, coords_out, target) : NULL;
     }
     virtual bool IsImagePage(int pageNo) {

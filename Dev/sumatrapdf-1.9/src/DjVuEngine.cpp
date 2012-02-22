@@ -213,7 +213,7 @@ public:
 
     virtual unsigned char *GetFileData(size_t *cbCount);
     virtual TCHAR * ExtractPageText(int pageNo, TCHAR *lineSep, RectI **coords_out=NULL,
-                                    RenderTarget target=Target_View);
+                                    RenderTarget target=Target_View, char_inf** ch_inf_out = NULL);
     virtual bool IsImagePage(int pageNo) { return true; }
     virtual PageLayoutType PreferredLayout() { return Layout_Single; }
 
@@ -622,7 +622,7 @@ bool CDjVuEngine::ExtractPageText(miniexp_t item, const TCHAR *lineSep, str::Str
     return !item;
 }
 
-TCHAR *CDjVuEngine::ExtractPageText(int pageNo, TCHAR *lineSep, RectI **coords_out, RenderTarget target)
+TCHAR *CDjVuEngine::ExtractPageText(int pageNo, TCHAR *lineSep, RectI **coords_out, RenderTarget target, char_inf** ch_inf_out)
 {
     ScopedCritSec scope(&gDjVuContext.lock);
 

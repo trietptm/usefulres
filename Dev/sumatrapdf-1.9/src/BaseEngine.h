@@ -10,6 +10,12 @@
 
 /*MyCode*/
 #include "..\..\..\..\biggod.app\PDFEditor\sumatrapdf_intf.h"
+
+extern "C" {
+__pragma(warning(push))
+#include "..\mupdf\fitz\fitz.h"
+__pragma(warning(pop))
+}
 //////////////////////////////////////////////////////////////////////////
 
 /* certain OCGs will only be rendered for some of these (e.g. watermarks) */
@@ -190,7 +196,7 @@ public:
     // coordinates of the individual glyphs)
     // caller needs to free() the result
     virtual TCHAR * ExtractPageText(int pageNo, TCHAR *lineSep, RectI **coords_out=NULL,
-                                    RenderTarget target=Target_View) = 0;
+                                    RenderTarget target=Target_View, char_inf** ch_inf_out = NULL) = 0;
     // certain optimizations can be made for a page consisting of a single large image
     virtual bool IsImagePage(int pageNo) = 0;
     // the layout type this document's author suggests (if the user doesn't care)

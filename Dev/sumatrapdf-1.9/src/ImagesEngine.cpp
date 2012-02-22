@@ -271,7 +271,7 @@ public:
         return (unsigned char *)file::ReadAll(fileName, cbCount);
     }
     virtual TCHAR * ExtractPageText(int pageNo, TCHAR *lineSep, RectI **coords_out=NULL,
-                                    RenderTarget target=Target_View) { return NULL; }
+                                    RenderTarget target=Target_View, char_inf** ch_inf_out = NULL) { return NULL; }
     virtual bool IsImagePage(int pageNo) { return true; }
     virtual PageLayoutType PreferredLayout() { return Layout_NonContinuous; }
     virtual bool IsImageCollection() { return true; }
