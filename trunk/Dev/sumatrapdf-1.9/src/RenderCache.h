@@ -98,7 +98,7 @@ public:
     void    KeepForDisplayModel(DisplayModel *oldDm, DisplayModel *newDm);
     UINT    Paint(HDC hdc, RectI *bounds, DisplayModel *dm, int pageNo,
                   PageInfo *pageInfo, bool *renderOutOfDateCue);
-
+	
 protected:
     /* Interface for page rendering thread */
     HANDLE  startRendering;
@@ -138,6 +138,8 @@ private:
                       RectI *pageOnScreen, USHORT tileRes, bool renderMissing,
                       bool *renderOutOfDateCue, bool *renderedReplacement);
 
+	/*MyCode*/
+	static void DoRender(RenderCache *cache);
 };
 
 #endif

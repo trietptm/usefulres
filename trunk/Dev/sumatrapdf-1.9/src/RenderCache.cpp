@@ -531,12 +531,60 @@ void RenderCache::ClearQueueForDisplayModel(DisplayModel *dm, int pageNo, TilePo
     }
 }
 
+/*MyCode*/
+void RenderCache::DoRender(RenderCache *cache)
+{
+	PageRenderRequest   req;
+	RenderedBitmap *    bmp;
+
+	if (!cache->GetNextRequest(&req))
+		return;
+
+	DBG_OUT("RenderCacheThread(): dequeued %d\n", req.pageNo);
+	if (!req.dm->PageVisibleNearby(req.pageNo) && !req.renderCb) {
+		DBG_OUT("RenderCacheThread(): not rendering because not visible\n");
+		return;
+	}
+	if (req.dm->dontRenderFlag) {
+		DBG_OUT("RenderCacheThread(): not rendering because of _dontRenderFlag\n");
+		if (req.renderCb)
+			req.renderCb->Callback();
+		return;
+	}
+
+	bmp = req.dm->engine->RenderBitmap(req.pageNo, req.zoom, req.rotation, &req.pageRect);
+	if (req.abort) {
+		delete bmp;
+		if (req.renderCb)
+			req.renderCb->Callback();
+		return;
+	}
+
+	if (bmp)
+		DBG_OUT("RenderCacheThread(): finished rendering %d\n", req.pageNo);
+	else
+		DBG_OUT("RenderCacheThread(): failed to render a bitmap of page %d\n", req.pageNo);
+	if (req.renderCb) {
+		// the callback must free the RenderedBitmap
+		req.renderCb->Callback(bmp);
+		req.renderCb = (RenderingCallback *)1; // will crash if accessed again, which should not happen
+	}
+	else {
+		if (bmp && cache->invertColors)
+			InvertBitmapColors(bmp->GetBitmap());
+		cache->Add(req, bmp);
+#ifdef CONSERVE_MEMORY
+		cache->FreeNotVisible();
+#endif
+		req.dm->RepaintDisplay();
+	}
+}
+//////////////////////////////////////////////////////////////////////////
+
 DWORD WINAPI RenderCache::RenderCacheThread(LPVOID data)
 {
     RenderCache *cache = (RenderCache *)data;
-    PageRenderRequest   req;
-    RenderedBitmap *    bmp;
-
+        
     DBG_OUT("RenderCacheThread() started\n");
     for (;;) {
         //DBG_OUT("Worker: wait\n");
@@ -549,46 +597,7 @@ DWORD WINAPI RenderCache::RenderCacheThread(LPVOID data)
             }
         }
 
-        if (!cache->GetNextRequest(&req))
-            continue;
-        DBG_OUT("RenderCacheThread(): dequeued %d\n", req.pageNo);
-        if (!req.dm->PageVisibleNearby(req.pageNo) && !req.renderCb) {
-            DBG_OUT("RenderCacheThread(): not rendering because not visible\n");
-            continue;
-        }
-        if (req.dm->dontRenderFlag) {
-            DBG_OUT("RenderCacheThread(): not rendering because of _dontRenderFlag\n");
-            if (req.renderCb)
-                req.renderCb->Callback();
-            continue;
-        }
-
-        bmp = req.dm->engine->RenderBitmap(req.pageNo, req.zoom, req.rotation, &req.pageRect);
-        if (req.abort) {
-            delete bmp;
-            if (req.renderCb)
-                req.renderCb->Callback();
-            continue;
-        }
-
-        if (bmp)
-            DBG_OUT("RenderCacheThread(): finished rendering %d\n", req.pageNo);
-        else
-            DBG_OUT("RenderCacheThread(): failed to render a bitmap of page %d\n", req.pageNo);
-        if (req.renderCb) {
-            // the callback must free the RenderedBitmap
-            req.renderCb->Callback(bmp);
-            req.renderCb = (RenderingCallback *)1; // will crash if accessed again, which should not happen
-        }
-        else {
-            if (bmp && cache->invertColors)
-                InvertBitmapColors(bmp->GetBitmap());
-            cache->Add(req, bmp);
-#ifdef CONSERVE_MEMORY
-            cache->FreeNotVisible();
-#endif
-            req.dm->RepaintDisplay();
-        }
+        DoRender(cache);        
     }
 
     DBG_OUT("RenderCacheThread() finished\n");
