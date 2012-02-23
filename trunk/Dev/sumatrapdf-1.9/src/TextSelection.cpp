@@ -428,9 +428,10 @@ BOOL TextSelection::DeleteCharByPos(int pageNo, HXOBJ hObj, const PointD& pt, BO
 	ci.node->item.text->items[ci.iItem].ucs = 'C';
 	pageText[iPosDel] = 'C';
 #else
-	ArrayDeleteElements(ci.node->item.text->items,ci.node->item.text->len,ci.iItem,1);
-
 	RectI* pageCoords = coords[pageNo - 1];
+	INT widthDelta = -pageCoords[iPosDel].dx;
+
+	ArrayDeleteElements(ci.node->item.text->items,ci.node->item.text->len,ci.iItem,1);	
 
 	INT pageTextLen = lens[pageNo - 1];
 	ArrayDeleteElements(pageText,pageTextLen,iPosDel,1);
@@ -447,6 +448,9 @@ BOOL TextSelection::DeleteCharByPos(int pageNo, HXOBJ hObj, const PointD& pt, BO
 
 	for(INT i = iPosDel;i < pageTextLen;i++)
 	{
+		if(pageText[i]=='\n')
+			widthDelta = 0;
+
 		char_inf& ci = pageChInf[i];
 		if(ci.iItem==-1)
 			continue;
@@ -454,6 +458,9 @@ BOOL TextSelection::DeleteCharByPos(int pageNo, HXOBJ hObj, const PointD& pt, BO
 		if(ci.node==hObj)
 		{
 			ci.iItem--;
+
+			if(widthDelta)
+				ci.node->item.text->items[ci.iItem].x += widthDelta;
 		}
 	}
 #endif
