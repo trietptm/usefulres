@@ -417,6 +417,7 @@ BOOL TextSelection::DeleteCharByPos(int pageNo, HXOBJ hObj, const PointD& pt, BO
 		return FALSE;
 
 	assert(ci.node == hObj);
+	assert(ci.iItem >= 0 && ci.iItem < ci.node->item.text->len);
 
 	ci.node->item.text->items[ci.iItem].gid = 2;
 	ci.node->item.text->items[ci.iItem].ucs = 'C';
