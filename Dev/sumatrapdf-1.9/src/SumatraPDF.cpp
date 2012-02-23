@@ -5059,7 +5059,7 @@ static BOOL DeleteCharByPos(int pageNo, PdfObj* pObj, const FPoint& fPt, BOOL bB
 	if(bRet)
 	{
 		win->dm->Redraw();
-		win->RepaintAsync();
+		//win->RepaintAsync();
 	}
 	return bRet;
 }

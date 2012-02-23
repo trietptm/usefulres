@@ -437,6 +437,7 @@ BOOL TextSelection::DeleteCharByPos(int pageNo, HXOBJ hObj, const PointD& pt, BO
 		widthDelta = -(pageCoords[iPosDel + 1].x - pageCoords[iPosDel].x);
 	}
 
+	assert(ci.node->item.text->items[ci.iItem].ucs==pageText[iPosDel]);
 	ArrayDeleteElements(ci.node->item.text->items,ci.node->item.text->len,ci.iItem,1);	
 
 	pageTextLen = lens[pageNo - 1];
