@@ -79,6 +79,27 @@
 				CompileAsManaged=""
 			/>
 		</Configuration>
+		<Configuration
+			Name="Release_Lib|Win32"
+			OutputDirectory="$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="0"
+			BuildLogFile="lib-rel\BuildLog.htm"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="nmake -f makefile_lib.msvc CFG=rel NASM=$(ProjectDir)bin\nasm.exe"
+				ReBuildCommandLine="nmake -f makefile_lib.msvc CFG=rel NASM=$(ProjectDir)bin\nasm.exe rebuild"
+				CleanCommandLine="nmake -f makefile_lib.msvc CFG=rel NASM=$(ProjectDir)bin\nasm.exe clean"
+				Output="lib-rel\sumatrapdf.exe"
+				PreprocessorDefinitions="WIN32;UNICODE;_UNICODE;NDEBUG;SYNCTEX_FEATURE"
+				IncludeSearchPath="src\utils;mupdf\fitz;mupdf\draw;mupdf\pdf;mupdf\xps"
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+		</Configuration>
 	</Configurations>
 	<References>
 	</References>
