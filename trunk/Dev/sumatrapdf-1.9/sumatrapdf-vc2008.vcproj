@@ -1055,6 +1055,14 @@
 				</File>
 			</Filter>
 		</Filter>
+		<Filter
+			Name="Ctrl"
+			>
+			<File
+				RelativePath="..\..\..\biggod.dev\Ctrl\Utility.hpp"
+				>
+			</File>
+		</Filter>
 		<File
 			RelativePath=".\docs\release_plan.txt"
 			>

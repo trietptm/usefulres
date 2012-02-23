@@ -4,6 +4,10 @@
 #include "TextSelection.h"
 #include "Vec.h"
 
+/*MyCode*/
+#include "..\..\..\..\biggod.dev\Ctrl\Utility.hpp"
+//////////////////////////////////////////////////////////////////////////
+
 TextSelection::TextSelection(BaseEngine *engine) : engine(engine)
 {
     int count = engine->PageCount();
@@ -419,9 +423,14 @@ BOOL TextSelection::DeleteCharByPos(int pageNo, HXOBJ hObj, const PointD& pt, BO
 	assert(ci.node == hObj);
 	assert(ci.iItem >= 0 && ci.iItem < ci.node->item.text->len);
 
+#if 0
 	ci.node->item.text->items[ci.iItem].gid = 2;
 	ci.node->item.text->items[ci.iItem].ucs = 'C';
 	pageText[iPosDel] = 'C';
+#else
+	ArrayDeleteElements(ci.node->item.text->items,ci.node->item.text->len,ci.iItem,1);
+	ArrayDeleteElements(pageText,lens[pageNo - 1],iPosDel,1);
+#endif
 
 	return TRUE;
 }
