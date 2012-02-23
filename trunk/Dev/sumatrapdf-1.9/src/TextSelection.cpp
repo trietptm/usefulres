@@ -428,12 +428,18 @@ BOOL TextSelection::DeleteCharByPos(int pageNo, HXOBJ hObj, const PointD& pt, BO
 	ci.node->item.text->items[ci.iItem].ucs = 'C';
 	pageText[iPosDel] = 'C';
 #else
+	INT pageTextLen = lens[pageNo - 1];
+
 	RectI* pageCoords = coords[pageNo - 1];
 	INT widthDelta = -pageCoords[iPosDel].dx;
+	if(iPosDel + 1 < pageTextLen)
+	{
+		widthDelta = -(pageCoords[iPosDel + 1].x - pageCoords[iPosDel].x);
+	}
 
 	ArrayDeleteElements(ci.node->item.text->items,ci.node->item.text->len,ci.iItem,1);	
 
-	INT pageTextLen = lens[pageNo - 1];
+	pageTextLen = lens[pageNo - 1];
 	ArrayDeleteElements(pageText,pageTextLen,iPosDel,1);
 	pageText[pageTextLen] = _T('\0');
 
