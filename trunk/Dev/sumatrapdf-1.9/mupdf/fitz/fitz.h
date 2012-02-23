@@ -1052,10 +1052,11 @@ typedef struct fz_text_char_s fz_text_char;
 struct char_inf
 {
 	fz_display_node* node;
-	fz_text_span *span;
-	int iText; //fz_text_char索引
+	int iItem; //对应的fz_text_item索引值
+	//fz_text_span *span;
+	//int iText; //fz_text_char索引
 
-	fz_bbox bbox;
+	fz_bbox bbox;	
 };
 //////////////////////////////////////////////////////////////////////////
 

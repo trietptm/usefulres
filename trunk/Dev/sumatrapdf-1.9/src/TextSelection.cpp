@@ -236,7 +236,8 @@ TCHAR *TextSelection::ExtractText(TCHAR *lineSep)
 }
 
 /*MyCode*/
-INT TextSelection::GetObjLineText(int pageNo, HXOBJ hObj, const PointD* pt, RectD* rtText, DOUBLE* xCursor)
+//chPos：光标所在的字符位置
+INT TextSelection::GetObjLineText(int pageNo, HXOBJ hObj, const PointD* pt, RectD* rtText, DOUBLE* xCursor, INT* chPos)
 {
 	INT lineTextPos = -1;
 
@@ -337,15 +338,28 @@ INT TextSelection::GetObjLineText(int pageNo, HXOBJ hObj, const PointD* pt, Rect
 							{
 								*xCursor = pageCoords[i].x;
 								cursorDist = dist;
+
+								if(chPos)
+									*chPos = i;
 							}
 
 							dist = fabs((pageCoords[i].x + pageCoords[i].dx) - pt->x);
 							if(dist < cursorDist)
 							{
 								if(i + 1 < textLen && pageText[i + 1]!='\n')
+								{
 									*xCursor = pageCoords[i + 1].x;
+
+									if(chPos)
+										*chPos = i + 1;
+								}
 								else
+								{
 									*xCursor = pageCoords[i].x + pageCoords[i].dx;
+
+									if(chPos)
+										*chPos = i;
+								}
 
 								cursorDist = dist;
 							}
@@ -385,19 +399,28 @@ BOOL TextSelection::DeleteCharByPos(int pageNo, HXOBJ hObj, const PointD& pt, BO
 	if (!coords[pageNo - 1])
 		FindClosestGlyph(pageNo, 0, 0);
 
-	INT lineTextPos = GetObjLineText(pageNo,hObj,&pt,NULL,NULL);
-	if(lineTextPos==-1)
-		return NULL;
+	INT chPos = -1;
+	DOUBLE xCursor1 = 0.0;
+	INT lineTextPos = GetObjLineText(pageNo,hObj,&pt,NULL,&xCursor1,&chPos);
+	if(lineTextPos==-1 || chPos==-1)
+		return FALSE;
 
 	WCHAR* pageText = text[pageNo - 1];
 	char_inf* pageChInf = chInf[pageNo - 1];
 
-	char_inf& ci = pageChInf[lineTextPos];
+	INT iPosDel = chPos - 1;
+	if(iPosDel < lineTextPos)
+		return FALSE;
+
+	char_inf& ci = pageChInf[iPosDel];
+	if(ci.iItem==-1)
+		return FALSE;
+
 	assert(ci.node == hObj);
 
-	ci.node->item.text->items[0].gid = 2;
-	ci.node->item.text->items[0].ucs = 'C';
-	pageText[lineTextPos] = 'C';
+	ci.node->item.text->items[ci.iItem].gid = 2;
+	ci.node->item.text->items[ci.iItem].ucs = 'C';
+	pageText[iPosDel] = 'C';
 
 	return TRUE;
 }

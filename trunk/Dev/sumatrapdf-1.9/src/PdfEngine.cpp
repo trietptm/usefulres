@@ -279,10 +279,11 @@ WCHAR *fz_span_to_wchar(fz_text_span *text, TCHAR *lineSep, RectI **coords_out=N
 			/*MyCode*/
 			if(destChInf)
 			{				
-				destChInf->span = span;
-				destChInf->iText = i;				
+				//destChInf->span = span;
+				//destChInf->iText = i;				
 
 				destChInf->node = span->text[i].node;
+				destChInf->iItem = span->text[i].iItem;
 				destChInf->bbox = span->text[i].bbox;
 
 				destChInf++;
@@ -308,8 +309,9 @@ WCHAR *fz_span_to_wchar(fz_text_span *text, TCHAR *lineSep, RectI **coords_out=N
 			for(int i = 0;i < (int)lineSepLen;i++)
 			{
 				destChInf->node = NULL;
-				destChInf->span = NULL;
-				destChInf->iText = -1;
+				destChInf->iItem = -1;
+				//destChInf->span = NULL;
+				//destChInf->iText = -1;
 
 				destChInf->bbox.x0 = destChInf->bbox.y0 = destChInf->bbox.x1 = destChInf->bbox.y1 = 0;
 
@@ -1559,6 +1561,7 @@ BOOL CPdfEngine::DeleteCharByPos(int pageNo, HXOBJ hObj, const PointD& pt, BOOL 
 	WCHAR *content = NULL;
 	if (!error)
 	{
+#if 0
 		char_inf* chInf = NULL;
 		content = GetObjLineText(text,&pt,NULL,NULL,&chInf);
 		if(content)
@@ -1568,6 +1571,7 @@ BOOL CPdfEngine::DeleteCharByPos(int pageNo, HXOBJ hObj, const PointD& pt, BOOL 
 				int textLen = str::Len(content);
 				for(int i = 0;i < textLen;i++)
 				{
+	
 					if(chInf->iText != -1)
 					{
 						if(chInf->span)
@@ -1582,7 +1586,6 @@ BOOL CPdfEngine::DeleteCharByPos(int pageNo, HXOBJ hObj, const PointD& pt, BOOL 
 								bRet = TRUE;
 							}
 						}
-
 						break;
 					}
 				}
@@ -1592,6 +1595,7 @@ BOOL CPdfEngine::DeleteCharByPos(int pageNo, HXOBJ hObj, const PointD& pt, BOOL 
 		}
 		if(chInf)
 			delete[] chInf;
+#endif
 	}
 
 	EnterCriticalSection(&xrefAccess);
