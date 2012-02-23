@@ -76,8 +76,10 @@ private:
     PageRenderRequest   requests[MAX_PAGE_REQUESTS];
     int                 requestCount;
     PageRenderRequest * curReq;
+#if 0 //MyCode
     CRITICAL_SECTION    requestAccess;
     HANDLE              renderThread;
+#endif
 
     const SizeI         maxTileSize;
 
@@ -101,7 +103,9 @@ public:
 	
 protected:
     /* Interface for page rendering thread */
+#if 0 //MyCode
     HANDLE  startRendering;
+#endif
 
     bool    ClearCurrentRequest();
     bool    GetNextRequest(PageRenderRequest *req);

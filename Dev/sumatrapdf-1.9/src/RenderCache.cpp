@@ -21,26 +21,38 @@ RenderCache::RenderCache()
       maxTileSize(GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN))
 {
     InitializeCriticalSection(&cacheAccess);
+#if 0 //MyCode
     InitializeCriticalSection(&requestAccess);
+#endif
 
+#if 0 //MyCode
     startRendering = CreateEvent(NULL, FALSE, FALSE, NULL);
     renderThread = CreateThread(NULL, 0, RenderCacheThread, this, 0, 0);
     assert(NULL != renderThread);
+#endif
 }
 
 RenderCache::~RenderCache()
 {
+#if 0 //MyCode
     EnterCriticalSection(&requestAccess);
+#endif
     EnterCriticalSection(&cacheAccess);
 
+#if 0 //MyCode
     CloseHandle(renderThread);
     CloseHandle(startRendering);
+#endif
+#if 0 //MyCode
     assert(!curReq && 0 == requestCount && 0 == cacheCount);
+#endif
 
     LeaveCriticalSection(&cacheAccess);
     DeleteCriticalSection(&cacheAccess);
+#if 0 //MyCode
     LeaveCriticalSection(&requestAccess);
     DeleteCriticalSection(&requestAccess);
+#endif
 }
 
 /* Find a bitmap for a page defined by <dm> and <pageNo> and optionally also
@@ -283,7 +295,9 @@ bool RenderCache::ReduceTileSize()
     if (maxTileSize.dx < 200 || maxTileSize.dy < 200)
         return false;
 
+#if 0 //MyCode
     ScopedCritSec scope1(&requestAccess);
+#endif
     ScopedCritSec scope2(&cacheAccess);
 
     if (maxTileSize.dx > maxTileSize.dy)
@@ -322,7 +336,9 @@ void RenderCache::Render(DisplayModel *dm, int pageNo, TilePosition tile, bool c
     DBG_OUT("RenderCache::Render(pageNo=%d)\n", pageNo);
     assert(dm);
 
+#if 0 //MyCode
     ScopedCritSec scope(&requestAccess);
+#endif
     bool ok = false;
     if (!dm || dm->dontRenderFlag) goto Exit;
 
@@ -405,7 +421,9 @@ bool RenderCache::Render(DisplayModel *dm, int pageNo, int rotation, float zoom,
     if (!tile && !(pageRect && renderCb))
         return false;
 
+#if 0 //MyCode
     ScopedCritSec scope(&requestAccess);
+#endif
     PageRenderRequest* newRequest;
 
     /* add request to the queue */
@@ -440,14 +458,20 @@ bool RenderCache::Render(DisplayModel *dm, int pageNo, int rotation, float zoom,
     newRequest->timestamp = GetTickCount();
     newRequest->renderCb = renderCb;
 
+#if 0 //MyCode
     SetEvent(startRendering);
+#else
+	DoRender(this);
+#endif
 
     return true;
 }
 
 UINT RenderCache::GetRenderDelay(DisplayModel *dm, int pageNo, TilePosition tile)
 {
+#if 0 //MyCode
     ScopedCritSec scope(&requestAccess);
+#endif
 
     if (curReq && curReq->pageNo == pageNo && curReq->dm == dm && curReq->tile == tile)
         return GetTickCount() - curReq->timestamp;
@@ -461,7 +485,9 @@ UINT RenderCache::GetRenderDelay(DisplayModel *dm, int pageNo, TilePosition tile
 
 bool RenderCache::GetNextRequest(PageRenderRequest *req)
 {
+#if 0 //MyCode
     ScopedCritSec scope(&requestAccess);
+#endif
 
     if (requestCount == 0)
         return false;
@@ -479,7 +505,9 @@ bool RenderCache::GetNextRequest(PageRenderRequest *req)
 
 bool RenderCache::ClearCurrentRequest()
 {
+#if 0 //MyCode
     ScopedCritSec scope(&requestAccess);
+#endif
     curReq = NULL;
 
     bool isQueueEmpty = requestCount == 0;
@@ -495,16 +523,22 @@ void RenderCache::CancelRendering(DisplayModel *dm)
     ClearQueueForDisplayModel(dm);
 
     for (;;) {
+#if 0 //MyCode
         EnterCriticalSection(&requestAccess);
+#endif
         if (!curReq || (curReq->dm != dm)) {
             // to be on the safe side
             ClearQueueForDisplayModel(dm);
+#if 0 //MyCode
             LeaveCriticalSection(&requestAccess);
+#endif
             return;
         }
 
         curReq->abort = true;
+#if 0 //MyCode
         LeaveCriticalSection(&requestAccess);
+#endif
 
         /* TODO: busy loop is not good, but I don't have a better idea */
         Sleep(50);
@@ -513,7 +547,9 @@ void RenderCache::CancelRendering(DisplayModel *dm)
 
 void RenderCache::ClearQueueForDisplayModel(DisplayModel *dm, int pageNo, TilePosition *tile)
 {
+#if 0 //MyCode
     ScopedCritSec scope(&requestAccess);
+#endif
     int reqCount = requestCount;
     int curPos = 0;
     for (int i = 0; i < reqCount; i++) {
@@ -583,6 +619,7 @@ void RenderCache::DoRender(RenderCache *cache)
 
 DWORD WINAPI RenderCache::RenderCacheThread(LPVOID data)
 {
+#if 0 //MyCode
     RenderCache *cache = (RenderCache *)data;
         
     DBG_OUT("RenderCacheThread() started\n");
@@ -601,6 +638,7 @@ DWORD WINAPI RenderCache::RenderCacheThread(LPVOID data)
     }
 
     DBG_OUT("RenderCacheThread() finished\n");
+#endif
     return 0;
 }
 
