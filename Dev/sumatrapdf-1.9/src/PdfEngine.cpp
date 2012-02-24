@@ -264,6 +264,8 @@ WCHAR *fz_span_to_wchar(fz_text_span *text, TCHAR *lineSep, RectI **coords_out=N
 			return NULL;
 		}
 	}
+
+	fz_display_node* last_node = NULL;
 	//////////////////////////////////////////////////////////////////////////
 
     WCHAR *dest = content;
@@ -279,14 +281,13 @@ WCHAR *fz_span_to_wchar(fz_text_span *text, TCHAR *lineSep, RectI **coords_out=N
 			/*MyCode*/
 			if(destChInf)
 			{				
-				//destChInf->span = span;
-				//destChInf->iText = i;				
+				last_node = span->text[i].node;
 
 				destChInf->node = span->text[i].node;
 				destChInf->iItem = span->text[i].iItem;
-				destChInf->bbox = span->text[i].bbox;
+				destChInf->bbox = span->text[i].bbox;				
 
-				destChInf++;
+				destChInf++;				
 			} 
 			//////////////////////////////////////////////////////////////////////////
         }
@@ -308,7 +309,7 @@ WCHAR *fz_span_to_wchar(fz_text_span *text, TCHAR *lineSep, RectI **coords_out=N
 		{
 			for(int i = 0;i < (int)lineSepLen;i++)
 			{
-				destChInf->node = NULL;
+				destChInf->node = last_node;
 				destChInf->iItem = -1;
 				//destChInf->span = NULL;
 				//destChInf->iText = -1;

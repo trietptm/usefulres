@@ -265,7 +265,7 @@ INT TextSelection::GetObjLineText(int pageNo, HXOBJ hObj, const PointD* pt, Rect
 				{
 					const char_inf& ci = pageChInf[i];
 
-					if(ci.node != hObj)
+					if(ci.node != hObj || ci.iItem==-1)
 						continue;
 
 					iObjFirstCh = i;
@@ -280,7 +280,7 @@ INT TextSelection::GetObjLineText(int pageNo, HXOBJ hObj, const PointD* pt, Rect
 				{
 					const char_inf& ci = pageChInf[i];
 
-					if(ci.node != hObj)
+					if(ci.node != hObj || ci.iItem==-1)
 					{
 						iPos = i;
 						break;
@@ -418,10 +418,17 @@ BOOL TextSelection::DeleteCharByPos(int pageNo, HXOBJ hObj, const PointD& pt, BO
 
 	char_inf& ci = pageChInf[iPosDel];
 	if(ci.iItem==-1)
-		return FALSE;
+	{
+		if(pageText[iPosDel] != ' ' || ci.node != hObj)
+			return FALSE;
+	}
 
 	assert(ci.node == hObj);
-	assert(ci.iItem >= 0 && ci.iItem < ci.node->item.text->len);
+
+	if(ci.iItem != -1)
+	{
+		assert(ci.iItem >= 0 && ci.iItem < ci.node->item.text->len);
+	}
 
 #if 0
 	ci.node->item.text->items[ci.iItem].gid = 2;
@@ -437,8 +444,18 @@ BOOL TextSelection::DeleteCharByPos(int pageNo, HXOBJ hObj, const PointD& pt, BO
 		widthDelta = -(pageCoords[iPosDel + 1].x - pageCoords[iPosDel].x);
 	}
 
-	assert(ci.node->item.text->items[ci.iItem].ucs==pageText[iPosDel]);
-	ArrayDeleteElements(ci.node->item.text->items,ci.node->item.text->len,ci.iItem,1);	
+	INT indexChanged = 0;
+	if(ci.iItem != -1)
+	{
+		assert(ci.node->item.text->items[ci.iItem].ucs==pageText[iPosDel]);
+		ArrayDeleteElements(ci.node->item.text->items,ci.node->item.text->len,ci.iItem,1);
+
+		indexChanged = -1;
+	}
+	else
+	{
+		assert(pageText[iPosDel]==' ');
+	}
 
 	pageTextLen = lens[pageNo - 1];
 	ArrayDeleteElements(pageText,pageTextLen,iPosDel,1);
@@ -469,7 +486,8 @@ BOOL TextSelection::DeleteCharByPos(int pageNo, HXOBJ hObj, const PointD& pt, BO
 
 		if(ci.node==hObj)
 		{
-			ci.iItem--;
+			if(indexChanged)
+				ci.iItem += indexChanged;
 
 			if(widthDelta)
 			{
