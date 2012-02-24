@@ -285,7 +285,7 @@ WCHAR *fz_span_to_wchar(fz_text_span *text, TCHAR *lineSep, RectI **coords_out=N
 
 				destChInf->node = span->text[i].node;
 				destChInf->iItem = span->text[i].iItem;
-				destChInf->bbox = span->text[i].bbox;				
+				//destChInf->bbox = span->text[i].bbox;				
 
 				destChInf++;				
 			} 
@@ -314,7 +314,7 @@ WCHAR *fz_span_to_wchar(fz_text_span *text, TCHAR *lineSep, RectI **coords_out=N
 				//destChInf->span = NULL;
 				//destChInf->iText = -1;
 
-				destChInf->bbox.x0 = destChInf->bbox.y0 = destChInf->bbox.x1 = destChInf->bbox.y1 = 0;
+				//destChInf->bbox.x0 = destChInf->bbox.y0 = destChInf->bbox.x1 = destChInf->bbox.y1 = 0;
 
 				destChInf++;
 			}
