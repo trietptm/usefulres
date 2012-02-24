@@ -460,7 +460,12 @@ BOOL TextSelection::DeleteCharByPos(int pageNo, HXOBJ hObj, const PointD& pt, BO
 
 		char_inf& ci = pageChInf[i];
 		if(ci.iItem==-1)
+		{
+			if(widthDelta)
+				pageCoords[i].x += widthDelta;
+
 			continue;
+		}
 
 		if(ci.node==hObj)
 		{
