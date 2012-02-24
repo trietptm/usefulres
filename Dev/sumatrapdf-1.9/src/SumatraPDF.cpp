@@ -3125,6 +3125,16 @@ static void FrameOnChar(WindowInfo& win, WPARAM key)
 {
 //    DBG_OUT("char=%d,%c\n", key, (char)key);
 
+	/*MyCode*/
+	if(g_pIntf)
+	{
+		if(g_pIntf->OnChar(key))
+		{
+			return;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+
     if (IsCharUpper((TCHAR)key))
         key = (TCHAR)CharLower((LPTSTR)(TCHAR)key);
 
