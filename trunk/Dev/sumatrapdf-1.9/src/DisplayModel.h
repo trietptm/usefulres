@@ -222,7 +222,7 @@ protected:
     PointI          GetContentStart(int pageNo);
     void            SetZoomVirtual(float zoomVirtual);
     void            RecalcVisibleParts();
-    void            RenderVisibleParts(bool bForceRender = false);
+    void            RenderVisibleParts(bool bForceRender = false, bool bNoPredictive = false);
 
     void            AddNavPoint(bool keepForward=false);
     RectD           GetContentBox(int pageNo, RenderTarget target=Target_View);
