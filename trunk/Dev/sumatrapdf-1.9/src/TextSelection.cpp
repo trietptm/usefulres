@@ -511,4 +511,66 @@ BOOL TextSelection::DeleteCharByPos(int pageNo, HXOBJ hObj, const PointD& pt, BO
 
 	return TRUE;
 }
+
+//´Óres_text.c¿½±´¹ýÀ´
+static void
+fz_grow_text(fz_text *text, int n)
+{
+	if (text->len + n < text->cap)
+		return;
+	while (text->len + n > text->cap)
+		text->cap = text->cap + 36;
+	text->items = (fz_text_item*)fz_realloc(text->items, text->cap, sizeof(fz_text_item));
+}
+
+BOOL TextSelection::InsertCharByPos(int pageNo, HXOBJ hObj, const PointD& pt, WCHAR chIns, DOUBLE* xCursor)
+{
+	assert(1 <= pageNo && pageNo <= engine->PageCount());
+	if (!coords[pageNo - 1])
+		FindClosestGlyph(pageNo, 0, 0);
+
+	INT chPos = -1;
+	DOUBLE xCursor1 = 0.0;
+	INT lineTextPos = GetObjLineText(pageNo,hObj,&pt,NULL,&xCursor1,&chPos);
+	if(lineTextPos==-1 || chPos==-1)
+		return FALSE;
+
+	WCHAR* pageText = text[pageNo - 1];
+	char_inf* pageChInf = chInf[pageNo - 1];
+
+	INT iPosIns = chPos;
+
+	char_inf& ci = pageChInf[iPosIns];
+	if(ci.iItem==-1)
+	{
+		if(pageText[iPosIns] != ' ' || ci.node != hObj)
+			return FALSE;
+	}
+
+	assert(ci.node == hObj);
+
+	if(ci.iItem != -1)
+	{
+		assert(ci.iItem >= 0 && ci.iItem < ci.node->item.text->len);
+	}
+
+	INT indexChanged = 0;
+	if(ci.iItem != -1)
+	{
+		fz_grow_text(ci.node->item.text,1);
+
+		fz_text_item txtItem;
+		txtItem = ci.node->item.text->items[ci.iItem];
+		txtItem.x = txtItem.x + 7;
+		ArrayInsertElements(ci.node->item.text->items,ci.node->item.text->len,ci.iItem,&txtItem,1);
+
+		indexChanged = -1;
+	}
+	else
+	{
+		assert(pageText[iPosIns]==' ');
+	}
+
+	return TRUE;
+}
 //////////////////////////////////////////////////////////////////////////
