@@ -561,7 +561,7 @@ BOOL TextSelection::InsertCharByPos(int pageNo, HXOBJ hObj, const PointD& pt, WC
 
 		fz_text_item txtItem;
 		txtItem = ci.node->item.text->items[ci.iItem];
-		txtItem.x = txtItem.x + 7;
+		txtItem.x = txtItem.x - 7;
 		ArrayInsertElements(ci.node->item.text->items,ci.node->item.text->len,ci.iItem,&txtItem,1);
 
 		indexChanged = -1;
