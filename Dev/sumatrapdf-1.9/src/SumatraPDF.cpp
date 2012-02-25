@@ -5069,7 +5069,29 @@ static BOOL DeleteCharByPos(int pageNo, PdfObj* pObj, const FPoint& fPt, BOOL bB
 	if(bRet)
 	{
 		win->dm->Redraw();
-		//win->RepaintAsync();
+	}
+	return bRet;
+}
+
+static BOOL InsertCharByPos(int pageNo, PdfObj* pObj, const FPoint& fPt, WCHAR chIns, DOUBLE* xCursor)
+{
+	WindowInfo* win = WindowInfo::g_pWinInf;
+	if(!win)
+		return FALSE;
+
+	if(!win->dm || !win->dm->engine)
+		return FALSE;
+
+	if(!pObj->m_hObj)
+		return FALSE;
+
+	PointD ptD;
+	ptD.x = fPt.x;
+	ptD.y = fPt.y;
+	BOOL bRet = win->dm->textSelection->InsertCharByPos(pageNo,pObj->m_hObj,ptD,chIns,xCursor);
+	if(bRet)
+	{
+		win->dm->Redraw();
 	}
 	return bRet;
 }
@@ -5176,6 +5198,7 @@ int APIENTRY LaunchPdf(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmd
 	g_pIntf->GetPageNoByPoint = GetPageNoByPoint;
 	g_pIntf->UpdateView = UpdateView;
 	g_pIntf->DeleteCharByPos = DeleteCharByPos;
+	g_pIntf->InsertCharByPos = InsertCharByPos;
 
 	return WinMain(hInstance,hPrevInstance,lpCmdLine,SW_SHOW);
 }
