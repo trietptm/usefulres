@@ -554,6 +554,11 @@ BOOL TextSelection::InsertCharByPos(int pageNo, HXOBJ hObj, const PointD& pt, WC
 		assert(ci.iItem >= 0 && ci.iItem < ci.node->item.text->len);
 	}
 
+	INT pageTextLen = lens[pageNo - 1];
+	RectI* pageCoords = coords[pageNo - 1];
+
+	INT widthDelta = 7;
+	
 	INT indexChanged = 0;
 	if(ci.iItem != -1)
 	{
@@ -561,14 +566,81 @@ BOOL TextSelection::InsertCharByPos(int pageNo, HXOBJ hObj, const PointD& pt, WC
 
 		fz_text_item txtItem;
 		txtItem = ci.node->item.text->items[ci.iItem];
-		txtItem.x = txtItem.x - 7;
+		//txtItem.x = txtItem.x + pageCoords[iPosIns].dx;
+		widthDelta = pageCoords[iPosIns + 1].x - pageCoords[iPosIns].x;
+
+		chIns = txtItem.ucs;
+
 		ArrayInsertElements(ci.node->item.text->items,ci.node->item.text->len,ci.iItem,&txtItem,1);
 
-		indexChanged = -1;
+		indexChanged = 1;
 	}
 	else
 	{
 		assert(pageText[iPosIns]==' ');
+	}
+
+	{
+		pageTextLen = lens[pageNo - 1];
+		
+		INT bufSize = pageTextLen + 1;
+		EnsureBufSize(&pageText,bufSize,bufSize,bufSize + 1,EBS_CAlloc);
+		text[pageNo - 1] = pageText;
+
+		ArrayInsertElements(pageText,pageTextLen,iPosIns,&chIns,1);
+		pageText[pageTextLen] = _T('\0');
+	}
+
+	{
+		pageTextLen = lens[pageNo - 1];
+
+		INT bufSize = pageTextLen + 1;
+		EnsureBufSize(&pageChInf,bufSize,bufSize,bufSize + 1,NULL);
+		chInf[pageNo - 1] = pageChInf;
+
+		char_inf newCI = pageChInf[iPosIns];
+		ArrayInsertElements(pageChInf,pageTextLen,iPosIns,&newCI,1);
+	}
+
+	{
+		pageTextLen = lens[pageNo - 1];
+
+		INT bufSize = pageTextLen + 1;
+		EnsureBufSize(&pageCoords,bufSize,bufSize,bufSize + 1,NULL);
+		coords[pageNo - 1] = pageCoords;
+
+		RectI newRT = pageCoords[iPosIns];
+		ArrayInsertElements(pageCoords,pageTextLen,iPosIns,&newRT,1);
+	}
+
+	lens[pageNo - 1] = pageTextLen;
+	assert(str::Len(pageText)==pageTextLen);
+
+	for(INT i = iPosIns + 1;i < pageTextLen;i++)
+	{
+		if(pageText[i]=='\n')
+			widthDelta = 0;
+
+		char_inf& ci = pageChInf[i];
+		if(ci.iItem==-1)
+		{
+			if(widthDelta)
+				pageCoords[i].x += widthDelta;
+
+			continue;
+		}
+
+		if(ci.node==hObj)
+		{
+			if(indexChanged)
+				ci.iItem += indexChanged;
+
+			if(widthDelta)
+			{
+				ci.node->item.text->items[ci.iItem].x += widthDelta;
+				pageCoords[i].x += widthDelta;
+			}
+		}
 	}
 
 	return TRUE;
