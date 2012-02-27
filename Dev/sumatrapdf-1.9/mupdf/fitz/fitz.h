@@ -848,6 +848,8 @@ struct my_pdf_gstate_s
 	pdf_font_desc *font;
 	float size;
 	float rise;
+
+	fz_matrix tm;
 };
 //////////////////////////////////////////////////////////////////////////
 
@@ -885,7 +887,7 @@ struct fz_text_s
 	my_pdf_gstate gstate;
 };
 
-fz_text *fz_new_text(fz_font *face, fz_matrix trm, int wmode);
+fz_text *fz_new_text(fz_font *face, fz_matrix trm, int wmode, my_pdf_gstate* gstate);
 void fz_add_text(fz_text *text, int gid, int ucs, float x, float y);
 void fz_free_text(fz_text *text);
 void fz_debug_text(fz_text*, int indent);
