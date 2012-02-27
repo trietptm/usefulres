@@ -421,6 +421,14 @@ pdf_flush_text(pdf_csi *csi)
 	text = csi->text;
 	csi->text = NULL;
 
+	/*MyCode*/
+	text->gstate.char_space = gstate->char_space;
+	text->gstate.font = pdf_keep_font(gstate->font);
+	text->gstate.rise = gstate->rise;
+	text->gstate.scale = gstate->scale;
+	text->gstate.size = gstate->size;
+	//////////////////////////////////////////////////////////////////////////	
+
 	dofill = dostroke = doclip = doinvisible = 0;
 	switch (csi->text_mode)
 	{

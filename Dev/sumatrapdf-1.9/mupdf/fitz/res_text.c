@@ -1,5 +1,9 @@
 #include "fitz.h"
 
+/*MyCode*/
+#include "mupdf.h"
+//////////////////////////////////////////////////////////////////////////
+
 fz_text *
 fz_new_text(fz_font *font, fz_matrix trm, int wmode)
 {
@@ -13,12 +17,25 @@ fz_new_text(fz_font *font, fz_matrix trm, int wmode)
 	text->cap = 0;
 	text->items = NULL;
 
+	/*MyCode*/
+	text->gstate.char_space = 0;
+	text->gstate.font = NULL;
+	text->gstate.rise = 0;
+	text->gstate.scale = 0;
+	text->gstate.size = 0;
+	//////////////////////////////////////////////////////////////////////////
+
 	return text;
 }
 
 void
 fz_free_text(fz_text *text)
 {
+	/*MyCode*/
+	if(text->gstate.font)
+		pdf_drop_font(text->gstate.font);
+	//////////////////////////////////////////////////////////////////////////
+
 	fz_drop_font(text->font);
 	fz_free(text->items);
 	fz_free(text);
@@ -37,6 +54,17 @@ fz_clone_text(fz_text *old)
 	text->cap = text->len;
 	text->items = fz_calloc(text->len, sizeof(fz_text_item));
 	memcpy(text->items, old->items, text->len * sizeof(fz_text_item));
+
+	/*MyCode*/
+	if(old->gstate.font)
+	{
+		text->gstate.char_space = old->gstate.char_space;
+		text->gstate.font = pdf_keep_font(old->gstate.font);
+		text->gstate.rise = old->gstate.rise;
+		text->gstate.scale = old->gstate.scale;
+		text->gstate.size = old->gstate.size;
+	}
+	//////////////////////////////////////////////////////////////////////////	
 
 	return text;
 }
