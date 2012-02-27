@@ -680,16 +680,20 @@ BOOL TextSelection::InsertCharByPos(int pageNo, HXOBJ hObj, const PointD& pt, WC
 		fz_text_item txtItem;
 		txtItem = ci.node->item.text->items[ci.iItem];
 		//txtItem.x = txtItem.x + pageCoords[iPosIns].dx;
-		widthDelta = pageCoords[iPosIns + 1].x - pageCoords[iPosIns].x;
+		//widthDelta = pageCoords[iPosIns + 1].x - pageCoords[iPosIns].x;		
+		txtItem.ucs = chIns;
 
 		int cid = 0;
 		unsigned char buf[] = {txtItem.ucs,0};
 		ansii_to_cid(ci.node->item.text->gstate.font,buf,cid);
+
+		txtItem.gid = pdf_font_cid_to_gid(ci.node->item.text->gstate.font, cid);
+
 		fz_matrix tm = ci.node->item.text->trm;
 		my_pdf_show_char(&ci.node->item.text->gstate,cid,tm);
 		widthDelta = (int)ceilf(tm.e - 0.001f);
 
-		chIns = txtItem.ucs;
+		//chIns = txtItem.ucs;
 
 		ArrayInsertElements(ci.node->item.text->items,ci.node->item.text->len,ci.iItem,&txtItem,1);
 

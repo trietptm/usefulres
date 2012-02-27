@@ -422,6 +422,7 @@ pdf_flush_text(pdf_csi *csi)
 	csi->text = NULL;
 
 	/*MyCode*/
+	assert(text->gstate.font==NULL);
 	text->gstate.char_space = gstate->char_space;
 	text->gstate.font = pdf_keep_font(gstate->font);
 	text->gstate.rise = gstate->rise;
