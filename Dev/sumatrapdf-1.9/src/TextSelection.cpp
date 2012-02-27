@@ -683,8 +683,12 @@ BOOL TextSelection::InsertCharByPos(int pageNo, HXOBJ hObj, const PointD& pt, WC
 		//widthDelta = pageCoords[iPosIns + 1].x - pageCoords[iPosIns].x;		
 		txtItem.ucs = chIns;
 
+		
+		WCHAR wbuf[] = {txtItem.ucs,0};
+		unsigned char buf[MAX_PATH] = {0};
+		WideCharToMultiByte(CP_ACP,WC_COMPOSITECHECK,wbuf,-1,(LPSTR)buf,sizeof(buf),NULL,NULL);
+
 		int cid = 0;
-		unsigned char buf[] = {txtItem.ucs,0};
 		if(!ansii_to_cid(ci.node->item.text->gstate.font,buf,cid))
 			return FALSE;
 
