@@ -837,6 +837,20 @@ fz_path *fz_clone_path(fz_path *old);
 fz_rect fz_bound_path(fz_path *path, fz_stroke_state *stroke, fz_matrix ctm);
 void fz_debug_path(fz_path *, int indent);
 
+/*MyCode*/
+typedef struct pdf_font_desc_s pdf_font_desc;
+
+typedef struct my_pdf_gstate_s my_pdf_gstate;
+struct my_pdf_gstate_s
+{
+	float char_space;
+	float scale;
+	pdf_font_desc *font;
+	float size;
+	float rise;
+};
+//////////////////////////////////////////////////////////////////////////
+
 /*
  * Text buffer.
  *
@@ -866,6 +880,9 @@ struct fz_text_s
 	int wmode;
 	int len, cap;
 	fz_text_item *items;
+
+	/*MyCode*/
+	my_pdf_gstate gstate;
 };
 
 fz_text *fz_new_text(fz_font *face, fz_matrix trm, int wmode);

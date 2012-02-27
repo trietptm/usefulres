@@ -6,6 +6,9 @@
 
 /*MyCode*/
 #include "..\..\..\..\biggod.dev\Ctrl\Utility.hpp"
+extern "C"{
+#include "mupdf.h"
+};
 //////////////////////////////////////////////////////////////////////////
 
 TextSelection::TextSelection(BaseEngine *engine) : engine(engine)
@@ -523,6 +526,116 @@ fz_grow_text(fz_text *text, int n)
 	text->items = (fz_text_item*)fz_realloc(text->items, text->cap, sizeof(fz_text_item));
 }
 
+static void
+my_pdf_show_char(my_pdf_gstate *gstate,int cid,fz_matrix& tm)
+{
+	//pdf_gstate *gstate = csi->gstate + csi->gtop;
+	pdf_font_desc *fontdesc = gstate->font;
+	fz_matrix tsm, trm;
+	float w0, w1, tx, ty;
+	pdf_hmtx h;
+	pdf_vmtx v;
+	int gid;
+	int ucsbuf[8];
+	int ucslen;
+	//int i;
+
+	tsm.a = gstate->size * gstate->scale;
+	tsm.b = 0;
+	tsm.c = 0;
+	tsm.d = gstate->size;
+	tsm.e = 0;
+	tsm.f = gstate->rise;
+
+	ucslen = 0;
+	if (fontdesc->to_unicode)
+		ucslen = pdf_lookup_cmap_full(fontdesc->to_unicode, cid, ucsbuf);
+	if (ucslen == 0 && cid < fontdesc->cid_to_ucs_len)
+	{
+		ucsbuf[0] = fontdesc->cid_to_ucs[cid];
+		ucslen = 1;
+	}
+	if (ucslen == 0 || (ucslen == 1 && ucsbuf[0] == 0))
+	{
+		ucsbuf[0] = '?';
+		ucslen = 1;
+	}
+
+	gid = pdf_font_cid_to_gid(fontdesc, cid);
+
+	/* cf. http://code.google.com/p/sumatrapdf/issues/detail?id=1149 */
+	if (fontdesc->wmode == 1 && fontdesc->font->ft_face)
+		gid = pdf_ft_get_vgid(fontdesc, gid);
+
+	if (fontdesc->wmode == 1)
+	{
+		v = pdf_get_vmtx(fontdesc, cid);
+		tsm.e -= v.x * gstate->size * 0.001f;
+		tsm.f -= v.y * gstate->size * 0.001f;
+	}
+
+	trm = fz_concat(tsm, tm);
+
+#if 0
+	/* flush buffered text if face or matrix or rendermode has changed */
+	if (!csi->text ||
+		fontdesc->font != csi->text->font ||
+		fontdesc->wmode != csi->text->wmode ||
+		fabsf(trm.a - csi->text->trm.a) > FLT_EPSILON ||
+		fabsf(trm.b - csi->text->trm.b) > FLT_EPSILON ||
+		fabsf(trm.c - csi->text->trm.c) > FLT_EPSILON ||
+		fabsf(trm.d - csi->text->trm.d) > FLT_EPSILON ||
+		gstate->render != csi->text_mode)
+	{
+		pdf_flush_text(csi);
+
+		csi->text = fz_new_text(fontdesc->font, trm, fontdesc->wmode);
+		csi->text->trm.e = 0;
+		csi->text->trm.f = 0;
+		csi->text_mode = gstate->render;
+	}
+
+	/* add glyph to textobject */
+	fz_add_text(csi->text, gid, ucsbuf[0], trm.e, trm.f);
+
+	/* add filler glyphs for one-to-many unicode mapping */
+	for (i = 1; i < ucslen; i++)
+		fz_add_text(csi->text, -1, ucsbuf[i], trm.e, trm.f);
+#endif
+
+	if (fontdesc->wmode == 0)
+	{
+		h = pdf_get_hmtx(fontdesc, cid);
+		w0 = h.w * 0.001f;
+		tx = (w0 * gstate->size + gstate->char_space) * gstate->scale;
+		tm = fz_concat(fz_translate(tx, 0), tm);
+	}
+
+	if (fontdesc->wmode == 1)
+	{
+		w1 = v.w * 0.001f;
+		ty = w1 * gstate->size + gstate->char_space;
+		tm = fz_concat(fz_translate(0, ty), tm);
+	}
+}
+
+static unsigned char* ansii_to_cid(pdf_font_desc *fontdesc,unsigned char* buf,int& cid)
+{
+	int cpt;
+
+	buf = pdf_decode_cmap(fontdesc->encoding, buf, &cpt);
+	cid = pdf_lookup_cmap(fontdesc->encoding, cpt);
+	if (cid < 0)
+	{
+		fz_warn("cannot encode character with code point %#x", cpt);
+		return NULL;
+	}
+//	if (cpt == 32)
+//			pdf_show_space(csi, gstate->word_space);
+
+	return buf;
+}
+
 BOOL TextSelection::InsertCharByPos(int pageNo, HXOBJ hObj, const PointD& pt, WCHAR chIns, DOUBLE* xCursor)
 {
 	assert(1 <= pageNo && pageNo <= engine->PageCount());
@@ -568,6 +681,13 @@ BOOL TextSelection::InsertCharByPos(int pageNo, HXOBJ hObj, const PointD& pt, WC
 		txtItem = ci.node->item.text->items[ci.iItem];
 		//txtItem.x = txtItem.x + pageCoords[iPosIns].dx;
 		widthDelta = pageCoords[iPosIns + 1].x - pageCoords[iPosIns].x;
+
+		int cid = 0;
+		unsigned char buf[] = {txtItem.ucs,0};
+		ansii_to_cid(ci.node->item.text->gstate.font,buf,cid);
+		fz_matrix tm = ci.node->item.text->trm;
+		my_pdf_show_char(&ci.node->item.text->gstate,cid,tm);
+		widthDelta = (int)ceilf(tm.e - 0.001f);
 
 		chIns = txtItem.ucs;
 
