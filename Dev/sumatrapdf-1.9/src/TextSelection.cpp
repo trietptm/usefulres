@@ -685,15 +685,14 @@ BOOL TextSelection::InsertCharByPos(int pageNo, HXOBJ hObj, const PointD& pt, WC
 
 		int cid = 0;
 		unsigned char buf[] = {txtItem.ucs,0};
-		ansii_to_cid(ci.node->item.text->gstate.font,buf,cid);
+		if(!ansii_to_cid(ci.node->item.text->gstate.font,buf,cid))
+			return FALSE;
 
 		txtItem.gid = pdf_font_cid_to_gid(ci.node->item.text->gstate.font, cid);
 
 		fz_matrix tm = ci.node->item.text->trm;
 		my_pdf_show_char(&ci.node->item.text->gstate,cid,tm);
 		widthDelta = (int)ceilf(tm.e - 0.001f);
-
-		//chIns = txtItem.ucs;
 
 		ArrayInsertElements(ci.node->item.text->items,ci.node->item.text->len,ci.iItem,&txtItem,1);
 
@@ -764,6 +763,17 @@ BOOL TextSelection::InsertCharByPos(int pageNo, HXOBJ hObj, const PointD& pt, WC
 				ci.node->item.text->items[ci.iItem].x += widthDelta;
 				pageCoords[i].x += widthDelta;
 			}
+		}
+	}
+
+	if(xCursor)
+	{
+		if(iPosIns + 1 < pageTextLen)
+			*xCursor = pageCoords[iPosIns + 1].x;
+		else
+		{
+			if(pageTextLen > 0)
+				*xCursor = pageCoords[pageTextLen - 1].x + pageCoords[pageTextLen - 1].dx;
 		}
 	}
 
