@@ -421,15 +421,6 @@ pdf_flush_text(pdf_csi *csi)
 	text = csi->text;
 	csi->text = NULL;
 
-	/*MyCode*/
-	assert(text->gstate.font==NULL);
-	text->gstate.char_space = gstate->char_space;
-	text->gstate.font = pdf_keep_font(gstate->font);
-	text->gstate.rise = gstate->rise;
-	text->gstate.scale = gstate->scale;
-	text->gstate.size = gstate->size;
-	//////////////////////////////////////////////////////////////////////////	
-
 	dofill = dostroke = doclip = doinvisible = 0;
 	switch (csi->text_mode)
 	{
@@ -538,6 +529,8 @@ pdf_show_char(pdf_csi *csi, int cid)
 	int ucsbuf[8];
 	int ucslen;
 	int i;
+	
+	my_pdf_gstate my_gstate; //MyCode
 
 	tsm.a = gstate->size * gstate->scale;
 	tsm.b = 0;
@@ -587,7 +580,16 @@ pdf_show_char(pdf_csi *csi, int cid)
 	{
 		pdf_flush_text(csi);
 
-		csi->text = fz_new_text(fontdesc->font, trm, fontdesc->wmode);
+		/*MyCode*/		
+		my_gstate.char_space = gstate->char_space;
+		my_gstate.font = gstate->font;
+		my_gstate.rise = gstate->rise;
+		my_gstate.scale = gstate->scale;
+		my_gstate.size = gstate->size;
+		my_gstate.tm = csi->tm;
+		//////////////////////////////////////////////////////////////////////////		
+
+		csi->text = fz_new_text(fontdesc->font, trm, fontdesc->wmode, &my_gstate);
 		csi->text->trm.e = 0;
 		csi->text->trm.f = 0;
 		csi->text_mode = gstate->render;

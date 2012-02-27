@@ -5,7 +5,7 @@
 //////////////////////////////////////////////////////////////////////////
 
 fz_text *
-fz_new_text(fz_font *font, fz_matrix trm, int wmode)
+fz_new_text(fz_font *font, fz_matrix trm, int wmode, my_pdf_gstate* gstate)
 {
 	fz_text *text;
 
@@ -18,11 +18,23 @@ fz_new_text(fz_font *font, fz_matrix trm, int wmode)
 	text->items = NULL;
 
 	/*MyCode*/
-	text->gstate.char_space = 0;
-	text->gstate.font = NULL;
-	text->gstate.rise = 0;
-	text->gstate.scale = 0;
-	text->gstate.size = 0;
+	if(gstate)
+	{
+		text->gstate.char_space = gstate->char_space;
+		text->gstate.font = pdf_keep_font(gstate->font);
+		text->gstate.rise = gstate->rise;
+		text->gstate.scale = gstate->scale;
+		text->gstate.size = gstate->size;
+		text->gstate.tm = gstate->tm;
+	}
+	else
+	{
+		text->gstate.char_space = 0;
+		text->gstate.font = NULL;
+		text->gstate.rise = 0;
+		text->gstate.scale = 0;
+		text->gstate.size = 0;
+	}
 	//////////////////////////////////////////////////////////////////////////
 
 	return text;
@@ -63,6 +75,7 @@ fz_clone_text(fz_text *old)
 		text->gstate.rise = old->gstate.rise;
 		text->gstate.scale = old->gstate.scale;
 		text->gstate.size = old->gstate.size;
+		text->gstate.tm = old->gstate.tm;
 	}
 	//////////////////////////////////////////////////////////////////////////	
 

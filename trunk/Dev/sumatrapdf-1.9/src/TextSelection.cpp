@@ -690,7 +690,9 @@ BOOL TextSelection::InsertCharByPos(int pageNo, HXOBJ hObj, const PointD& pt, WC
 
 		txtItem.gid = pdf_font_cid_to_gid(ci.node->item.text->gstate.font, cid);
 
-		fz_matrix tm = ci.node->item.text->trm;
+		fz_matrix tm = ci.node->item.text->gstate.tm;
+		tm.e = 0.0;
+		tm.f = 0.0;
 		my_pdf_show_char(&ci.node->item.text->gstate,cid,tm);
 		widthDelta = (int)ceilf(tm.e - 0.001f);
 

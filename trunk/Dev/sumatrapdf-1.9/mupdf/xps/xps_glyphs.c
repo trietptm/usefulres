@@ -281,7 +281,7 @@ xps_parse_glyphs_imp(xps_context *ctx, fz_matrix ctm,
 	else
 		tm = fz_scale(size, -size);
 
-	text = fz_new_text(font, tm, is_sideways);
+	text = fz_new_text(font, tm, is_sideways, NULL); //NULL(MyCode)
 
 	while ((us && un > 0) || (is && *is))
 	{
