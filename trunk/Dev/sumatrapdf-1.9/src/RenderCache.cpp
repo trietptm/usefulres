@@ -141,6 +141,14 @@ static RectD GetTileRect(BaseEngine *engine, int pageNo, int rotation, float zoo
 {
     RectD mediabox = engine->PageMediabox(pageNo);
 
+	/*MyCode*/
+	if(engine->m_forceTileRect)
+	{
+		mediabox = *engine->m_forceTileRect;
+		return mediabox;
+	}
+	//////////////////////////////////////////////////////////////////////////
+
     if (tile.res && tile.res != INVALID_TILE_RES) {
         double width = mediabox.dx / (1 << tile.res);
         mediabox.x += tile.col * width;
@@ -568,6 +576,43 @@ void RenderCache::ClearQueueForDisplayModel(DisplayModel *dm, int pageNo, TilePo
 }
 
 /*MyCode*/
+static BOOL CopyBmp(HBITMAP destBmp, HBITMAP srcBmp,INT destX,INT destY,const RectI* srcRect)
+{
+	if(!destBmp || !srcBmp)
+		return FALSE;
+
+// 	BITMAP bm;
+// 	::GetObject(srcBmp, sizeof(BITMAP), &bm);
+// 
+// 	LONG width = bm.bmWidth;
+// 	LONG height = bm.bmHeight;	
+
+	HDC dcDest;
+	dcDest = ::CreateCompatibleDC(NULL);
+	::SelectObject(dcDest,destBmp);
+
+	HDC dcSrc;
+	dcSrc = ::CreateCompatibleDC(NULL);
+	::SelectObject(dcSrc,srcBmp);
+
+	BOOL bRet = ::BitBlt(dcDest,destX,destY,srcRect->dx,srcRect->dy,dcSrc,srcRect->x,srcRect->y,SRCCOPY);
+
+	::DeleteDC(dcDest);
+	::DeleteDC(dcSrc);
+
+	return bRet;
+}
+
+BitmapCacheEntry* RenderCache::GetBitmapCacheEntry(INT iCache)
+{
+	if(iCache >=0 && iCache < cacheCount)
+	{
+		return cache[iCache];
+	}
+
+	return NULL;
+}
+
 void RenderCache::DoRender(RenderCache *cache)
 {
 	PageRenderRequest   req;
@@ -608,10 +653,63 @@ void RenderCache::DoRender(RenderCache *cache)
 	else {
 		if (bmp && cache->invertColors)
 			InvertBitmapColors(bmp->GetBitmap());
-		cache->Add(req, bmp);
-#ifdef CONSERVE_MEMORY
-		cache->FreeNotVisible();
+
+		//MyCode
+		if(req.dm->engine->m_forceTileRect)
+		{
+			RectD mediabox = GetTileRect(req.dm->engine, req.pageNo, req.dm->Rotation(), req.dm->ZoomReal(), req.tile);
+			RectI bbox = req.dm->engine->Transform(mediabox, req.pageNo, req.dm->ZoomReal(), req.dm->Rotation()).Round();
+			req.dm->engine->m_forceTileRect = NULL;
+
+#if 0
+			BitmapCacheEntry *entry = cache->Find(req.dm, req.pageNo, req.dm->Rotation(), req.dm->ZoomReal(), &req.tile);
+			if(!entry)
+			{
+				delete bmp;
+				return;
+			}			
+
+			CopyBmp(entry->bitmap->GetBitmap(),bmp->GetBitmap(),bbox.x,bbox.y);
+#else
+			//将bmp更新到所有已有的cache中
+			INT nCache = cache->CacheCount();
+			for(INT iCache = 0;iCache < nCache;iCache++)
+			{
+				BitmapCacheEntry *entry = cache->GetBitmapCacheEntry(iCache);
+				if(!entry)
+					continue;
+
+				if(entry->dm->engine != req.dm->engine || entry->pageNo != req.pageNo || 
+					entry->rotation != req.dm->Rotation() || entry->zoom != req.dm->ZoomReal())
+					continue;
+
+				RectD mediabox1 = GetTileRect(entry->dm->engine, entry->pageNo, entry->rotation, entry->zoom, entry->tile);
+				RectI bbox1 = req.dm->engine->Transform(mediabox1, entry->pageNo, entry->zoom, entry->rotation).Round();
+
+				RectI rtInter = bbox1.Intersect(bbox);
+				if(rtInter.IsEmpty())
+					continue;
+
+				RectI srcRect;
+				srcRect.x = rtInter.x - bbox.x;
+				srcRect.y = rtInter.y - bbox.y;
+				srcRect.dx = rtInter.dx;
+				srcRect.dy = rtInter.dy;
+				CopyBmp(entry->bitmap->GetBitmap(),bmp->GetBitmap(),rtInter.x - bbox1.x,rtInter.y - bbox1.y,&srcRect);
+			}
 #endif
+			
+			delete bmp;			
+		}
+		//////////////////////////////////////////////////////////////////////////
+		else
+		{
+			cache->Add(req, bmp);
+	#ifdef CONSERVE_MEMORY
+			cache->FreeNotVisible();
+	#endif
+		}
+
 		req.dm->RepaintDisplay();
 	}
 }

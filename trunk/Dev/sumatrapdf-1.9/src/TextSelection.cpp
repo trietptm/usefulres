@@ -414,7 +414,7 @@ TCHAR* TextSelection::ExtractObjText(int pageNo, HXOBJ hObj, const PointD* pt, R
 	WCHAR* pageText = text[pageNo - 1];
 	return &pageText[lineTextPos];
 }
-BOOL TextSelection::DeleteCharByPos(int pageNo, HXOBJ hObj, const PointD& pt, BOOL bBackspace, DOUBLE* xCursor)
+BOOL TextSelection::DeleteCharByPos(int pageNo, HXOBJ hObj, const PointD& pt, BOOL bBackspace, DOUBLE* xCursor, RectD* updateRect)
 {
 	assert(1 <= pageNo && pageNo <= engine->PageCount());
 	if (!coords[pageNo - 1])
@@ -459,6 +459,17 @@ BOOL TextSelection::DeleteCharByPos(int pageNo, HXOBJ hObj, const PointD& pt, BO
 	if(iPosDel + 1 < pageTextLen)
 	{
 		widthDelta = -(pageCoords[iPosDel + 1].x - pageCoords[iPosDel].x);
+	}
+
+	if(updateRect)
+	{
+		if(iPosDel < pageTextLen)
+		{
+			updateRect->x = pageCoords[iPosDel].x;
+			updateRect->y = pageCoords[iPosDel].y;
+			updateRect->dx = 100;//pageCoords[iPosDel].dx;
+			updateRect->dy = pageCoords[iPosDel].dy;
+		}
 	}
 
 	INT indexChanged = 0;

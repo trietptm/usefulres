@@ -144,6 +144,8 @@ private:
 
 	/*MyCode*/
 	static void DoRender(RenderCache *cache);
+	INT CacheCount()const{return cacheCount;}
+	BitmapCacheEntry* GetBitmapCacheEntry(INT iCache);
 };
 
 #endif

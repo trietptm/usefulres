@@ -152,7 +152,10 @@ public:
 	BaseEngine()
 	{
 		m_pIntf = NULL;
+		m_forceTileRect = NULL;
 	}
+	RectD* m_forceTileRect;
+	RectD m_forceTileRectTmp;
 	//////////////////////////////////////////////////////////////////////////
 
     virtual ~BaseEngine() { }

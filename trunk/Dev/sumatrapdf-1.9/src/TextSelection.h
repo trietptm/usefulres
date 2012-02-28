@@ -40,7 +40,7 @@ public:
 
 	/*MyCode*/
 	TCHAR* ExtractObjText(int pageNo, HXOBJ hObj, const PointD* pt = NULL, RectD* rtText = NULL, DOUBLE* xCursor = NULL);
-	BOOL DeleteCharByPos(int pageNo, HXOBJ hObj, const PointD& pt, BOOL bBackspace, DOUBLE* xCursor = NULL);
+	BOOL DeleteCharByPos(int pageNo, HXOBJ hObj, const PointD& pt, BOOL bBackspace, DOUBLE* xCursor = NULL, RectD* updateRect = NULL);
 	BOOL InsertCharByPos(int pageNo, HXOBJ hObj, const PointD& pt, WCHAR chIns, DOUBLE* xCursor = NULL);
 	INT GetObjLineText(int pageNo, HXOBJ hObj, const PointD* pt, RectD* rtText = NULL, DOUBLE* xCursor = NULL, INT* chPos = NULL);
 	//////////////////////////////////////////////////////////////////////////
