@@ -350,6 +350,7 @@ INT TextSelection::GetObjLineText(int pageNo, HXOBJ hObj, const PointD* pt, Rect
 									*chPos = i;
 							}
 
+#if 0
 							dist = fabs((pageCoords[i].x + pageCoords[i].dx) - pt->x);
 							if(dist < cursorDist)
 							{
@@ -370,6 +371,19 @@ INT TextSelection::GetObjLineText(int pageNo, HXOBJ hObj, const PointD* pt, Rect
 
 								cursorDist = dist;
 							}
+#else
+							if(i == textLen - 1 || pageText[i + 1]=='\n')
+							{
+								dist = fabs((pageCoords[i].x + pageCoords[i].dx) - pt->x);
+								if(dist < cursorDist)
+								{
+									*xCursor = pageCoords[i].x + pageCoords[i].dx;
+
+									if(chPos)
+										*chPos = i + 1;
+								}
+							}
+#endif
 						}
 					}
 
@@ -673,16 +687,43 @@ BOOL TextSelection::InsertCharByPos(int pageNo, HXOBJ hObj, const PointD& pt, WC
 	INT widthDelta = 7;
 	
 	INT indexChanged = 0;
-	if(ci.iItem != -1)
+
+	INT iTextItem = ci.iItem;
+	float xInsPos = 0.0;
+	if(iTextItem==-1)
+	{
+		xInsPos = (float)pageCoords[iPosIns].x;
+
+		for(INT i = iPosIns + 1;i < pageTextLen;i++)
+		{
+			char_inf& ci = pageChInf[i];
+			
+			if(ci.node==hObj)
+			{
+				if(ci.iItem != -1)
+				{
+					iTextItem = ci.iItem;
+					break;
+				}
+			}
+		}
+	}
+	else
+	{
+		xInsPos = ci.node->item.text->items[iTextItem].x;
+	}
+	assert(iTextItem != -1);
+	if(iTextItem==-1)
+		return FALSE;
+
+	//if(ci.iItem != -1)
 	{
 		fz_grow_text(ci.node->item.text,1);
 
 		fz_text_item txtItem;
-		txtItem = ci.node->item.text->items[ci.iItem];
-		//txtItem.x = txtItem.x + pageCoords[iPosIns].dx;
-		//widthDelta = pageCoords[iPosIns + 1].x - pageCoords[iPosIns].x;		
+		txtItem = ci.node->item.text->items[iTextItem];
 		txtItem.ucs = chIns;
-
+		txtItem.x = xInsPos;
 		
 		WCHAR wbuf[] = {txtItem.ucs,0};
 		unsigned char buf[MAX_PATH] = {0};
@@ -700,14 +741,14 @@ BOOL TextSelection::InsertCharByPos(int pageNo, HXOBJ hObj, const PointD& pt, WC
 		my_pdf_show_char(&ci.node->item.text->gstate,cid,tm);
 		widthDelta = (int)ceilf(tm.e - 0.001f);
 
-		ArrayInsertElements(ci.node->item.text->items,ci.node->item.text->len,ci.iItem,&txtItem,1);
+		ArrayInsertElements(ci.node->item.text->items,ci.node->item.text->len,iTextItem,&txtItem,1);
 
 		indexChanged = 1;
 	}
-	else
-	{
-		assert(pageText[iPosIns]==' ');
-	}
+// 	else
+// 	{
+// 		assert(pageText[iPosIns]==' ');
+// 	}
 
 	{
 		pageTextLen = lens[pageNo - 1];
