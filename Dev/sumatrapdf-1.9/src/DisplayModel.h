@@ -210,7 +210,7 @@ public:
     ChmEngine *     AsChmEngine() const;
 
 	/*MyCode*/
-	void Redraw();
+	void Redraw(RectD* updateRect = NULL);
 	//////////////////////////////////////////////////////////////////////////	
 protected:
 

@@ -5064,11 +5064,12 @@ static BOOL DeleteCharByPos(int pageNo, PdfObj* pObj, const FPoint& fPt, BOOL bB
 #if 0
 	BOOL bRet = win->dm->engine->DeleteCharByPos(pageNo,pObj->m_hObj,ptD,bBackspace,xCursor);
 #else
-	BOOL bRet = win->dm->textSelection->DeleteCharByPos(pageNo,pObj->m_hObj,ptD,bBackspace,xCursor);
+	RectD updateRect;
+	BOOL bRet = win->dm->textSelection->DeleteCharByPos(pageNo,pObj->m_hObj,ptD,bBackspace,xCursor,&updateRect);
 #endif
 	if(bRet)
 	{
-		win->dm->Redraw();
+		win->dm->Redraw(&updateRect);
 	}
 	return bRet;
 }

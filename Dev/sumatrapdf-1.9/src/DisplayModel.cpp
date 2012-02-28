@@ -931,9 +931,16 @@ void DisplayModel::RenderVisibleParts(bool bForceRender, bool bNoPredictive)
 }
 
 /*MyCode*/
-void DisplayModel::Redraw()
+void DisplayModel::Redraw(RectD* updateRect)
 {
+	engine->m_forceTileRect = NULL;
+	if(updateRect)
+	{
+		engine->m_forceTileRectTmp = *updateRect;
+		engine->m_forceTileRect = &engine->m_forceTileRectTmp;
+	}
 	RenderVisibleParts(true,true);
+	//engine->m_forceTileRect = NULL;
 }
 //////////////////////////////////////////////////////////////////////////
 
