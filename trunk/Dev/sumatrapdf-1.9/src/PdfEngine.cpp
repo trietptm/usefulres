@@ -1352,10 +1352,6 @@ PdfObj* CPdfEngine::ExtractObjs(int pageNo)
 				PdfObj* pNewObj = new PdfObj();
 
 				pNewObj->m_hObj = node;
-				pNewObj->rect.x0 = node->rect.x0;
-				pNewObj->rect.y0 = node->rect.y0;
-				pNewObj->rect.x1 = node->rect.x1;
-				pNewObj->rect.y1 = node->rect.y1;
 
 				if(pObj)
 				{

@@ -5046,6 +5046,16 @@ static WCHAR* ExtractObjText(int pageNo, PdfObj* pObj, const FPoint* fPt, FRect*
 	return rText;
 }
 
+static void GetObjRect(const PdfObj* pObj,FRect& rtObj)
+{
+	fz_display_node *node = static_cast<fz_display_node*>(pObj->m_hObj);
+
+	rtObj.x0 = node->rect.x0;
+	rtObj.y0 = node->rect.y0;
+	rtObj.x1 = node->rect.x1;
+	rtObj.y1 = node->rect.y1;
+}
+
 static BOOL DeleteCharByPos(int pageNo, PdfObj* pObj, const FPoint& fPt, BOOL bBackspace, DOUBLE* xCursor)
 {
 	WindowInfo* win = WindowInfo::g_pWinInf;
@@ -5195,6 +5205,7 @@ int APIENTRY LaunchPdf(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmd
 	g_pIntf->ExtractObjText = ExtractObjText;
 	g_pIntf->DeletePdfObjects = DeletePdfObjects;
 	g_pIntf->FreeMem = FreeMem;
+	g_pIntf->GetObjRect = GetObjRect;
 	g_pIntf->CvtToScreen = CvtToScreen;
 	g_pIntf->CvtFromScreen = CvtFromScreen;
 	g_pIntf->GetPageNoByPoint = GetPageNoByPoint;
