@@ -784,8 +784,8 @@ public:
 
 	/*MyCode*/
 	virtual PdfObj* ExtractObjs(int pageNo);
-	virtual TCHAR* ExtractObjText(int pageNo, HXOBJ hObj, PointD* pt = NULL, RectD* rtText = NULL, DOUBLE* xCursor = NULL);
-	virtual BOOL DeleteCharByPos(int pageNo, HXOBJ hObj, const PointD& pt, BOOL bBackspace, DOUBLE* xCursor = NULL);
+	virtual TCHAR* ExtractObjText(int pageNo, HPDFOBJ hObj, PointD* pt = NULL, RectD* rtText = NULL, DOUBLE* xCursor = NULL);
+	virtual BOOL DeleteCharByPos(int pageNo, HPDFOBJ hObj, const PointD& pt, BOOL bBackspace, DOUBLE* xCursor = NULL);
 
 	TCHAR* GetObjLineText(fz_text_span *text, const PointD* pt, RectD* rtText = NULL, DOUBLE* xCursor = NULL, char_inf** ch_inf_out = NULL);
 	//////////////////////////////////////////////////////////////////////////
@@ -1351,7 +1351,7 @@ PdfObj* CPdfEngine::ExtractObjs(int pageNo)
 			{
 				PdfObj* pNewObj = new PdfObj();
 
-				pNewObj->m_hObj = node;
+				pNewObj->m_hObj = (HPDFOBJ)node;
 
 				if(pObj)
 				{
@@ -1514,7 +1514,7 @@ TCHAR* CPdfEngine::GetObjLineText(fz_text_span *text, const PointD* pt, RectD* r
 
 	return content;
 }
-TCHAR* CPdfEngine::ExtractObjText(int pageNo, HXOBJ hObj, PointD* pt, RectD* rtText, DOUBLE* xCursor)
+TCHAR* CPdfEngine::ExtractObjText(int pageNo, HPDFOBJ hObj, PointD* pt, RectD* rtText, DOUBLE* xCursor)
 {
 	pdf_page *page = GetPdfPage(pageNo, true);
 	if(!page)
@@ -1524,7 +1524,7 @@ TCHAR* CPdfEngine::ExtractObjText(int pageNo, HXOBJ hObj, PointD* pt, RectD* rtT
 	// use an infinite rectangle as bounds (instead of page->mediabox) to ensure that
 	// the extracted text is consistent between cached runs using a list device and
 	// fresh runs (otherwise the list device omits text outside the mediabox bounds)
-	fz_error error = RunPage(page, fz_new_text_device(text), fz_identity, Target_View, fz_infinite_bbox, true, static_cast<fz_display_node*>(hObj));
+	fz_error error = RunPage(page, fz_new_text_device(text), fz_identity, Target_View, fz_infinite_bbox, true, (fz_display_node*)(hObj));
 
 	WCHAR *content = NULL;
 	if (!error)
@@ -1541,7 +1541,7 @@ TCHAR* CPdfEngine::ExtractObjText(int pageNo, HXOBJ hObj, PointD* pt, RectD* rtT
 
 	return str::conv::FromWStrQ(content);
 }
-BOOL CPdfEngine::DeleteCharByPos(int pageNo, HXOBJ hObj, const PointD& pt, BOOL bBackspace, DOUBLE* xCursor)
+BOOL CPdfEngine::DeleteCharByPos(int pageNo, HPDFOBJ hObj, const PointD& pt, BOOL bBackspace, DOUBLE* xCursor)
 {
 	pdf_page *page = GetPdfPage(pageNo, true);
 	if(!page)
@@ -1553,7 +1553,7 @@ BOOL CPdfEngine::DeleteCharByPos(int pageNo, HXOBJ hObj, const PointD& pt, BOOL 
 	// use an infinite rectangle as bounds (instead of page->mediabox) to ensure that
 	// the extracted text is consistent between cached runs using a list device and
 	// fresh runs (otherwise the list device omits text outside the mediabox bounds)
-	fz_error error = RunPage(page, fz_new_text_device(text), fz_identity, Target_View, fz_infinite_bbox, true, static_cast<fz_display_node*>(hObj));
+	fz_error error = RunPage(page, fz_new_text_device(text), fz_identity, Target_View, fz_infinite_bbox, true, (fz_display_node*)(hObj));
 
 	WCHAR *content = NULL;
 	if (!error)
