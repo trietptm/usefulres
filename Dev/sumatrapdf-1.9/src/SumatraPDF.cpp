@@ -4991,7 +4991,19 @@ Exit:
 /*MyCode*/
 SumatraPdfIntf* g_pIntf;
 
-static PdfObj* ExtraPdfObjects(INT pageNo)
+// static PdfObj* ExtraPdfObjects(INT pageNo)
+// {
+// 	WindowInfo* win = WindowInfo::g_pWinInf;
+// 	if(!win)
+// 		return NULL;
+// 
+// 	if(!win->dm || !win->dm->engine)
+// 		return NULL;
+// 
+//  	return win->dm->engine->ExtractObjs(pageNo);
+// }
+
+static HPDFOBJ GetFirstPdfObj(INT pageNo)
 {
 	WindowInfo* win = WindowInfo::g_pWinInf;
 	if(!win)
@@ -5000,7 +5012,16 @@ static PdfObj* ExtraPdfObjects(INT pageNo)
 	if(!win->dm || !win->dm->engine)
 		return NULL;
 
- 	return win->dm->engine->ExtractObjs(pageNo);
+	return win->dm->engine->GetPageFirstObj(pageNo);
+}
+
+static HPDFOBJ GetNextPdfObj(HPDFOBJ hObj)
+{
+	if(!hObj)
+		return NULL;
+
+	fz_display_node* node = (fz_display_node*)hObj;
+	return (HPDFOBJ)node->next;
 }
 
 static WCHAR* ExtractObjText(int pageNo, HPDFOBJ hObj, const FPoint* fPt, FRect* rtText, DOUBLE* xCursor)
@@ -5108,16 +5129,16 @@ static BOOL InsertCharByPos(int pageNo, HPDFOBJ hObj, const FPoint& fPt, WCHAR c
 	return bRet;
 }
 
-static void DeletePdfObjects(PdfObj* pdfObjs)
-{
-	PdfObj* p = pdfObjs;
-	while(p)
-	{
-		PdfObj* pNext = p->m_pNext;		
-		delete p;
-		p = pNext;
-	}
-}
+// static void DeletePdfObjects(PdfObj* pdfObjs)
+// {
+// 	PdfObj* p = pdfObjs;
+// 	while(p)
+// 	{
+// 		PdfObj* pNext = p->m_pNext;		
+// 		delete p;
+// 		p = pNext;
+// 	}
+// }
 
 static void FreeMem(void* pMem)
 {
@@ -5201,9 +5222,11 @@ static INT GetPageNoByPoint(INT x, INT y)
 int APIENTRY LaunchPdf(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, SumatraPdfIntf* pIntf)
 {
 	g_pIntf = pIntf;
-	g_pIntf->ExtraPdfObjects = ExtraPdfObjects;
+	//g_pIntf->ExtraPdfObjects = ExtraPdfObjects;
+	g_pIntf->GetFirstPdfObj = GetFirstPdfObj;
+	g_pIntf->GetNextPdfObj = GetNextPdfObj;
 	g_pIntf->ExtractObjText = ExtractObjText;
-	g_pIntf->DeletePdfObjects = DeletePdfObjects;
+	//g_pIntf->DeletePdfObjects = DeletePdfObjects;
 	g_pIntf->FreeMem = FreeMem;
 	g_pIntf->GetObjRect = GetObjRect;
 	g_pIntf->CvtToScreen = CvtToScreen;

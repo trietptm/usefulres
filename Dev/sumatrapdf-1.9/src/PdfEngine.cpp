@@ -783,7 +783,8 @@ public:
     virtual void RunGC();
 
 	/*MyCode*/
-	virtual PdfObj* ExtractObjs(int pageNo);
+	//virtual PdfObj* ExtractObjs(int pageNo);
+	virtual HPDFOBJ GetPageFirstObj(int pageNo);
 	virtual TCHAR* ExtractObjText(int pageNo, HPDFOBJ hObj, PointD* pt = NULL, RectD* rtText = NULL, DOUBLE* xCursor = NULL);
 	virtual BOOL DeleteCharByPos(int pageNo, HPDFOBJ hObj, const PointD& pt, BOOL bBackspace, DOUBLE* xCursor = NULL);
 
@@ -1330,42 +1331,64 @@ fz_error CPdfEngine::RunPage(pdf_page *page, fz_device *dev, fz_matrix ctm, Rend
 }
 
 /*MyCode*/
-PdfObj* CPdfEngine::ExtractObjs(int pageNo)
+// PdfObj* CPdfEngine::ExtractObjs(int pageNo)
+// {
+// 	pdf_page *page = GetPdfPage(pageNo, true);
+// 	if(!page)
+// 		return NULL;
+// 
+// 	PdfObj* pHead = NULL;
+// 
+// 	PdfPageRun *run;
+// 	run = GetPageRun(page, false);
+// 	if(run)
+// 	{
+// 		EnterCriticalSection(&xrefAccess);
+// 		{
+// 			fz_display_node *node = NULL;
+// 			
+// 			PdfObj* pObj = NULL;
+// 			for (node = run->list->first; node; node = node->next)
+// 			{
+// 				PdfObj* pNewObj = new PdfObj();
+// 
+// 				pNewObj->m_hObj = (HPDFOBJ)node;
+// 
+// 				if(pObj)
+// 				{
+// 					pObj->m_pNext = pNewObj;
+// 					pObj = pObj->m_pNext;
+// 				}
+// 				else
+// 				{
+// 					pObj = pNewObj;
+// 					pHead = pObj;
+// 				}
+// 			}		
+// 		}
+// 		LeaveCriticalSection(&xrefAccess);
+// 		DropPageRun(run);
+// 	}
+// 
+// 	return pHead;
+// }
+HPDFOBJ CPdfEngine::GetPageFirstObj(int pageNo)
 {
 	pdf_page *page = GetPdfPage(pageNo, true);
 	if(!page)
 		return NULL;
 
-	PdfObj* pHead = NULL;
+	HPDFOBJ pHead = NULL;
 
 	PdfPageRun *run;
 	run = GetPageRun(page, false);
 	if(run)
 	{
-		EnterCriticalSection(&xrefAccess);
+		//EnterCriticalSection(&xrefAccess);
 		{
-			fz_display_node *node = NULL;
-			
-			PdfObj* pObj = NULL;
-			for (node = run->list->first; node; node = node->next)
-			{
-				PdfObj* pNewObj = new PdfObj();
-
-				pNewObj->m_hObj = (HPDFOBJ)node;
-
-				if(pObj)
-				{
-					pObj->m_pNext = pNewObj;
-					pObj = pObj->m_pNext;
-				}
-				else
-				{
-					pObj = pNewObj;
-					pHead = pObj;
-				}
-			}		
+			pHead = (HPDFOBJ)run->list->first;				
 		}
-		LeaveCriticalSection(&xrefAccess);
+		//LeaveCriticalSection(&xrefAccess);
 		DropPageRun(run);
 	}
 
