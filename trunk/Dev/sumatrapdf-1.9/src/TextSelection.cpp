@@ -469,7 +469,7 @@ BOOL TextSelection::DeleteCharByPos(int pageNo, HXOBJ hObj, const PointD& pt, BO
 
 			updateRect->x = pageCoords[iPosDel].x;
 			updateRect->y = pageCoords[iPosDel].y;
-			updateRect->dx = mediabox.dx - mediabox.x;
+			updateRect->dx = (mediabox.x + mediabox.dx) - updateRect->x;
 			updateRect->dy = pageCoords[iPosDel].dy;
 		}
 	}
@@ -663,7 +663,7 @@ static unsigned char* ansii_to_cid(pdf_font_desc *fontdesc,unsigned char* buf,in
 	return buf;
 }
 
-BOOL TextSelection::InsertCharByPos(int pageNo, HXOBJ hObj, const PointD& pt, WCHAR chIns, DOUBLE* xCursor)
+BOOL TextSelection::InsertCharByPos(int pageNo, HXOBJ hObj, const PointD& pt, WCHAR chIns, DOUBLE* xCursor, RectD* updateRect)
 {
 	assert(1 <= pageNo && pageNo <= engine->PageCount());
 	if (!coords[pageNo - 1])
@@ -694,8 +694,23 @@ BOOL TextSelection::InsertCharByPos(int pageNo, HXOBJ hObj, const PointD& pt, WC
 		assert(ci.iItem >= 0 && ci.iItem < ci.node->item.text->len);
 	}
 
+	fz_display_node* node = ci.node;
+
 	INT pageTextLen = lens[pageNo - 1];
 	RectI* pageCoords = coords[pageNo - 1];
+
+	if(updateRect)
+	{
+		if(iPosIns < pageTextLen)
+		{
+			RectD mediabox = engine->PageMediabox(pageNo);
+
+			updateRect->x = pageCoords[iPosIns].x;
+			updateRect->y = pageCoords[iPosIns].y;
+			updateRect->dx = (mediabox.x + mediabox.dx) - updateRect->x;
+			updateRect->dy = pageCoords[iPosIns].dy;
+		}
+	}
 
 	INT widthDelta = 7;
 	
@@ -799,6 +814,8 @@ BOOL TextSelection::InsertCharByPos(int pageNo, HXOBJ hObj, const PointD& pt, WC
 	lens[pageNo - 1] = pageTextLen;
 	assert(str::Len(pageText)==pageTextLen);
 
+	float newObjRight = node->rect.x1;
+
 	for(INT i = iPosIns + 1;i < pageTextLen;i++)
 	{
 		if(pageText[i]=='\n')
@@ -810,6 +827,10 @@ BOOL TextSelection::InsertCharByPos(int pageNo, HXOBJ hObj, const PointD& pt, WC
 			if(widthDelta)
 				pageCoords[i].x += widthDelta;
 
+			if(newObjRight < pageCoords[i].x + pageCoords[i].dx)
+			{
+				newObjRight = (float)(pageCoords[i].x + pageCoords[i].dx);
+			}
 			continue;
 		}
 
@@ -822,9 +843,17 @@ BOOL TextSelection::InsertCharByPos(int pageNo, HXOBJ hObj, const PointD& pt, WC
 			{
 				ci.node->item.text->items[ci.iItem].x += widthDelta;
 				pageCoords[i].x += widthDelta;
+
+				if(newObjRight < pageCoords[i].x + pageCoords[i].dx)
+				{
+					newObjRight = (float)(pageCoords[i].x + pageCoords[i].dx);
+				}
 			}
 		}
 	}
+
+	if(node->rect.x1 < newObjRight)
+		node->rect.x1 = newObjRight;
 
 	if(xCursor)
 	{

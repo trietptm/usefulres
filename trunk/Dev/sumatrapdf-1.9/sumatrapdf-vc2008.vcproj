@@ -1080,6 +1080,10 @@
 			Name="Ctrl"
 			>
 			<File
+				RelativePath="..\..\..\biggod.dev\Ctrl\UIUtility.hpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\biggod.dev\Ctrl\Utility.hpp"
 				>
 			</File>
