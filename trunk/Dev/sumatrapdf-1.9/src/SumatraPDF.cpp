@@ -5056,7 +5056,7 @@ static void GetObjRect(HPDFOBJ hObj,FRect& rtObj)
 	rtObj.y1 = node->rect.y1;
 }
 
-static BOOL DeleteCharByPos(int pageNo, PdfObj* pObj, const FPoint& fPt, BOOL bBackspace, DOUBLE* xCursor)
+static BOOL DeleteCharByPos(int pageNo, HPDFOBJ hObj, const FPoint& fPt, BOOL bBackspace, DOUBLE* xCursor)
 {
 	WindowInfo* win = WindowInfo::g_pWinInf;
 	if(!win)
@@ -5065,7 +5065,7 @@ static BOOL DeleteCharByPos(int pageNo, PdfObj* pObj, const FPoint& fPt, BOOL bB
 	if(!win->dm || !win->dm->engine)
 		return FALSE;
 
-	if(!pObj->m_hObj)
+	if(!hObj)
 		return FALSE;
 
 	PointD ptD;
@@ -5075,7 +5075,7 @@ static BOOL DeleteCharByPos(int pageNo, PdfObj* pObj, const FPoint& fPt, BOOL bB
 	BOOL bRet = win->dm->engine->DeleteCharByPos(pageNo,pObj->m_hObj,ptD,bBackspace,xCursor);
 #else
 	RectD updateRect;
-	BOOL bRet = win->dm->textSelection->DeleteCharByPos(pageNo,pObj->m_hObj,ptD,bBackspace,xCursor,&updateRect);
+	BOOL bRet = win->dm->textSelection->DeleteCharByPos(pageNo,hObj,ptD,bBackspace,xCursor,&updateRect);
 #endif
 	if(bRet)
 	{
@@ -5084,7 +5084,7 @@ static BOOL DeleteCharByPos(int pageNo, PdfObj* pObj, const FPoint& fPt, BOOL bB
 	return bRet;
 }
 
-static BOOL InsertCharByPos(int pageNo, PdfObj* pObj, const FPoint& fPt, WCHAR chIns, DOUBLE* xCursor)
+static BOOL InsertCharByPos(int pageNo, HPDFOBJ hObj, const FPoint& fPt, WCHAR chIns, DOUBLE* xCursor)
 {
 	WindowInfo* win = WindowInfo::g_pWinInf;
 	if(!win)
@@ -5093,14 +5093,14 @@ static BOOL InsertCharByPos(int pageNo, PdfObj* pObj, const FPoint& fPt, WCHAR c
 	if(!win->dm || !win->dm->engine)
 		return FALSE;
 
-	if(!pObj->m_hObj)
+	if(!hObj)
 		return FALSE;
 
 	PointD ptD;
 	ptD.x = fPt.x;
 	ptD.y = fPt.y;
 	RectD updateRect;
-	BOOL bRet = win->dm->textSelection->InsertCharByPos(pageNo,pObj->m_hObj,ptD,chIns,xCursor,&updateRect);
+	BOOL bRet = win->dm->textSelection->InsertCharByPos(pageNo,hObj,ptD,chIns,xCursor,&updateRect);
 	if(bRet)
 	{
 		win->dm->Redraw(&updateRect);
