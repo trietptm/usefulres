@@ -7,6 +7,7 @@
 #include "WinUtil.h"
 
 /*MyCode*/
+#include "..\..\..\..\biggod.dev\Ctrl\UIUtility.hpp"
 #include "..\..\..\..\biggod.app\PDFEditor\sumatrapdf_intf.h"
 extern SumatraPdfIntf* g_pIntf;
 //////////////////////////////////////////////////////////////////////////
@@ -699,7 +700,9 @@ void RenderCache::DoRender(RenderCache *cache)
 			}
 #endif
 			
-			delete bmp;			
+			//StdUIFun::DumpBitmap(bmp->GetBitmap(),_T("C:\\update.bmp"));
+
+			delete bmp;
 		}
 		//////////////////////////////////////////////////////////////////////////
 		else

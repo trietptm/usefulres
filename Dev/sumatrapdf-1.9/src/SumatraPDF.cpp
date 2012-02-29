@@ -5089,10 +5089,11 @@ static BOOL InsertCharByPos(int pageNo, PdfObj* pObj, const FPoint& fPt, WCHAR c
 	PointD ptD;
 	ptD.x = fPt.x;
 	ptD.y = fPt.y;
-	BOOL bRet = win->dm->textSelection->InsertCharByPos(pageNo,pObj->m_hObj,ptD,chIns,xCursor);
+	RectD updateRect;
+	BOOL bRet = win->dm->textSelection->InsertCharByPos(pageNo,pObj->m_hObj,ptD,chIns,xCursor,&updateRect);
 	if(bRet)
 	{
-		win->dm->Redraw();
+		win->dm->Redraw(&updateRect);
 	}
 	return bRet;
 }
