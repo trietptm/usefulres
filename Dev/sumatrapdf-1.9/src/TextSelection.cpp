@@ -244,7 +244,7 @@ TCHAR *TextSelection::ExtractText(TCHAR *lineSep)
 
 /*MyCode*/
 //chPos：光标所在的字符位置
-INT TextSelection::GetObjLineText(int pageNo, HXOBJ hObj, const PointD* pt, RectD* rtText, DOUBLE* xCursor, INT* chPos)
+INT TextSelection::GetObjLineText(int pageNo, HPDFOBJ hObj, const PointD* pt, RectD* rtText, DOUBLE* xCursor, INT* chPos)
 {
 	INT lineTextPos = -1;
 
@@ -268,7 +268,7 @@ INT TextSelection::GetObjLineText(int pageNo, HXOBJ hObj, const PointD* pt, Rect
 				{
 					const char_inf& ci = pageChInf[i];
 
-					if(ci.node != hObj || ci.iItem==-1)
+					if(ci.node != (fz_display_node*)hObj || ci.iItem==-1)
 						continue;
 
 					iObjFirstCh = i;
@@ -283,7 +283,7 @@ INT TextSelection::GetObjLineText(int pageNo, HXOBJ hObj, const PointD* pt, Rect
 				{
 					const char_inf& ci = pageChInf[i];
 
-					if(ci.node != hObj || ci.iItem==-1)
+					if(ci.node != (fz_display_node*)hObj || ci.iItem==-1)
 					{
 						iPos = i;
 						break;
@@ -309,7 +309,7 @@ INT TextSelection::GetObjLineText(int pageNo, HXOBJ hObj, const PointD* pt, Rect
 					{
 						const char_inf& ci = pageChInf[i];
 
-						if(ci.node != hObj || pageText[i]=='\n')
+						if(ci.node != (fz_display_node*)hObj || pageText[i]=='\n')
 						{
 							iPos = i;
 							break;
@@ -401,7 +401,7 @@ INT TextSelection::GetObjLineText(int pageNo, HXOBJ hObj, const PointD* pt, Rect
 
 	return lineTextPos;
 }
-TCHAR* TextSelection::ExtractObjText(int pageNo, HXOBJ hObj, const PointD* pt, RectD* rtText, DOUBLE* xCursor)
+TCHAR* TextSelection::ExtractObjText(int pageNo, HPDFOBJ hObj, const PointD* pt, RectD* rtText, DOUBLE* xCursor)
 {
 	assert(1 <= pageNo && pageNo <= engine->PageCount());
 	if (!coords[pageNo - 1])
@@ -414,7 +414,7 @@ TCHAR* TextSelection::ExtractObjText(int pageNo, HXOBJ hObj, const PointD* pt, R
 	WCHAR* pageText = text[pageNo - 1];
 	return &pageText[lineTextPos];
 }
-BOOL TextSelection::DeleteCharByPos(int pageNo, HXOBJ hObj, const PointD& pt, BOOL bBackspace, DOUBLE* xCursor, RectD* updateRect)
+BOOL TextSelection::DeleteCharByPos(int pageNo, HPDFOBJ hObj, const PointD& pt, BOOL bBackspace, DOUBLE* xCursor, RectD* updateRect)
 {
 	assert(1 <= pageNo && pageNo <= engine->PageCount());
 	if (!coords[pageNo - 1])
@@ -436,11 +436,11 @@ BOOL TextSelection::DeleteCharByPos(int pageNo, HXOBJ hObj, const PointD& pt, BO
 	char_inf& ci = pageChInf[iPosDel];
 	if(ci.iItem==-1)
 	{
-		if(pageText[iPosDel] != ' ' || ci.node != hObj)
+		if(pageText[iPosDel] != ' ' || ci.node != (fz_display_node*)hObj)
 			return FALSE;
 	}
 
-	assert(ci.node == hObj);
+	assert(ci.node == (fz_display_node*)hObj);
 
 	if(ci.iItem != -1)
 	{
@@ -514,7 +514,7 @@ BOOL TextSelection::DeleteCharByPos(int pageNo, HXOBJ hObj, const PointD& pt, BO
 			continue;
 		}
 
-		if(ci.node==hObj)
+		if(ci.node==(fz_display_node*)hObj)
 		{
 			if(indexChanged)
 				ci.iItem += indexChanged;
@@ -663,7 +663,7 @@ static unsigned char* ansii_to_cid(pdf_font_desc *fontdesc,unsigned char* buf,in
 	return buf;
 }
 
-BOOL TextSelection::InsertCharByPos(int pageNo, HXOBJ hObj, const PointD& pt, WCHAR chIns, DOUBLE* xCursor, RectD* updateRect)
+BOOL TextSelection::InsertCharByPos(int pageNo, HPDFOBJ hObj, const PointD& pt, WCHAR chIns, DOUBLE* xCursor, RectD* updateRect)
 {
 	assert(1 <= pageNo && pageNo <= engine->PageCount());
 	if (!coords[pageNo - 1])
@@ -683,11 +683,11 @@ BOOL TextSelection::InsertCharByPos(int pageNo, HXOBJ hObj, const PointD& pt, WC
 	char_inf& ci = pageChInf[iPosIns];
 	if(ci.iItem==-1)
 	{
-		if(pageText[iPosIns] != ' ' || ci.node != hObj)
+		if(pageText[iPosIns] != ' ' || ci.node != (fz_display_node*)hObj)
 			return FALSE;
 	}
 
-	assert(ci.node == hObj);
+	assert(ci.node == (fz_display_node*)hObj);
 
 	if(ci.iItem != -1)
 	{
@@ -726,7 +726,7 @@ BOOL TextSelection::InsertCharByPos(int pageNo, HXOBJ hObj, const PointD& pt, WC
 		{
 			char_inf& ci = pageChInf[i];
 			
-			if(ci.node==hObj)
+			if(ci.node==(fz_display_node*)hObj)
 			{
 				if(ci.iItem != -1)
 				{
@@ -834,7 +834,7 @@ BOOL TextSelection::InsertCharByPos(int pageNo, HXOBJ hObj, const PointD& pt, WC
 			continue;
 		}
 
-		if(ci.node==hObj)
+		if(ci.node==(fz_display_node*)hObj)
 		{
 			if(indexChanged)
 				ci.iItem += indexChanged;

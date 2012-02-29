@@ -5046,9 +5046,9 @@ static WCHAR* ExtractObjText(int pageNo, PdfObj* pObj, const FPoint* fPt, FRect*
 	return rText;
 }
 
-static void GetObjRect(const PdfObj* pObj,FRect& rtObj)
+static void GetObjRect(HPDFOBJ hObj,FRect& rtObj)
 {
-	fz_display_node *node = static_cast<fz_display_node*>(pObj->m_hObj);
+	fz_display_node *node = (fz_display_node*)(hObj);
 
 	rtObj.x0 = node->rect.x0;
 	rtObj.y0 = node->rect.y0;
