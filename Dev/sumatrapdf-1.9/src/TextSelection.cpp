@@ -465,9 +465,11 @@ BOOL TextSelection::DeleteCharByPos(int pageNo, HXOBJ hObj, const PointD& pt, BO
 	{
 		if(iPosDel < pageTextLen)
 		{
+			RectD mediabox = engine->PageMediabox(pageNo);
+
 			updateRect->x = pageCoords[iPosDel].x;
 			updateRect->y = pageCoords[iPosDel].y;
-			updateRect->dx = 100;//pageCoords[iPosDel].dx;
+			updateRect->dx = mediabox.dx - mediabox.x;
 			updateRect->dy = pageCoords[iPosDel].dy;
 		}
 	}
