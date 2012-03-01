@@ -1331,47 +1331,6 @@ fz_error CPdfEngine::RunPage(pdf_page *page, fz_device *dev, fz_matrix ctm, Rend
 }
 
 /*MyCode*/
-// PdfObj* CPdfEngine::ExtractObjs(int pageNo)
-// {
-// 	pdf_page *page = GetPdfPage(pageNo, true);
-// 	if(!page)
-// 		return NULL;
-// 
-// 	PdfObj* pHead = NULL;
-// 
-// 	PdfPageRun *run;
-// 	run = GetPageRun(page, false);
-// 	if(run)
-// 	{
-// 		EnterCriticalSection(&xrefAccess);
-// 		{
-// 			fz_display_node *node = NULL;
-// 			
-// 			PdfObj* pObj = NULL;
-// 			for (node = run->list->first; node; node = node->next)
-// 			{
-// 				PdfObj* pNewObj = new PdfObj();
-// 
-// 				pNewObj->m_hObj = (HPDFOBJ)node;
-// 
-// 				if(pObj)
-// 				{
-// 					pObj->m_pNext = pNewObj;
-// 					pObj = pObj->m_pNext;
-// 				}
-// 				else
-// 				{
-// 					pObj = pNewObj;
-// 					pHead = pObj;
-// 				}
-// 			}		
-// 		}
-// 		LeaveCriticalSection(&xrefAccess);
-// 		DropPageRun(run);
-// 	}
-// 
-// 	return pHead;
-// }
 HPDFOBJ CPdfEngine::GetPageFirstObj(int pageNo)
 {
 	pdf_page *page = GetPdfPage(pageNo, true);

@@ -868,4 +868,78 @@ BOOL TextSelection::InsertCharByPos(int pageNo, HPDFOBJ hObj, const PointD& pt, 
 
 	return TRUE;
 }
+
+BOOL TextSelection::MoveCursor(int pageNo, HPDFOBJ hObj, const PointD& pt, INT nMove, DOUBLE* xCursor)
+{
+	if(nMove==0)
+		return FALSE;
+
+	assert(1 <= pageNo && pageNo <= engine->PageCount());
+	if (!coords[pageNo - 1])
+		FindClosestGlyph(pageNo, 0, 0);
+
+	INT chPos = -1;
+	DOUBLE xCursor1 = 0.0;
+	INT lineTextPos = GetObjLineText(pageNo,hObj,&pt,NULL,&xCursor1,&chPos);
+	if(lineTextPos==-1 || chPos==-1)
+		return FALSE;
+
+	INT pageTextLen = lens[pageNo - 1];
+
+	INT iPosCur = chPos;
+	if(iPosCur <= 0 && nMove < 0)
+		return FALSE;
+	if(iPosCur >= pageTextLen && nMove > 0)
+		return FALSE;
+
+	WCHAR* pageText = text[pageNo - 1];
+	RectI* pageCoords = coords[pageNo - 1];
+	char_inf* pageChInf = chInf[pageNo - 1];
+
+	if(nMove < 0)
+	{
+		if(iPosCur > 1)
+		{
+			if(pageText[iPosCur - 1]=='\n')
+				return FALSE;
+		}
+	}
+	else if(nMove > 0)
+	{
+		if(pageText[iPosCur]=='\n')
+			return FALSE;
+	}
+	else
+	{
+		assert(0);
+		return FALSE;
+	}
+
+	INT iPosNew = iPosCur + nMove;
+	if(iPosNew > pageTextLen)
+		iPosNew = pageTextLen;
+	if(iPosNew < 0)
+		iPosNew = 0;
+
+	if(xCursor)
+	{
+		if(iPosNew < pageTextLen)
+		{
+			if(pageText[iPosNew] == '\n')
+			{
+				assert(iPosNew > 0);
+				*xCursor = pageCoords[iPosNew - 1].x + pageCoords[iPosNew - 1].dx;
+			}
+			else
+				*xCursor = pageCoords[iPosNew].x;
+		}
+		else
+		{
+			if(pageTextLen > 0)
+				*xCursor = pageCoords[pageTextLen - 1].x + pageCoords[pageTextLen - 1].dx;
+		}
+	}	
+
+	return TRUE;
+}
 //////////////////////////////////////////////////////////////////////////
