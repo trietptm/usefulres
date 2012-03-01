@@ -5129,17 +5129,6 @@ static BOOL InsertCharByPos(int pageNo, HPDFOBJ hObj, const FPoint& fPt, WCHAR c
 	return bRet;
 }
 
-// static void DeletePdfObjects(PdfObj* pdfObjs)
-// {
-// 	PdfObj* p = pdfObjs;
-// 	while(p)
-// 	{
-// 		PdfObj* pNext = p->m_pNext;		
-// 		delete p;
-// 		p = pNext;
-// 	}
-// }
-
 static void FreeMem(void* pMem)
 {
 	if(!pMem)
@@ -5203,6 +5192,24 @@ static void UpdateView()
 	::InvalidateRect(win->hwndCanvas,NULL,TRUE);
 }
 
+static BOOL MoveCursor(int pageNo, HPDFOBJ hObj, const FPoint& fPt, INT nMove, DOUBLE* xCursor)
+{
+	WindowInfo* win = WindowInfo::g_pWinInf;
+	if(!win)
+		return FALSE;
+
+	if(!win->dm || !win->dm->engine)
+		return FALSE;
+
+	if(!hObj)
+		return FALSE;
+
+	PointD ptD;
+	ptD.x = fPt.x;
+	ptD.y = fPt.y;
+	return win->dm->textSelection->MoveCursor(pageNo,hObj,ptD,nMove,xCursor);
+}
+
 static INT GetPageNoByPoint(INT x, INT y)
 {
 	WindowInfo* win = WindowInfo::g_pWinInf;
@@ -5222,11 +5229,9 @@ static INT GetPageNoByPoint(INT x, INT y)
 int APIENTRY LaunchPdf(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, SumatraPdfIntf* pIntf)
 {
 	g_pIntf = pIntf;
-	//g_pIntf->ExtraPdfObjects = ExtraPdfObjects;
 	g_pIntf->GetFirstPdfObj = GetFirstPdfObj;
 	g_pIntf->GetNextPdfObj = GetNextPdfObj;
 	g_pIntf->ExtractObjText = ExtractObjText;
-	//g_pIntf->DeletePdfObjects = DeletePdfObjects;
 	g_pIntf->FreeMem = FreeMem;
 	g_pIntf->GetObjRect = GetObjRect;
 	g_pIntf->CvtToScreen = CvtToScreen;
@@ -5235,6 +5240,7 @@ int APIENTRY LaunchPdf(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmd
 	g_pIntf->UpdateView = UpdateView;
 	g_pIntf->DeleteCharByPos = DeleteCharByPos;
 	g_pIntf->InsertCharByPos = InsertCharByPos;
+	g_pIntf->MoveCursor = MoveCursor;
 
 	return WinMain(hInstance,hPrevInstance,lpCmdLine,SW_SHOW);
 }
