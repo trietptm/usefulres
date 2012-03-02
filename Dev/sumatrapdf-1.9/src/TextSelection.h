@@ -39,8 +39,8 @@ public:
     TextSel result;
 
 	/*MyCode*/
-	INT GetObjLineText(int pageNo, HPDFOBJ hObj, const PointD* pt, RectD* rtText = NULL, DOUBLE* xCursor = NULL, INT* chPos = NULL);
-	TCHAR* ExtractObjText(int pageNo, HPDFOBJ hObj, const PointD* pt = NULL, RectD* rtText = NULL, DOUBLE* xCursor = NULL);	
+	INT GetObjLineText(int pageNo, HPDFOBJ hObj, const PointD* pt, RectD* rtText = NULL, DOUBLE* xCursor = NULL, INT* chPos = NULL, INT* endLinePos = NULL);
+	TCHAR* ExtractObjLineText(int pageNo, HPDFOBJ hObj, const PointD* pt = NULL, RectD* rtText = NULL, DOUBLE* xCursor = NULL, INT* textLen = NULL);	
 	BOOL DeleteCharByPos(int pageNo, HPDFOBJ hObj, const PointD& pt, BOOL bBackspace, DOUBLE* xCursor = NULL, RectD* updateRect = NULL);
 	BOOL InsertCharByPos(int pageNo, HPDFOBJ hObj, const PointD& pt, WCHAR chIns, DOUBLE* xCursor = NULL, RectD* updateRect = NULL);
 	BOOL MoveCursor(int pageNo, HPDFOBJ hObj, const PointD& pt, INT nMove, DOUBLE* xCursor);

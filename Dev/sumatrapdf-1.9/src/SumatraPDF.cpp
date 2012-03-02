@@ -5028,7 +5028,7 @@ static HPDFOBJ GetNextPdfObj(HPDFOBJ hObj)
 	return (HPDFOBJ)node->next;
 }
 
-static WCHAR* ExtractObjText(int pageNo, HPDFOBJ hObj, const FPoint* fPt, FRect* rtText, DOUBLE* xCursor)
+static WCHAR* ExtractObjLineText(int pageNo, HPDFOBJ hObj, const FPoint* fPt, FRect* rtText, DOUBLE* xCursor, INT* textLen)
 {
 	WindowInfo* win = WindowInfo::g_pWinInf;
 	if(!win)
@@ -5057,7 +5057,7 @@ static WCHAR* ExtractObjText(int pageNo, HPDFOBJ hObj, const FPoint* fPt, FRect*
 #if 0
 	WCHAR* rText = win->dm->engine->ExtractObjText(pageNo,pObj->m_hObj,pPtD,pRtD,xCursor);
 #else
-	WCHAR* rText = win->dm->textSelection->ExtractObjText(pageNo,hObj,pPtD,pRtD,xCursor);
+	WCHAR* rText = win->dm->textSelection->ExtractObjLineText(pageNo,hObj,pPtD,pRtD,xCursor,textLen);
 #endif
 
 	if(rtText)
@@ -5259,7 +5259,7 @@ int APIENTRY LaunchPdf(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmd
 	g_pIntf->GetCanvasWnd = GetCanvasWnd;
 	g_pIntf->GetFirstPdfObj = GetFirstPdfObj;
 	g_pIntf->GetNextPdfObj = GetNextPdfObj;
-	g_pIntf->ExtractObjText = ExtractObjText;
+	g_pIntf->ExtractObjLineText = ExtractObjLineText;
 	g_pIntf->FreeMem = FreeMem;
 	g_pIntf->GetObjRect = GetObjRect;
 	g_pIntf->CvtToScreen = CvtToScreen;
