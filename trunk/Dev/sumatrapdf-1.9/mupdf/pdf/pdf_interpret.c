@@ -2261,6 +2261,16 @@ pdf_run_stream(pdf_csi *csi, fz_obj *rdb, fz_stream *file, char *buf, int buflen
 			{
 				pdf_gstate *gstate = csi->gstate + csi->gtop;
 				pdf_show_space(csi, -fz_atof(buf) * gstate->size * 0.001f);
+
+				/*MyCode*/
+				if(csi->text)
+				{
+					if(csi->text->len > 0)
+					{
+						csi->text->items[csi->text->len - 1].offset += fz_atof(buf);
+					}
+				}
+				//////////////////////////////////////////////////////////////////////////				
 			}
 			else if (tok == PDF_TOK_STRING)
 			{

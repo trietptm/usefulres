@@ -149,6 +149,9 @@ fz_add_text(fz_text *text, int gid, int ucs, float x, float y)
 	text->items[text->len].gid = gid;
 	text->items[text->len].x = x;
 	text->items[text->len].y = y;
+
+	text->items[text->len].offset = 0.0; //MyCode
+
 	text->len++;
 }
 
