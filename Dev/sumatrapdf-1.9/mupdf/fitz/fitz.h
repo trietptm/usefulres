@@ -873,6 +873,9 @@ struct fz_text_item_s
 	float x, y;
 	int gid; /* -1 for one gid to many ucs mappings */
 	int ucs; /* -1 for one ucs to many gid mappings */
+
+	/*MyCode*/
+	float offset; //д╛хон╙0
 };
 
 struct fz_text_s

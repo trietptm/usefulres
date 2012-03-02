@@ -5028,7 +5028,7 @@ static HPDFOBJ GetNextPdfObj(HPDFOBJ hObj)
 	return (HPDFOBJ)node->next;
 }
 
-static WCHAR* ExtractObjLineText(int pageNo, HPDFOBJ hObj, const FPoint* fPt, FRect* rtText, DOUBLE* xCursor, INT* textLen)
+static WCHAR* ExtractObjLineText(int pageNo, HPDFOBJ hObj, const FPoint* fPt, FRect* rtText, DOUBLE* xCursor, INT* textLen, LPWSTR* ppRawText)
 {
 	WindowInfo* win = WindowInfo::g_pWinInf;
 	if(!win)
@@ -5057,7 +5057,7 @@ static WCHAR* ExtractObjLineText(int pageNo, HPDFOBJ hObj, const FPoint* fPt, FR
 #if 0
 	WCHAR* rText = win->dm->engine->ExtractObjText(pageNo,pObj->m_hObj,pPtD,pRtD,xCursor);
 #else
-	WCHAR* rText = win->dm->textSelection->ExtractObjLineText(pageNo,hObj,pPtD,pRtD,xCursor,textLen);
+	WCHAR* rText = win->dm->textSelection->ExtractObjLineText(pageNo,hObj,pPtD,pRtD,xCursor,textLen,ppRawText);
 #endif
 
 	if(rtText)

@@ -410,7 +410,7 @@ INT TextSelection::GetObjLineText(int pageNo, HPDFOBJ hObj, const PointD* pt, Re
 
 	return lineTextPos;
 }
-TCHAR* TextSelection::ExtractObjLineText(int pageNo, HPDFOBJ hObj, const PointD* pt, RectD* rtText, DOUBLE* xCursor, INT* textLen)
+TCHAR* TextSelection::ExtractObjLineText(int pageNo, HPDFOBJ hObj, const PointD* pt, RectD* rtText, DOUBLE* xCursor, INT* textLen, LPWSTR* ppRawText)
 {
 	assert(1 <= pageNo && pageNo <= engine->PageCount());
 	if (!coords[pageNo - 1])
@@ -421,8 +421,54 @@ TCHAR* TextSelection::ExtractObjLineText(int pageNo, HPDFOBJ hObj, const PointD*
 	if(lineTextPos==-1)
 		return NULL;
 
+	INT tLen = endLinePos - lineTextPos;
 	if(textLen)
-		*textLen = endLinePos - lineTextPos;
+		*textLen = tLen;
+
+	if(ppRawText)
+	{
+		if(tLen > 0)
+		{
+			WCHAR* pageText = text[pageNo - 1];
+			char_inf* pageChInf = chInf[pageNo - 1];
+			INT pageTextLen = lens[pageNo - 1];
+
+			INT bufSize = 0;
+			INT len = 0;
+			WCHAR* buf = NULL;
+			EnsureBufSize(&buf,bufSize,len,tLen + 1,EBS_CAlloc | EBS_ZeroInit);
+
+			WCHAR ofsBuf[MAX_PATH] = {0};
+
+			for(INT i = lineTextPos;i < endLinePos;i++)
+			{
+				assert(i >= 0 && i < pageTextLen);
+
+				char_inf& ci = pageChInf[i];
+				if(ci.iItem==-1 || ci.node != (fz_display_node*)hObj)
+					continue;
+
+				assert(ci.node->item.text->items[ci.iItem].ucs==pageText[i]);
+
+				EnsureBufSize(&buf,bufSize,len,len + 1 + 1,EBS_CAlloc | EBS_ZeroInit);
+				buf[len] = pageText[i];
+				buf[len + 1] = 0;
+				len++;
+
+				if(ci.node->item.text->items[ci.iItem].offset==0.0)
+					continue;
+
+				_snwprintf(ofsBuf,MAX_PATH - 1,L"[%.2f]",ci.node->item.text->items[ci.iItem].offset);
+				INT ofsBufLen = wcslen(ofsBuf);
+				EnsureBufSize(&buf,bufSize,len,len + 1 + ofsBufLen,EBS_CAlloc | EBS_ZeroInit);
+				memcpy(&buf[len],ofsBuf,(ofsBufLen + 1) * sizeof(WCHAR));
+				len += ofsBufLen;
+			}
+
+			if(buf)
+				*ppRawText = buf;
+		}
+	}
 	
 	WCHAR* pageText = text[pageNo - 1];
 	return &pageText[lineTextPos];
@@ -782,6 +828,7 @@ BOOL TextSelection::InsertCharByPos(int pageNo, HPDFOBJ hObj, const PointD& pt, 
 		txtItem = ci.node->item.text->items[iTextItem];
 		txtItem.ucs = chIns;
 		txtItem.x = xInsPos;
+		txtItem.offset = 0.0;
 		
 		WCHAR wbuf[] = {txtItem.ucs,0};
 		unsigned char buf[MAX_PATH] = {0};
