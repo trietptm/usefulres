@@ -428,10 +428,20 @@ BOOL TextSelection::DeleteCharByPos(int pageNo, HPDFOBJ hObj, const PointD& pt, 
 
 	WCHAR* pageText = text[pageNo - 1];
 	char_inf* pageChInf = chInf[pageNo - 1];
+	INT pageTextLen = lens[pageNo - 1];
+	RectI* pageCoords = coords[pageNo - 1];
 
-	INT iPosDel = chPos - 1;
-	if(iPosDel < lineTextPos)
+	INT iPosDel = chPos;
+	if(bBackspace)
+		iPosDel--;
+
+	if(iPosDel < lineTextPos || iPosDel >= pageTextLen)
 		return FALSE;
+
+	if(pageText[iPosDel]=='\n')
+		return FALSE;
+
+	INT rawPosX = pageCoords[iPosDel].x;
 
 	char_inf& ci = pageChInf[iPosDel];
 	if(ci.iItem==-1)
@@ -452,9 +462,8 @@ BOOL TextSelection::DeleteCharByPos(int pageNo, HPDFOBJ hObj, const PointD& pt, 
 	ci.node->item.text->items[ci.iItem].ucs = 'C';
 	pageText[iPosDel] = 'C';
 #else
-	INT pageTextLen = lens[pageNo - 1];
-
-	RectI* pageCoords = coords[pageNo - 1];
+	pageTextLen = lens[pageNo - 1];
+	
 	INT widthDelta = -pageCoords[iPosDel].dx;
 	if(iPosDel + 1 < pageTextLen)
 	{
@@ -527,10 +536,18 @@ BOOL TextSelection::DeleteCharByPos(int pageNo, HPDFOBJ hObj, const PointD& pt, 
 		}
 	}
 
-	if(xCursor)
+	if(bBackspace && xCursor)
 	{
 		if(iPosDel < pageTextLen)
-			*xCursor = pageCoords[iPosDel].x;
+		{
+			if(pageText[iPosDel] == '\n')
+			{
+				//assert(iPosDel > 0);
+				*xCursor = rawPosX;//pageCoords[iPosDel - 1].x + pageCoords[iPosDel - 1].dx;
+			}
+			else
+				*xCursor = pageCoords[iPosDel].x;
+		}
 		else
 		{
 			if(pageTextLen > 0)
