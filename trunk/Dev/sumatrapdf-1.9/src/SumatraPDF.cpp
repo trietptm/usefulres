@@ -5239,6 +5239,20 @@ static INT GetPageNoByPoint(INT x, INT y)
 	return 0;
 }
 
+static BOOL GetPropertyDescr(HPDFOBJ hObj,LPCTSTR lpPropName,LPTSTR lpDescr)
+{
+	fz_display_node* node = (fz_display_node*)hObj;
+
+	if(lstrcmp(lpPropName,_T("Char Space"))==0)
+	{
+		_sntprintf(lpDescr,MAX_PATH - 1,_T("%f"),node->item.text->gstate.char_space);
+
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
 int APIENTRY LaunchPdf(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, SumatraPdfIntf* pIntf)
 {
 	g_pIntf = pIntf;
@@ -5255,6 +5269,7 @@ int APIENTRY LaunchPdf(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmd
 	g_pIntf->DeleteCharByPos = DeleteCharByPos;
 	g_pIntf->InsertCharByPos = InsertCharByPos;
 	g_pIntf->MoveCursor = MoveCursor;
+	g_pIntf->GetPropertyDescr = GetPropertyDescr;
 
 	return WinMain(hInstance,hPrevInstance,lpCmdLine,SW_SHOW);
 }
