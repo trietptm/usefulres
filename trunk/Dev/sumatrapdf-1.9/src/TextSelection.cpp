@@ -244,7 +244,7 @@ TCHAR *TextSelection::ExtractText(TCHAR *lineSep)
 
 /*MyCode*/
 //chPos：光标所在的字符位置
-INT TextSelection::GetObjLineText(int pageNo, HPDFOBJ hObj, const PointD* pt, RectD* rtText, DOUBLE* xCursor, INT* chPos)
+INT TextSelection::GetObjLineText(int pageNo, HPDFOBJ hObj, const PointD* pt, RectD* rtText, DOUBLE* xCursor, INT* chPos, INT* endLinePos)
 {
 	INT lineTextPos = -1;
 
@@ -323,6 +323,10 @@ INT TextSelection::GetObjLineText(int pageNo, HPDFOBJ hObj, const PointD* pt, Re
 							left = pageCoords[i].x;
 							top = pageCoords[i].y;
 							right = pageCoords[i].x + pageCoords[i].dx;
+
+							if(endLinePos)
+								*endLinePos = i + 1;
+
 							bottom = pageCoords[i].y + pageCoords[i].dy;									
 						}
 						else
@@ -332,7 +336,12 @@ INT TextSelection::GetObjLineText(int pageNo, HPDFOBJ hObj, const PointD* pt, Re
 							if(pageCoords[i].y < top)
 								top = pageCoords[i].y;
 							if(pageCoords[i].x + pageCoords[i].dx > right)
+							{
 								right = pageCoords[i].x + pageCoords[i].dx;
+
+								if(endLinePos)
+									*endLinePos = i + 1;
+							}
 							if(pageCoords[i].y + pageCoords[i].dy > bottom)
 								bottom = pageCoords[i].y + pageCoords[i].dy;									
 						}
@@ -401,16 +410,20 @@ INT TextSelection::GetObjLineText(int pageNo, HPDFOBJ hObj, const PointD* pt, Re
 
 	return lineTextPos;
 }
-TCHAR* TextSelection::ExtractObjText(int pageNo, HPDFOBJ hObj, const PointD* pt, RectD* rtText, DOUBLE* xCursor)
+TCHAR* TextSelection::ExtractObjLineText(int pageNo, HPDFOBJ hObj, const PointD* pt, RectD* rtText, DOUBLE* xCursor, INT* textLen)
 {
 	assert(1 <= pageNo && pageNo <= engine->PageCount());
 	if (!coords[pageNo - 1])
 		FindClosestGlyph(pageNo, 0, 0);
 
-	INT lineTextPos = GetObjLineText(pageNo,hObj,pt,rtText,xCursor);
+	INT endLinePos = 0;
+	INT lineTextPos = GetObjLineText(pageNo,hObj,pt,rtText,xCursor,NULL,&endLinePos);
 	if(lineTextPos==-1)
 		return NULL;
 
+	if(textLen)
+		*textLen = endLinePos - lineTextPos;
+	
 	WCHAR* pageText = text[pageNo - 1];
 	return &pageText[lineTextPos];
 }
