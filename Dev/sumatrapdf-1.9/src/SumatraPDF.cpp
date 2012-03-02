@@ -2071,7 +2071,11 @@ static void OnPaint(WindowInfo& win)
             FillRect(hdc, &ps.rcPaint, gBrushWhite);
             break;
         default:
-            DrawDocument(win, win.buffer->GetDC(), &ps.rcPaint);			
+            DrawDocument(win, win.buffer->GetDC(), &ps.rcPaint);
+
+			if(g_pIntf)
+				g_pIntf->BeforePaintFlush(hdc);
+
             win.buffer->Flush(hdc);
         }
     }
@@ -5137,6 +5141,15 @@ static void FreeMem(void* pMem)
 	free(pMem);
 }
 
+static HWND GetCanvasWnd()
+{
+	WindowInfo* win = WindowInfo::g_pWinInf;
+	if(!win)
+		return NULL;
+
+	return win->hwndCanvas;
+}
+
 static RECT CvtToScreen(int pageNo, const FRect& r)
 {
 	RECT ret = {0};
@@ -5229,6 +5242,7 @@ static INT GetPageNoByPoint(INT x, INT y)
 int APIENTRY LaunchPdf(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, SumatraPdfIntf* pIntf)
 {
 	g_pIntf = pIntf;
+	g_pIntf->GetCanvasWnd = GetCanvasWnd;
 	g_pIntf->GetFirstPdfObj = GetFirstPdfObj;
 	g_pIntf->GetNextPdfObj = GetNextPdfObj;
 	g_pIntf->ExtractObjText = ExtractObjText;
