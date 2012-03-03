@@ -5271,13 +5271,31 @@ static BOOL GetPropertyDescr(HPDFOBJ hObj,LPCTSTR lpPropName,LPSTR lpDescr)
 		if(node->item.text && node->item.text->font)
 		{
 			lstrcpynA(lpDescr,node->item.text->font->name,MAX_PATH - 1);
+			return TRUE;
 		}
 	}
 	else if(lstrcmp(lpPropName,_T("Font Size"))==0)
 	{
-		if(node->item.text && node->item.text->font)
+		if(node->item.text)
 		{
 			snprintf(lpDescr,MAX_PATH - 1,"%.2f",node->item.text->trm.a);
+			return TRUE;
+		}
+	}
+	else if(lstrcmp(lpPropName,_T("Position X(points)"))==0)
+	{
+		if(node->item.text)
+		{
+			snprintf(lpDescr,MAX_PATH - 1,"%.2f",node->item.text->gstate.tm.e);
+			return TRUE;
+		}
+	}
+	else if(lstrcmp(lpPropName,_T("Position Y(points)"))==0)
+	{
+		if(node->item.text)
+		{
+			snprintf(lpDescr,MAX_PATH - 1,"%.2f",node->item.text->gstate.tm.f);
+			return TRUE;
 		}
 	}
 
