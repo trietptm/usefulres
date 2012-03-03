@@ -402,7 +402,34 @@ fixup_delete_duplicates:
 			if (i < span->len && span->text[i].c == 32)
 				deletecharacter(span, i);
 			else if (i == span->len && span->eol)
+			{
 				span->eol = 0;
+
+				/*MyCode*/
+				if(span->next)
+				{
+					if(span->text && span->next->text)
+					{
+						if(span->text->node && span->next->text->node)
+						{
+							if(span->text->node->next == span->next->text->node)
+							{
+								assert(span->next->text->node->last == span->text->node);
+
+								//fill¼ÓstrokeÄ£Ê½
+								if(span->text->node->cmd == FZ_CMD_FILL_TEXT && span->next->text->node->cmd == FZ_CMD_STROKE_TEXT)
+								{
+									if(span->text->node->item.text->len == span->next->text->node->item.text->len)
+									{
+										span->text->node->is_dup = 1;
+									}
+								}
+							}
+						}
+					}
+				}
+				//////////////////////////////////////////////////////////////////////////				
+			}
 			i--;
 		}
 	}

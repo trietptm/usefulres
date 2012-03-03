@@ -266,6 +266,7 @@ WCHAR *fz_span_to_wchar(fz_text_span *text, TCHAR *lineSep, RectI **coords_out=N
 	}
 
 	fz_display_node* last_node = NULL;
+	RectI* last_rect = NULL;
 	//////////////////////////////////////////////////////////////////////////
 
     WCHAR *dest = content;
@@ -276,7 +277,22 @@ WCHAR *fz_span_to_wchar(fz_text_span *text, TCHAR *lineSep, RectI **coords_out=N
                 *dest = '?';
             dest++;
             if (destRect)
+			{
                 *destRect++ = fz_bbox_to_RectI(span->text[i].bbox);
+
+				/*MyCode：修正sumatrapdf空格高度与文本高度不一致的bug*/
+				if(span->text[i].c == ' ')
+				{
+					if(last_rect && content[-1] != '\n')
+					{
+						(destRect - 1)->y = last_rect->y;
+						(destRect - 1)->dy = last_rect->dy;
+					}
+				}
+				else
+					last_rect = destRect - 1;
+				//////////////////////////////////////////////////////////////////////////
+			}
 
 			/*MyCode*/
 			if(destChInf)

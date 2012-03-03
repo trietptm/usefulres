@@ -1217,6 +1217,12 @@ struct fz_display_node_s
 {
 	fz_display_command cmd;
 	fz_display_node *next;
+
+	/*MyCode*/
+	fz_display_node *last;
+	int is_dup; //ÖØ¸´µÄ
+	//////////////////////////////////////////////////////////////////////////
+
 	fz_rect rect;
 	union {
 		fz_path *path;
