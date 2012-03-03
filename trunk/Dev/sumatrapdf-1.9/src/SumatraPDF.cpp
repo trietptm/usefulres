@@ -5258,7 +5258,10 @@ static BOOL GetPropertyDescr(HPDFOBJ hObj,LPCTSTR lpPropName,LPTSTR lpDescr)
 			return TRUE;
 			break;
 		case FZ_CMD_STROKE_TEXT:
-			lstrcpyn(lpDescr,_T("Stroke Text"),MAX_PATH - 1);
+			if(node->last && node->last->is_dup && node->last->cmd==FZ_CMD_FILL_TEXT)
+				lstrcpyn(lpDescr,_T("Fill then Stroke text"),MAX_PATH - 1);
+			else
+				lstrcpyn(lpDescr,_T("Stroke Text"),MAX_PATH - 1);
 			return TRUE;
 			break;
 		}		
