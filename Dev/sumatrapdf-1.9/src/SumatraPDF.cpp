@@ -5309,15 +5309,19 @@ static BOOL GetPropertyDescr(HPDFOBJ hObj,LPCTSTR lpPropName,LPSTR lpDescr)
 	}
 	else if(lstrcmp(lpPropName,_T("Fill Color"))==0)
 	{
-		INT r,g,b,a;
+		INT r = 0,g = 0,b = 0,a = 100;
+
+		if(node->colorspace->n >= 1)
 		{
 			float f = node->color[0] * 100.0f;
 			r = (INT)ceilf((float)f - 0.001f);
 		}
+		if(node->colorspace->n >= 2)
 		{
 			float f = node->color[1] * 100.0f;
 			g = (INT)ceilf((float)f - 0.001f);
 		}
+		if(node->colorspace->n >= 3)
 		{
 			float f = node->color[2] * 100.0f;
 			b = (INT)ceilf((float)f - 0.001f);
