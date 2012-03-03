@@ -268,7 +268,7 @@ INT TextSelection::GetObjLineText(int pageNo, HPDFOBJ hObj, const PointD* pt, Re
 				{
 					const char_inf& ci = pageChInf[i];
 
-					if(ci.node != (fz_display_node*)hObj || ci.iItem==-1)
+					if(ci.node != (fz_display_node*)hObj || ci.iItem==-1 || pageText[i]=='\n')
 						continue;
 
 					iObjFirstCh = i;
