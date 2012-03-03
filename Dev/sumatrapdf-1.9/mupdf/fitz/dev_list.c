@@ -76,6 +76,10 @@ fz_new_display_node(fz_display_command cmd, fz_matrix ctm,
 	node = fz_malloc(sizeof(fz_display_node));
 	node->cmd = cmd;
 	node->next = NULL;
+
+	node->last = NULL; //MyCode
+	node->is_dup = 0; //MyCode
+
 	node->rect = fz_empty_rect;
 	node->item.path = NULL;
 	node->stroke = NULL;
@@ -192,7 +196,13 @@ fz_append_display_node(fz_display_list *list, fz_display_node *node)
 	else
 	{
 		list->last->next = node;
-		list->last = node;
+
+		/*MyCode*/
+		if(node && node != list->last)
+			node->last = list->last;
+		//////////////////////////////////////////////////////////////////////////
+
+		list->last = node;		
 	}
 }
 

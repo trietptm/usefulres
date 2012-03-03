@@ -548,6 +548,12 @@ BOOL TextSelection::DeleteCharByPos(int pageNo, HPDFOBJ hObj, const PointD& pt, 
 		assert(ci.node->item.text->items[ci.iItem].ucs==pageText[iPosDel]);
 		ArrayDeleteElements(ci.node->item.text->items,ci.node->item.text->len,ci.iItem,1);
 
+		if(ci.node->last && ci.node->last->is_dup)
+		{
+			assert(ci.node->last->item.text->items[ci.iItem].ucs==pageText[iPosDel]);
+			ArrayDeleteElements(ci.node->last->item.text->items,ci.node->last->item.text->len,ci.iItem,1);
+		}
+
 		indexChanged = -1;
 	}
 	else
@@ -590,6 +596,12 @@ BOOL TextSelection::DeleteCharByPos(int pageNo, HPDFOBJ hObj, const PointD& pt, 
 			if(widthDelta)
 			{
 				ci.node->item.text->items[ci.iItem].x += widthDelta;
+
+				if(ci.node->last && ci.node->last->is_dup)
+				{
+					ci.node->last->item.text->items[ci.iItem].x += widthDelta;
+				}
+
 				pageCoords[i].x += widthDelta;
 			}
 		}
@@ -848,6 +860,12 @@ BOOL TextSelection::InsertCharByPos(int pageNo, HPDFOBJ hObj, const PointD& pt, 
 
 		ArrayInsertElements(ci.node->item.text->items,ci.node->item.text->len,iTextItem,&txtItem,1);
 
+		if(ci.node->last && ci.node->last->is_dup)
+		{
+			fz_grow_text(ci.node->last->item.text,1);
+			ArrayInsertElements(ci.node->last->item.text->items,ci.node->last->item.text->len,iTextItem,&txtItem,1);
+		}
+
 		indexChanged = 1;
 	}
 // 	else
@@ -874,6 +892,16 @@ BOOL TextSelection::InsertCharByPos(int pageNo, HPDFOBJ hObj, const PointD& pt, 
 		chInf[pageNo - 1] = pageChInf;
 
 		char_inf newCI = pageChInf[iPosIns];
+
+		if(newCI.iItem==-1)
+		{
+			assert(iPosIns > 0);
+			assert(pageChInf[iPosIns - 1].iItem != -1);
+			
+			newCI.iItem = pageChInf[iPosIns - 1].iItem + 1;
+		}
+		assert(newCI.iItem != -1);
+
 		ArrayInsertElements(pageChInf,pageTextLen,iPosIns,&newCI,1);
 	}
 
@@ -919,6 +947,12 @@ BOOL TextSelection::InsertCharByPos(int pageNo, HPDFOBJ hObj, const PointD& pt, 
 			if(widthDelta)
 			{
 				ci.node->item.text->items[ci.iItem].x += widthDelta;
+
+				if(ci.node->last && ci.node->last->is_dup)
+				{
+					ci.node->last->item.text->items[ci.iItem].x += widthDelta;
+				}
+
 				pageCoords[i].x += widthDelta;
 
 				if(newObjRight < pageCoords[i].x + pageCoords[i].dx)
@@ -930,7 +964,17 @@ BOOL TextSelection::InsertCharByPos(int pageNo, HPDFOBJ hObj, const PointD& pt, 
 	}
 
 	if(node->rect.x1 < newObjRight)
-		node->rect.x1 = newObjRight;
+	{
+		node->rect.x1 = newObjRight;		
+	}
+
+	if(node->last && node->last->is_dup)
+	{
+		if(node->last->rect.x1 < newObjRight)
+		{
+			node->last->rect.x1 = newObjRight;
+		}
+	}
 
 	if(xCursor)
 	{
