@@ -5278,7 +5278,7 @@ static BOOL GetPropertyDescr(HPDFOBJ hObj,LPCTSTR lpPropName,LPSTR lpDescr)
 	{
 		if(node->item.text)
 		{
-			snprintf(lpDescr,MAX_PATH - 1,"%.2f",node->item.text->trm.a);
+			snprintf(lpDescr,MAX_PATH - 1,"%.2f",node->item.text->trm.d); //trm.d才是字体大小,trm.a不是
 			return TRUE;
 		}
 	}
