@@ -5307,6 +5307,28 @@ static BOOL GetPropertyDescr(HPDFOBJ hObj,LPCTSTR lpPropName,LPSTR lpDescr)
 			return TRUE;
 		}
 	}
+	else if(lstrcmp(lpPropName,_T("Fill Color"))==0)
+	{
+		INT r,g,b,a;
+		{
+			float f = node->color[0] * 100.0f;
+			r = (INT)ceilf((float)f - 0.001f);
+		}
+		{
+			float f = node->color[1] * 100.0f;
+			g = (INT)ceilf((float)f - 0.001f);
+		}
+		{
+			float f = node->color[2] * 100.0f;
+			b = (INT)ceilf((float)f - 0.001f);
+		}
+		{
+			float f = node->alpha * 100.0f;
+			a = (INT)ceilf((float)f - 0.001f);
+		}
+
+		snprintf(lpDescr,MAX_PATH - 1,"R:%d%%, G:%d%%, B:%d%%, A:%d%%",r,g,b,a);
+	}
 
 	return FALSE;
 }
