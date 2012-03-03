@@ -5273,6 +5273,13 @@ static BOOL GetPropertyDescr(HPDFOBJ hObj,LPCTSTR lpPropName,LPSTR lpDescr)
 			lstrcpynA(lpDescr,node->item.text->font->name,MAX_PATH - 1);
 		}
 	}
+	else if(lstrcmp(lpPropName,_T("Font Size"))==0)
+	{
+		if(node->item.text && node->item.text->font)
+		{
+			snprintf(lpDescr,MAX_PATH - 1,"%.2f",node->item.text->trm.a);
+		}
+	}
 
 	return FALSE;
 }
