@@ -490,7 +490,7 @@ pdf_flush_text(pdf_csi *csi)
 			break;
 		case PDF_MAT_COLOR:
 			fz_stroke_text(csi->dev, text, &gstate->stroke_state, gstate->ctm,
-				gstate->stroke.colorspace, gstate->stroke.v, gstate->stroke.alpha);
+				gstate->stroke.colorspace, gstate->stroke.v, gstate->stroke.alpha, NULL); //NULL(MyCode)
 			break;
 		case PDF_MAT_PATTERN:
 			if (gstate->stroke.pattern)
