@@ -5298,6 +5298,15 @@ static BOOL GetPropertyDescr(HPDFOBJ hObj,LPCTSTR lpPropName,LPSTR lpDescr)
 			return TRUE;
 		}
 	}
+	else if(lstrcmp(lpPropName,_T("Horizontal Scale(%)"))==0)
+	{
+		if(node->item.text)
+		{
+			double fRate = (node->item.text->trm.a / node->item.text->trm.d) * 100.0;
+			snprintf(lpDescr,MAX_PATH - 1,"%d",(int)ceilf((float)fRate - 0.001f));
+			return TRUE;
+		}
+	}
 
 	return FALSE;
 }
