@@ -5239,13 +5239,13 @@ static INT GetPageNoByPoint(INT x, INT y)
 	return 0;
 }
 
-static BOOL GetPropertyDescr(HPDFOBJ hObj,LPCTSTR lpPropName,LPTSTR lpDescr)
+static BOOL GetPropertyDescr(HPDFOBJ hObj,LPCTSTR lpPropName,LPSTR lpDescr)
 {
 	fz_display_node* node = (fz_display_node*)hObj;
 
 	if(lstrcmp(lpPropName,_T("Char Space"))==0)
 	{
-		_sntprintf(lpDescr,MAX_PATH - 1,_T("%f"),node->item.text->gstate.char_space);
+		snprintf(lpDescr,MAX_PATH - 1,"%f",node->item.text->gstate.char_space);
 
 		return TRUE;
 	}
@@ -5254,17 +5254,24 @@ static BOOL GetPropertyDescr(HPDFOBJ hObj,LPCTSTR lpPropName,LPTSTR lpDescr)
 		switch(node->cmd)
 		{
 		case FZ_CMD_FILL_TEXT:
-			lstrcpyn(lpDescr,_T("Fill Text"),MAX_PATH - 1);
+			lstrcpynA(lpDescr,"Fill Text",MAX_PATH - 1);
 			return TRUE;
 			break;
 		case FZ_CMD_STROKE_TEXT:
 			if(node->last && node->last->is_dup && node->last->cmd==FZ_CMD_FILL_TEXT)
-				lstrcpyn(lpDescr,_T("Fill then Stroke text"),MAX_PATH - 1);
+				lstrcpynA(lpDescr,"Fill then Stroke text",MAX_PATH - 1);
 			else
-				lstrcpyn(lpDescr,_T("Stroke Text"),MAX_PATH - 1);
+				lstrcpynA(lpDescr,"Stroke Text",MAX_PATH - 1);
 			return TRUE;
 			break;
 		}		
+	}
+	else if(lstrcmp(lpPropName,_T("Font"))==0)
+	{
+		if(node->item.text && node->item.text->font)
+		{
+			lstrcpynA(lpDescr,node->item.text->font->name,MAX_PATH - 1);
+		}
 	}
 
 	return FALSE;
