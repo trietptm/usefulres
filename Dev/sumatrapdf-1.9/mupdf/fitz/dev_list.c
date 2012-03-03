@@ -301,7 +301,7 @@ fz_list_fill_text(void *user, fz_text *text, fz_matrix ctm,
 
 static void
 fz_list_stroke_text(void *user, fz_text *text, fz_stroke_state *stroke, fz_matrix ctm,
-	fz_colorspace *colorspace, float *color, float alpha)
+	fz_colorspace *colorspace, float *color, float alpha, void *_node)
 {
 	fz_display_node *node;
 	node = fz_new_display_node(FZ_CMD_STROKE_TEXT, ctm, colorspace, color, alpha);
@@ -624,7 +624,7 @@ visible:
 			break;
 		case FZ_CMD_STROKE_TEXT:
 			fz_stroke_text(dev, node->item.text, node->stroke, ctm,
-				node->colorspace, node->color, node->alpha);
+				node->colorspace, node->color, node->alpha, node);
 			break;
 		case FZ_CMD_CLIP_TEXT:
 			fz_clip_text(dev, node->item.text, ctm, node->flag);

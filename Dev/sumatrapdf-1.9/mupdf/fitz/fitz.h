@@ -1010,7 +1010,7 @@ struct fz_device_s
 	void (*clip_stroke_path)(void *, fz_path *, fz_rect *rect, fz_stroke_state *, fz_matrix);
 
 	void (*fill_text)(void *, fz_text *, fz_matrix, fz_colorspace *, float *color, float alpha, void *node);
-	void (*stroke_text)(void *, fz_text *, fz_stroke_state *, fz_matrix, fz_colorspace *, float *color, float alpha);
+	void (*stroke_text)(void *, fz_text *, fz_stroke_state *, fz_matrix, fz_colorspace *, float *color, float alpha, void *node);
 	void (*clip_text)(void *, fz_text *, fz_matrix, int accumulate);
 	void (*clip_stroke_text)(void *, fz_text *, fz_stroke_state *, fz_matrix);
 	void (*ignore_text)(void *, fz_text *, fz_matrix);
@@ -1036,7 +1036,7 @@ void fz_stroke_path(fz_device *dev, fz_path *path, fz_stroke_state *stroke, fz_m
 void fz_clip_path(fz_device *dev, fz_path *path, fz_rect *rect, int even_odd, fz_matrix ctm);
 void fz_clip_stroke_path(fz_device *dev, fz_path *path, fz_rect *rect, fz_stroke_state *stroke, fz_matrix ctm);
 void fz_fill_text(fz_device *dev, fz_text *text, fz_matrix ctm, fz_colorspace *colorspace, float *color, float alpha, void *node);
-void fz_stroke_text(fz_device *dev, fz_text *text, fz_stroke_state *stroke, fz_matrix ctm, fz_colorspace *colorspace, float *color, float alpha);
+void fz_stroke_text(fz_device *dev, fz_text *text, fz_stroke_state *stroke, fz_matrix ctm, fz_colorspace *colorspace, float *color, float alpha, void *node);
 void fz_clip_text(fz_device *dev, fz_text *text, fz_matrix ctm, int accumulate);
 void fz_clip_stroke_text(fz_device *dev, fz_text *text, fz_stroke_state *stroke, fz_matrix ctm);
 void fz_ignore_text(fz_device *dev, fz_text *text, fz_matrix ctm);
