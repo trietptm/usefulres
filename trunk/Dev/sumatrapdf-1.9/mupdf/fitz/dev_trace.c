@@ -151,7 +151,7 @@ fz_trace_fill_text(void *user, fz_text *text, fz_matrix ctm,
 
 static void
 fz_trace_stroke_text(void *user, fz_text *text, fz_stroke_state *stroke, fz_matrix ctm,
-	fz_colorspace *colorspace, float *color, float alpha)
+	fz_colorspace *colorspace, float *color, float alpha, void *node)
 {
 	printf("<stroke_text font=\"%s\" wmode=\"%d\" ", text->font->name, text->wmode);
 	fz_trace_color(colorspace, color, alpha);

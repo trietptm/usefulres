@@ -31,7 +31,7 @@ fz_bbox_fill_text(void *user, fz_text *text, fz_matrix ctm,
 
 static void
 fz_bbox_stroke_text(void *user, fz_text *text, fz_stroke_state *stroke, fz_matrix ctm,
-	fz_colorspace *colorspace, float *color, float alpha)
+	fz_colorspace *colorspace, float *color, float alpha, void *node)
 {
 	fz_bbox *result = user;
 	fz_bbox bbox = fz_round_rect(fz_bound_text(text, ctm));

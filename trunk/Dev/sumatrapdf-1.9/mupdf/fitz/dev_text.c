@@ -559,10 +559,10 @@ fz_text_fill_text(void *user, fz_text *text, fz_matrix ctm,
 
 static void
 fz_text_stroke_text(void *user, fz_text *text, fz_stroke_state *stroke, fz_matrix ctm,
-	fz_colorspace *colorspace, float *color, float alpha)
+	fz_colorspace *colorspace, float *color, float alpha, void *node)
 {
 	fz_text_device *tdev = user;
-	fz_text_extract_span(&tdev->span, text, ctm, &tdev->point, NULL);
+	fz_text_extract_span(&tdev->span, text, ctm, &tdev->point, node);
 }
 
 static void
