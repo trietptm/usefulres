@@ -5239,6 +5239,31 @@ static INT GetPageNoByPoint(INT x, INT y)
 	return 0;
 }
 
+static BOOL IsColorProperty(const fz_display_node* node,LPCTSTR lpPropName,fz_display_node** node_use)
+{
+	*node_use = NULL;
+
+	if(node->cmd==FZ_CMD_FILL_TEXT && lstrcmp(lpPropName,_T("Fill Color"))==0)
+		return TRUE;
+
+	if(node->cmd==FZ_CMD_STROKE_TEXT)
+	{
+		if(lstrcmp(lpPropName,_T("Stroke Color"))==0)
+			return TRUE;
+
+		if(lstrcmp(lpPropName,_T("Fill Color"))==0)
+		{
+			if(node->last && node->last->is_dup && node->last->cmd==FZ_CMD_FILL_TEXT)
+			{
+				*node_use = node->last;
+				return TRUE;
+			}
+		}
+	}
+
+	return FALSE;
+}
+
 static BOOL GetPropertyDescr(HPDFOBJ hObj,LPCTSTR lpPropName,LPSTR lpDescr)
 {
 	fz_display_node* node = (fz_display_node*)hObj;
@@ -5307,27 +5332,59 @@ static BOOL GetPropertyDescr(HPDFOBJ hObj,LPCTSTR lpPropName,LPSTR lpDescr)
 			return TRUE;
 		}
 	}
-	else if(lstrcmp(lpPropName,_T("Fill Color"))==0)
+	else if(lstrcmp(lpPropName,_T("Fill Color"))==0 && node->item.text)
 	{
+		if(node->cmd==FZ_CMD_STROKE_TEXT)
+		{
+			if(node->last && node->last->is_dup && node->last->cmd==FZ_CMD_FILL_TEXT)
+				node = node->last;
+		}
+
 		INT r = 0,g = 0,b = 0,a = 100;
 
-		if(node->colorspace->n >= 1)
+		if(node->item.text->gstate.fill_colorspace_n >= 1)
 		{
-			float f = node->color[0] * 100.0f;
+			float f = node->item.text->gstate.fill_v[0] * 100.0f;
 			r = (INT)ceilf((float)f - 0.001f);
 		}
-		if(node->colorspace->n >= 2)
+		if(node->item.text->gstate.fill_colorspace_n >= 2)
 		{
-			float f = node->color[1] * 100.0f;
+			float f = node->item.text->gstate.fill_v[1] * 100.0f;
 			g = (INT)ceilf((float)f - 0.001f);
 		}
-		if(node->colorspace->n >= 3)
+		if(node->item.text->gstate.fill_colorspace_n >= 3)
 		{
-			float f = node->color[2] * 100.0f;
+			float f = node->item.text->gstate.fill_v[2] * 100.0f;
 			b = (INT)ceilf((float)f - 0.001f);
 		}
 		{
-			float f = node->alpha * 100.0f;
+			float f = node->item.text->gstate.fill_alpha * 100.0f;
+			a = (INT)ceilf((float)f - 0.001f);
+		}
+
+		snprintf(lpDescr,MAX_PATH - 1,"R:%d%%, G:%d%%, B:%d%%, A:%d%%",r,g,b,a);
+	}
+	else if(lstrcmp(lpPropName,_T("Stroke Color"))==0 && node->item.text)
+	{
+		INT r = 0,g = 0,b = 0,a = 100;
+
+		if(node->item.text->gstate.stroke_colorspace_n >= 1)
+		{
+			float f = node->item.text->gstate.stroke_v[0] * 100.0f;
+			r = (INT)ceilf((float)f - 0.001f);
+		}
+		if(node->item.text->gstate.stroke_colorspace_n >= 2)
+		{
+			float f = node->item.text->gstate.stroke_v[1] * 100.0f;
+			g = (INT)ceilf((float)f - 0.001f);
+		}
+		if(node->item.text->gstate.stroke_colorspace_n >= 3)
+		{
+			float f = node->item.text->gstate.stroke_v[2] * 100.0f;
+			b = (INT)ceilf((float)f - 0.001f);
+		}
+		{
+			float f = node->item.text->gstate.stroke_alpha * 100.0f;
 			a = (INT)ceilf((float)f - 0.001f);
 		}
 

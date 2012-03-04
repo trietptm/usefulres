@@ -20,20 +20,25 @@ fz_new_text(fz_font *font, fz_matrix trm, int wmode, my_pdf_gstate* gstate)
 	/*MyCode*/
 	if(gstate)
 	{
-		text->gstate.char_space = gstate->char_space;
+// 		text->gstate.char_space = gstate->char_space;
+// 		text->gstate.font = pdf_keep_font(gstate->font);
+// 		text->gstate.rise = gstate->rise;
+// 		text->gstate.scale = gstate->scale;
+// 		text->gstate.size = gstate->size;
+// 		text->gstate.tm = gstate->tm;
+
+		memcpy(&text->gstate,gstate,sizeof(text->gstate));
 		text->gstate.font = pdf_keep_font(gstate->font);
-		text->gstate.rise = gstate->rise;
-		text->gstate.scale = gstate->scale;
-		text->gstate.size = gstate->size;
-		text->gstate.tm = gstate->tm;
 	}
 	else
 	{
-		text->gstate.char_space = 0;
-		text->gstate.font = NULL;
-		text->gstate.rise = 0;
-		text->gstate.scale = 0;
-		text->gstate.size = 0;
+// 		text->gstate.char_space = 0;
+// 		text->gstate.font = NULL;
+// 		text->gstate.rise = 0;
+// 		text->gstate.scale = 0;
+// 		text->gstate.size = 0;
+
+		memset(&text->gstate,0,sizeof(text->gstate));
 	}
 	//////////////////////////////////////////////////////////////////////////
 
@@ -70,13 +75,18 @@ fz_clone_text(fz_text *old)
 	/*MyCode*/
 	if(old->gstate.font)
 	{
-		text->gstate.char_space = old->gstate.char_space;
+// 		text->gstate.char_space = old->gstate.char_space;
+// 		text->gstate.font = pdf_keep_font(old->gstate.font);
+// 		text->gstate.rise = old->gstate.rise;
+// 		text->gstate.scale = old->gstate.scale;
+// 		text->gstate.size = old->gstate.size;
+// 		text->gstate.tm = old->gstate.tm;
+
+		memcpy(&text->gstate,&old->gstate,sizeof(text->gstate));
 		text->gstate.font = pdf_keep_font(old->gstate.font);
-		text->gstate.rise = old->gstate.rise;
-		text->gstate.scale = old->gstate.scale;
-		text->gstate.size = old->gstate.size;
-		text->gstate.tm = old->gstate.tm;
 	}
+	else
+		memset(&text->gstate,0,sizeof(text->gstate));
 	//////////////////////////////////////////////////////////////////////////	
 
 	return text;

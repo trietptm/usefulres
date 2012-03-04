@@ -850,6 +850,15 @@ struct my_pdf_gstate_s
 	float rise;
 
 	fz_matrix tm;
+
+	//////////////////////////////////////////////////////////////////////////
+	float fill_alpha;
+	int fill_colorspace_n;
+	float fill_v[3]; //r,g,b
+
+	float stroke_alpha;
+	int stroke_colorspace_n;
+	float stroke_v[3]; //r,g,b
 };
 //////////////////////////////////////////////////////////////////////////
 
