@@ -587,6 +587,26 @@ pdf_show_char(pdf_csi *csi, int cid)
 		my_gstate.scale = gstate->scale;
 		my_gstate.size = gstate->size;
 		my_gstate.tm = csi->tm;
+
+		//Fill Color
+		my_gstate.fill_alpha = gstate->fill.alpha;
+		if(gstate->fill.colorspace)
+			my_gstate.fill_colorspace_n = gstate->fill.colorspace->n;
+		else
+			my_gstate.fill_colorspace_n = 0;
+		my_gstate.fill_v[0] = gstate->fill.v[0];
+		my_gstate.fill_v[1] = gstate->fill.v[1];
+		my_gstate.fill_v[2] = gstate->fill.v[2];
+
+		//Stroke Color
+		my_gstate.stroke_alpha = gstate->stroke.alpha;
+		if(gstate->stroke.colorspace)
+			my_gstate.stroke_colorspace_n = gstate->stroke.colorspace->n;
+		else
+			my_gstate.stroke_colorspace_n = 0;
+		my_gstate.stroke_v[0] = gstate->stroke.v[0];
+		my_gstate.stroke_v[1] = gstate->stroke.v[1];
+		my_gstate.stroke_v[2] = gstate->stroke.v[2];
 		//////////////////////////////////////////////////////////////////////////		
 
 		csi->text = fz_new_text(fontdesc->font, trm, fontdesc->wmode, &my_gstate);
