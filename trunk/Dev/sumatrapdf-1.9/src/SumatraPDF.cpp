@@ -1928,6 +1928,14 @@ static void OnMouseLeftButtonDblClk(WindowInfo& win, int x, int y, WPARAM key)
         return;
     }
 
+	/*MyCode*/
+	if(g_pIntf)
+	{
+		if(g_pIntf->OnMouseLeftButtonDblClk(x,y,key))
+			return;
+	}
+	//////////////////////////////////////////////////////////////////////////
+
     bool dontSelect = false;
     if (gGlobalPrefs.enableTeXEnhancements && !(key & ~MK_LBUTTON))
         dontSelect = OnInverseSearch(&win, x, y);
@@ -1941,11 +1949,7 @@ static void OnMouseLeftButtonDblClk(WindowInfo& win, int x, int y, WPARAM key)
         win.dm->textSelection->SelectWordAt(pageNo, pt.x, pt.y);
     }
 
-    UpdateTextSelection(&win, false);
-
-	/*MyCode*/
-	if(g_pIntf)
-		g_pIntf->OnMouseLeftButtonDblClk(x,y,key);
+    UpdateTextSelection(&win, false);	
 
     win.RepaintAsync();
 }

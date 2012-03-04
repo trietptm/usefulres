@@ -454,6 +454,8 @@ fz_text_extract_span(fz_text_span **last, fz_text *text, fz_matrix ctm, fz_point
 	int multi;
 	int i, err;
 
+	float dist_y; //MyCode
+
 	if (text->len == 0)
 		return;
 
@@ -485,6 +487,9 @@ fz_text_extract_span(fz_text_span **last, fz_text *text, fz_matrix ctm, fz_point
 	trm = fz_concat(tm, ctm);
 	dir = fz_transform_vector(trm, dir);
 	dist = sqrtf(dir.x * dir.x + dir.y * dir.y);
+
+	dist_y = dir.y; //MyCode
+
 	ndir.x = dir.x / dist;
 	ndir.y = dir.y / dist;
 
@@ -514,6 +519,7 @@ fz_text_extract_span(fz_text_span **last, fz_text *text, fz_matrix ctm, fz_point
 			delta.x = delta.y = 0;
 
 		dist = sqrtf(delta.x * delta.x + delta.y * delta.y);
+		dist_y = delta.y; //MyCode
 
 		/* Add space and newlines based on pen movement */
 		if (dist > 0)
@@ -522,7 +528,12 @@ fz_text_extract_span(fz_text_span **last, fz_text *text, fz_matrix ctm, fz_point
 			ndelta.y = delta.y / dist;
 			dot = ndelta.x * ndir.x + ndelta.y * ndir.y;
 
+#if 0
 			if (dist > size * LINE_DIST)
+#else
+			//Mycode
+			if(dist_y > size * LINE_DIST) //防止很长的word_space或char_space被当成换行
+#endif
 			{
 				fz_add_text_newline(last, font, size, text->wmode);
 			}
@@ -530,6 +541,7 @@ fz_text_extract_span(fz_text_span **last, fz_text *text, fz_matrix ctm, fz_point
 			{
 				if ((*last)->len > 0 && (*last)->text[(*last)->len - 1].c != ' ')
 				{
+#if 0 //MyCode：不要添加多余的空格
 					fz_rect spacerect;
 					spacerect.x0 = -0.2f;
 					spacerect.y0 = 0;
@@ -538,6 +550,7 @@ fz_text_extract_span(fz_text_span **last, fz_text *text, fz_matrix ctm, fz_point
 					spacerect = fz_transform_rect(trm, spacerect);
 
 					fz_add_text_char(last, font, size, text->wmode, ' ', fz_round_rect(spacerect), -1, node);
+#endif
 				}
 			}
 		}
