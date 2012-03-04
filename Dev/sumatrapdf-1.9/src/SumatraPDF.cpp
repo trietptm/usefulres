@@ -5274,7 +5274,13 @@ static BOOL GetPropertyDescr(HPDFOBJ hObj,LPCTSTR lpPropName,LPSTR lpDescr)
 
 	if(lstrcmp(lpPropName,_T("Char Space"))==0)
 	{
-		snprintf(lpDescr,MAX_PATH - 1,"%f",node->item.text->gstate.char_space);
+		snprintf(lpDescr,MAX_PATH - 1,"%.2f",node->item.text->gstate.char_space);
+
+		return TRUE;
+	}
+	else if(lstrcmp(lpPropName,_T("Word Space"))==0)
+	{
+		snprintf(lpDescr,MAX_PATH - 1,"%.2f",node->item.text->gstate.word_space);
 
 		return TRUE;
 	}

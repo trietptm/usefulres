@@ -844,6 +844,7 @@ typedef struct my_pdf_gstate_s my_pdf_gstate;
 struct my_pdf_gstate_s
 {
 	float char_space;
+	float word_space;
 	float scale;
 	pdf_font_desc *font;
 	float size;

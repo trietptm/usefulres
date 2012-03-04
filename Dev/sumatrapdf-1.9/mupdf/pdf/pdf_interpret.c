@@ -582,6 +582,7 @@ pdf_show_char(pdf_csi *csi, int cid)
 
 		/*MyCode*/		
 		my_gstate.char_space = gstate->char_space;
+		my_gstate.word_space = gstate->word_space;
 		my_gstate.font = gstate->font;
 		my_gstate.rise = gstate->rise;
 		my_gstate.scale = gstate->scale;
