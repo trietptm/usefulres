@@ -54,7 +54,7 @@ free_without_recursion:
 
 //iItem(MyCode):对应的fz_text_item索引值
 static void
-fz_add_text_char_imp(fz_text_span *span, int c, fz_bbox bbox, int iItem, fz_display_node* node)
+fz_add_text_char_imp(fz_text_span *span, int c, fz_rect bbox, int iItem, fz_display_node* node)
 {
 	if (span->len + 1 >= span->cap)
 	{
@@ -72,8 +72,8 @@ fz_add_text_char_imp(fz_text_span *span, int c, fz_bbox bbox, int iItem, fz_disp
 	span->len ++;
 }
 
-static fz_bbox
-fz_split_bbox(fz_bbox bbox, int i, int n)
+static fz_rect
+fz_split_bbox(fz_rect bbox, int i, int n)
 {
 	float w = (float)(bbox.x1 - bbox.x0) / n;
 	float x0 = bbox.x0;
@@ -84,7 +84,7 @@ fz_split_bbox(fz_bbox bbox, int i, int n)
 
 //iItem(MyCode):对应的fz_text_item索引值
 static void
-fz_add_text_char(fz_text_span **last, fz_font *font, float size, int wmode, int c, fz_bbox bbox, int iItem, fz_display_node* node)
+fz_add_text_char(fz_text_span **last, fz_font *font, float size, int wmode, int c, fz_rect bbox, int iItem, fz_display_node* node)
 {
 	fz_text_span *span = *last;
 
@@ -142,7 +142,7 @@ fz_add_text_char(fz_text_span **last, fz_font *font, float size, int wmode, int 
 }
 
 static void
-fz_divide_text_chars(fz_text_span **last, int n, fz_bbox bbox)
+fz_divide_text_chars(fz_text_span **last, int n, fz_rect bbox)
 {
 	fz_text_span *span = *last;
 	int i, x;
@@ -316,11 +316,11 @@ doglyphsoverlap(fz_text_span *span, int i, fz_text_span *span2, int j)
 {
 	return
 		i < span->len && j < span2->len && span->text[i].c == span2->text[j].c &&
-		(calcbboxoverlap(span->text[i].bbox, span2->text[j].bbox) > 0.7f ||
+		(calcbboxoverlap(fz_round_rect(span->text[i].bbox), fz_round_rect(span2->text[j].bbox)) > 0.7f || //fz_round_rect:MyCode
 		 // bboxes of slim glyphs sometimes don't overlap enough, so
 		 // check if the overlapping continues with the following glyph
 		 i + 1 < span->len && j + 1 < span2->len && span->text[i + 1].c == span2->text[j + 1].c &&
-		 calcbboxoverlap(span->text[i + 1].bbox, span2->text[j + 1].bbox) > 0.7f);
+		 calcbboxoverlap(fz_round_rect(span->text[i + 1].bbox), fz_round_rect(span2->text[j + 1].bbox)) > 0.7f);
 }
 
 /* TODO: Complete these lists... */
@@ -501,9 +501,9 @@ fz_text_extract_span(fz_text_span **last, fz_text *text, fz_matrix ctm, fz_point
 	{
 		if (text->items[i].gid < 0)
 		{
-			fz_add_text_char(last, font, size, text->wmode, text->items[i].ucs, fz_round_rect(rect), i, node);
+			fz_add_text_char(last, font, size, text->wmode, text->items[i].ucs, /*fz_round_rect*/(rect), i, node);
 			multi ++;
-			fz_divide_text_chars(last, multi, fz_round_rect(rect));
+			fz_divide_text_chars(last, multi, /*fz_round_rect*/(rect));
 			continue;
 		}
 		multi = 1;
@@ -585,7 +585,7 @@ fz_text_extract_span(fz_text_span **last, fz_text *text, fz_matrix ctm, fz_point
 		pen->x = trm.e + dir.x * adv;
 		pen->y = trm.f + dir.y * adv;
 
-		fz_add_text_char(last, font, size, text->wmode, text->items[i].ucs, fz_round_rect(rect), i, node);
+		fz_add_text_char(last, font, size, text->wmode, text->items[i].ucs, /*fz_round_rect*/(rect), i, node);
 	}
 }
 

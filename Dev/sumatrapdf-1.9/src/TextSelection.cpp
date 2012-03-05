@@ -14,7 +14,7 @@ extern "C"{
 TextSelection::TextSelection(BaseEngine *engine) : engine(engine)
 {
     int count = engine->PageCount();
-    coords = SAZA(RectI *, count);
+    coords = SAZA(RectD *, count);
 	chInf = SAZA(char_inf *, count); //MyCode
     text = SAZA(TCHAR *, count);
     lens = SAZA(int, count);
@@ -65,7 +65,7 @@ int TextSelection::FindClosestGlyph(int pageNo, double x, double y)
 {
     assert(1 <= pageNo && pageNo <= engine->PageCount());
     if (!text[pageNo - 1]) {
-        text[pageNo - 1] = engine->ExtractPageText(pageNo, _T("\n"), &coords[pageNo - 1], Target_View, &chInf[pageNo - 1]);
+        text[pageNo - 1] = engine->ExtractPageTextD(pageNo, _T("\n"), &coords[pageNo - 1], Target_View, &chInf[pageNo - 1]);
 
 		/*MyCode*/
 		if(chInf[pageNo - 1])
@@ -83,7 +83,7 @@ int TextSelection::FindClosestGlyph(int pageNo, double x, double y)
 
     double maxDist = -1;
     int result = -1;
-    RectI *_coords = coords[pageNo - 1];
+    RectD *_coords = coords[pageNo - 1];
 
     for (int i = 0; i < lens[pageNo - 1]; i++) {
         if (!_coords[i].x && !_coords[i].dx)
@@ -112,18 +112,18 @@ int TextSelection::FindClosestGlyph(int pageNo, double x, double y)
 
 void TextSelection::FillResultRects(int pageNo, int glyph, int length, StrVec *lines)
 {
-    RectI mediabox = engine->PageMediabox(pageNo).Round();
-    RectI *c = &coords[pageNo - 1][glyph], *end = c + length;
+    RectD mediabox = engine->PageMediabox(pageNo);//@.Round();
+    RectD *c = &coords[pageNo - 1][glyph], *end = c + length;
     for (; c < end; c++) {
         // skip line breaks
         if (!c->x && !c->dx)
             continue;
 
-        RectI c0 = *c, *c0p = c;
+        RectD c0 = *c, *c0p = c;
         for (; c < end && (c->x || c->dx); c++);
         c--;
-        RectI c1 = *c;
-        RectI bbox = c0.Union(c1).Intersect(mediabox);
+        RectD c1 = *c;
+        RectD bbox = c0.Union(c1).Intersect(mediabox);
         // skip text that's completely outside a page's mediabox
         if (bbox.IsEmpty())
             continue;
@@ -141,15 +141,15 @@ void TextSelection::FillResultRects(int pageNo, int glyph, int length, StrVec *l
         result.pages = (int *)realloc(result.pages, sizeof(int) * result.len);
         result.pages[result.len - 1] = pageNo;
         result.rects = (RectI *)realloc(result.rects, sizeof(RectI) * result.len);
-        result.rects[result.len - 1] = bbox;
+        result.rects[result.len - 1] = bbox.Round(); //Round():MyCode
     }
 }
 
 bool TextSelection::IsOverGlyph(int pageNo, double x, double y)
 {
     int glyphIx = FindClosestGlyph(pageNo, x, y);
-    PointI pt = PointD(x, y).Convert<int>();
-    RectI *_coords = coords[pageNo - 1];
+    PointD pt = PointD(x, y);//@.Convert<int>();
+    RectD *_coords = coords[pageNo - 1];
     // when over the right half of a glyph, FindClosestGlyph returns the
     // index of the next glyph, in which case glyphIx must be decremented
     if (glyphIx == lens[pageNo - 1] || !_coords[glyphIx].Inside(pt))
@@ -251,7 +251,7 @@ INT TextSelection::GetObjLineText(int pageNo, HPDFOBJ hObj, const PointD* pt, Re
 	if(text[pageNo - 1] && chInf[pageNo - 1])
 	{
 		WCHAR* pageText = text[pageNo - 1];
-		RectI* pageCoords = coords[pageNo - 1];
+		RectD* pageCoords = coords[pageNo - 1];
 		char_inf* pageChInf = chInf[pageNo - 1];
 
 		int textLen = str::Len(pageText);
@@ -488,7 +488,7 @@ BOOL TextSelection::DeleteCharByPos(int pageNo, HPDFOBJ hObj, const PointD& pt, 
 	WCHAR* pageText = text[pageNo - 1];
 	char_inf* pageChInf = chInf[pageNo - 1];
 	INT pageTextLen = lens[pageNo - 1];
-	RectI* pageCoords = coords[pageNo - 1];
+	RectD* pageCoords = coords[pageNo - 1];
 
 	INT iPosDel = chPos;
 	if(bBackspace)
@@ -500,7 +500,7 @@ BOOL TextSelection::DeleteCharByPos(int pageNo, HPDFOBJ hObj, const PointD& pt, 
 	if(pageText[iPosDel]=='\n')
 		return FALSE;
 
-	INT rawPosX = pageCoords[iPosDel].x;
+	double rawPosX = pageCoords[iPosDel].x;
 
 	char_inf& ci = pageChInf[iPosDel];
 	if(ci.iItem==-1)
@@ -523,7 +523,7 @@ BOOL TextSelection::DeleteCharByPos(int pageNo, HPDFOBJ hObj, const PointD& pt, 
 #else
 	pageTextLen = lens[pageNo - 1];
 	
-	INT widthDelta = -pageCoords[iPosDel].dx;
+	double widthDelta = -pageCoords[iPosDel].dx;
 	if(iPosDel + 1 < pageTextLen)
 	{
 		widthDelta = -(pageCoords[iPosDel + 1].x - pageCoords[iPosDel].x);
@@ -595,14 +595,14 @@ BOOL TextSelection::DeleteCharByPos(int pageNo, HPDFOBJ hObj, const PointD& pt, 
 
 			if(widthDelta)
 			{
-				ci.node->item.text->items[ci.iItem].x += widthDelta;
+				ci.node->item.text->items[ci.iItem].x += (float)widthDelta;
 
 				if(ci.node->last && ci.node->last->is_dup)
 				{
-					ci.node->last->item.text->items[ci.iItem].x += widthDelta;
+					ci.node->last->item.text->items[ci.iItem].x += (float)widthDelta;
 				}
 
-				pageCoords[i].x += widthDelta;
+				pageCoords[i].x += (float)widthDelta;
 			}
 		}
 	}
@@ -785,7 +785,7 @@ BOOL TextSelection::InsertCharByPos(int pageNo, HPDFOBJ hObj, const PointD& pt, 
 	fz_display_node* node = ci.node;
 
 	INT pageTextLen = lens[pageNo - 1];
-	RectI* pageCoords = coords[pageNo - 1];
+	RectD* pageCoords = coords[pageNo - 1];
 
 	if(updateRect)
 	{
@@ -912,7 +912,7 @@ BOOL TextSelection::InsertCharByPos(int pageNo, HPDFOBJ hObj, const PointD& pt, 
 		EnsureBufSize(&pageCoords,bufSize,bufSize,bufSize + 1,NULL);
 		coords[pageNo - 1] = pageCoords;
 
-		RectI newRT = pageCoords[iPosIns];
+		RectD newRT = pageCoords[iPosIns];
 		ArrayInsertElements(pageCoords,pageTextLen,iPosIns,&newRT,1);
 	}
 
@@ -1014,7 +1014,7 @@ BOOL TextSelection::MoveCursor(int pageNo, HPDFOBJ hObj, const PointD& pt, INT n
 		return FALSE;
 
 	WCHAR* pageText = text[pageNo - 1];
-	RectI* pageCoords = coords[pageNo - 1];
+	RectD* pageCoords = coords[pageNo - 1];
 	char_inf* pageChInf = chInf[pageNo - 1];
 
 	if(nMove < 0)

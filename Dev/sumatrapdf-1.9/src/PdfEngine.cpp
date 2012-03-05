@@ -278,7 +278,7 @@ WCHAR *fz_span_to_wchar(fz_text_span *text, TCHAR *lineSep, RectI **coords_out=N
             dest++;
             if (destRect)
 			{
-                *destRect++ = fz_bbox_to_RectI(span->text[i].bbox);
+                *destRect++ = fz_bbox_to_RectI(fz_round_rect(span->text[i].bbox)); //fz_round_rect:MyCode
 
 				/*MyCode：修正sumatrapdf空格高度与文本高度不一致的bug*/
 				if(span->text[i].c == ' ')
@@ -340,6 +340,118 @@ WCHAR *fz_span_to_wchar(fz_text_span *text, TCHAR *lineSep, RectI **coords_out=N
 
     return content;
 }
+
+/*MyCode*/
+WCHAR *fz_span_to_wcharD(fz_text_span *text, TCHAR *lineSep, RectD **coords_out=NULL, char_inf** ch_inf_out = NULL)
+{
+	size_t lineSepLen = str::Len(lineSep);
+	size_t textLen = 0;
+	for (fz_text_span *span = text; span; span = span->next)
+		textLen += span->len + lineSepLen;
+
+	WCHAR *content = SAZA(WCHAR, textLen + 1);
+	if (!content)
+		return NULL;
+
+	RectD *destRect = NULL;
+	if (coords_out) {
+		destRect = *coords_out = new RectD[textLen];
+		if (!*coords_out) {
+			free(content);
+			return NULL;
+		}
+	}
+
+	/*MyCode*/
+	char_inf* destChInf = NULL;
+	if(ch_inf_out)
+	{
+		destChInf = *ch_inf_out = new char_inf[textLen];
+		if(!*ch_inf_out)
+		{
+			free(content);
+			free(*coords_out);
+			return NULL;
+		}
+	}
+
+	fz_display_node* last_node = NULL;
+	RectD* last_rect = NULL;
+	//////////////////////////////////////////////////////////////////////////
+
+	WCHAR *dest = content;
+	for (fz_text_span *span = text; span; span = span->next) {
+		for (int i = 0; i < span->len; i++) {
+			*dest = span->text[i].c;
+			if (*dest < 32)
+				*dest = '?';
+			dest++;
+			if (destRect)
+			{
+				*destRect++ = fz_rect_to_RectD(span->text[i].bbox);
+
+				/*MyCode：修正sumatrapdf空格高度与文本高度不一致的bug*/
+				if(span->text[i].c == ' ')
+				{
+					if(last_rect && content[-1] != '\n')
+					{
+						(destRect - 1)->y = last_rect->y;
+						(destRect - 1)->dy = last_rect->dy;
+					}
+				}
+				else
+					last_rect = destRect - 1;
+				//////////////////////////////////////////////////////////////////////////
+			}
+
+			/*MyCode*/
+			if(destChInf)
+			{				
+				last_node = span->text[i].node;
+
+				destChInf->node = span->text[i].node;
+				destChInf->iItem = span->text[i].iItem;
+				//destChInf->bbox = span->text[i].bbox;				
+
+				destChInf++;				
+			} 
+			//////////////////////////////////////////////////////////////////////////
+		}
+		if (!span->eol && span->next)
+			continue;
+#ifdef UNICODE
+		lstrcpy(dest, lineSep);
+		dest += lineSepLen;
+#else
+		dest += MultiByteToWideChar(CP_ACP, 0, lineSep, -1, dest, lineSepLen + 1);
+#endif
+		if (destRect) {
+			ZeroMemory(destRect, lineSepLen * sizeof(fz_bbox)); //Me: bug??? 应该是sizeof(RectI)??? sizeof(RectI)==sizeof(fz_bbox)
+			destRect += lineSepLen;
+		}
+
+		/*MyCode*/
+		if(destChInf)
+		{
+			for(int i = 0;i < (int)lineSepLen;i++)
+			{
+				destChInf->node = last_node;
+				destChInf->iItem = -1;
+				//destChInf->span = NULL;
+				//destChInf->iText = -1;
+
+				//destChInf->bbox.x0 = destChInf->bbox.y0 = destChInf->bbox.x1 = destChInf->bbox.y1 = 0;
+
+				destChInf++;
+			}
+		} 
+		//////////////////////////////////////////////////////////////////////////
+	}
+
+	return content;
+}
+
+//////////////////////////////////////////////////////////////////////////
 
 extern "C" static int read_istream(fz_stream *stm, unsigned char *buf, int len)
 {
@@ -766,6 +878,10 @@ public:
     virtual unsigned char *GetFileData(size_t *cbCount);
     virtual TCHAR * ExtractPageText(int pageNo, TCHAR *lineSep, RectI **coords_out=NULL,
                                     RenderTarget target=Target_View, char_inf** ch_inf_out = NULL);
+
+	virtual TCHAR * ExtractPageTextD(int pageNo, TCHAR *lineSep, RectD **coords_out=NULL,
+		RenderTarget target=Target_View, char_inf** ch_inf_out = NULL);
+
     virtual bool IsImagePage(int pageNo);
     virtual PageLayoutType PreferredLayout();
     virtual TCHAR *GetProperty(char *name);
@@ -832,6 +948,9 @@ protected:
     bool            RequiresBlending(pdf_page *page);
     TCHAR         * ExtractPageText(pdf_page *page, TCHAR *lineSep, RectI **coords_out=NULL,
                                     RenderTarget target=Target_View, bool cacheRun=false, char_inf** ch_inf_out = NULL);
+
+	TCHAR         * ExtractPageTextD(pdf_page *page, TCHAR *lineSep, RectD **coords_out=NULL,
+		RenderTarget target=Target_View, bool cacheRun=false, char_inf** ch_inf_out = NULL);
 
     PdfPageRun    * runCache[MAX_PAGE_RUN_CACHE];
     PdfPageRun    * GetPageRun(pdf_page *page, bool tryOnly=false);
@@ -1973,6 +2092,28 @@ TCHAR *CPdfEngine::ExtractPageText(pdf_page *page, TCHAR *lineSep, RectI **coord
     return str::conv::FromWStrQ(content);
 }
 
+TCHAR *CPdfEngine::ExtractPageTextD(pdf_page *page, TCHAR *lineSep, RectD **coords_out, RenderTarget target, bool cacheRun, char_inf** ch_inf_out)
+{
+	if (!page)
+		return NULL;
+
+	fz_text_span *text = fz_new_text_span();
+	// use an infinite rectangle as bounds (instead of page->mediabox) to ensure that
+	// the extracted text is consistent between cached runs using a list device and
+	// fresh runs (otherwise the list device omits text outside the mediabox bounds)
+	fz_error error = RunPage(page, fz_new_text_device(text), fz_identity, target, fz_infinite_bbox, cacheRun);
+
+	WCHAR *content = NULL;
+	if (!error)
+		content = fz_span_to_wcharD(text, lineSep, coords_out, ch_inf_out);
+
+	EnterCriticalSection(&xrefAccess);
+	fz_free_text_span(text);
+	LeaveCriticalSection(&xrefAccess);
+
+	return str::conv::FromWStrQ(content);
+}
+
 TCHAR *CPdfEngine::ExtractPageText(int pageNo, TCHAR *lineSep, RectI **coords_out, RenderTarget target, char_inf** ch_inf_out)
 {
 #if 0
@@ -2001,6 +2142,16 @@ TCHAR *CPdfEngine::ExtractPageText(int pageNo, TCHAR *lineSep, RectI **coords_ou
 		return ExtractPageText(page, lineSep, coords_out, target, false, ch_inf_out);
 	return NULL;
 #endif
+}
+
+TCHAR *CPdfEngine::ExtractPageTextD(int pageNo, TCHAR *lineSep, RectD **coords_out, RenderTarget target, char_inf** ch_inf_out)
+{
+	/*MyCode*/
+	//只允许GetPdfPage中调用pdf_load_page
+	pdf_page *page = GetPdfPage(pageNo, false);
+	if (page)
+		return ExtractPageTextD(page, lineSep, coords_out, target, false, ch_inf_out);
+	return NULL;
 }
 
 TCHAR *CPdfEngine::GetProperty(char *name)
