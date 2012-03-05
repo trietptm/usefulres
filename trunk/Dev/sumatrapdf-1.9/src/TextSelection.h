@@ -48,7 +48,7 @@ public:
 	//////////////////////////////////////////////////////////////////////////
 protected:
     BaseEngine* engine;
-    RectI    ** coords;
+    RectD    ** coords;
 	char_inf ** chInf; //MyCode
     TCHAR    ** text;
     int       * lens;

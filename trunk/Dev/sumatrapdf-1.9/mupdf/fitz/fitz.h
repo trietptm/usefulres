@@ -1095,7 +1095,7 @@ struct char_inf
 struct fz_text_char_s
 {
 	int c;
-	fz_bbox bbox;
+	fz_rect bbox;
 
 	/*MyCode*/
 	fz_display_node* node;
