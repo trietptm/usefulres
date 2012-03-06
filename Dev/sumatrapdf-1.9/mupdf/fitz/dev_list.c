@@ -319,6 +319,22 @@ fz_list_stroke_text(void *user, fz_text *text, fz_stroke_state *stroke, fz_matri
 	node->item.text = fz_clone_text(text);
 	node->stroke = fz_clone_stroke_state(stroke);
 	fz_append_display_node(user, node);
+
+	//MyCode
+	if(node->item.text->gstate.font && node->item.text->gstate.render==2)
+	{
+		if(node->last && node->last->cmd == FZ_CMD_FILL_TEXT)
+		{
+			if(node->last->item.text->gstate.font && node->last->item.text->gstate.render==2)
+			{
+				if(node->last->item.text->len == node->item.text->len)
+				{
+					node->last->is_dup = 1;
+				}
+			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////	
 }
 
 static void

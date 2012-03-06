@@ -848,6 +848,7 @@ struct my_pdf_gstate_s
 	float scale;
 	pdf_font_desc *font;
 	float size;
+	int render; //text_mode
 	float rise;
 
 	fz_matrix tm;

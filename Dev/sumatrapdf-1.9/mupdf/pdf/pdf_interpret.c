@@ -587,6 +587,7 @@ pdf_show_char(pdf_csi *csi, int cid)
 		my_gstate.rise = gstate->rise;
 		my_gstate.scale = gstate->scale;
 		my_gstate.size = gstate->size;
+		my_gstate.render = gstate->render;
 		my_gstate.tm = csi->tm;
 
 		//Fill Color
@@ -1849,6 +1850,8 @@ static void pdf_run_Tj(pdf_csi *csi)
 		pdf_show_string(csi, csi->string, csi->string_len);
 	else
 		pdf_show_text(csi, csi->obj);
+
+	pdf_flush_text(csi); //MyCode
 }
 
 static void pdf_run_TJ(pdf_csi *csi)
@@ -1857,6 +1860,8 @@ static void pdf_run_TJ(pdf_csi *csi)
 		pdf_show_string(csi, csi->string, csi->string_len);
 	else
 		pdf_show_text(csi, csi->obj);
+
+	pdf_flush_text(csi); //MyCode
 }
 
 static void pdf_run_W(pdf_csi *csi)
