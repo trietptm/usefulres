@@ -44,6 +44,7 @@ public:
 	BOOL DeleteCharByPos(int pageNo, HPDFOBJ hObj, const PointD& pt, BOOL bBackspace, DOUBLE* xCursor = NULL, RectD* updateRect = NULL);
 	BOOL InsertCharByPos(int pageNo, HPDFOBJ hObj, const PointD& pt, WCHAR chIns, DOUBLE* xCursor = NULL, RectD* updateRect = NULL);
 	BOOL MoveCursor(int pageNo, HPDFOBJ hObj, const PointD& pt, INT nMove, DOUBLE* xCursor);
+	BOOL MoveObject(int pageNo, HPDFOBJ hObj, const FPoint& relMove);
 	//////////////////////////////////////////////////////////////////////////
 protected:
     BaseEngine* engine;

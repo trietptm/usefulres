@@ -993,6 +993,44 @@ BOOL TextSelection::InsertCharByPos(int pageNo, HPDFOBJ hObj, const PointD& pt, 
 	return TRUE;
 }
 
+BOOL TextSelection::MoveObject(int pageNo, HPDFOBJ hObj, const FPoint& relMove)
+{
+	assert(1 <= pageNo && pageNo <= engine->PageCount());
+	if (!coords[pageNo - 1])
+		FindClosestGlyph(pageNo, 0, 0);
+
+	WCHAR* pageText = text[pageNo - 1];
+	char_inf* pageChInf = chInf[pageNo - 1];
+	RectD* pageCoords = coords[pageNo - 1];
+	INT pageTextLen = lens[pageNo - 1];
+// 	assert(textPos >= 0 && textPos < pageTextLen);
+// 	assert(textPos + textLen > 0 && textPos + textLen <= pageTextLen);
+
+	for(INT i = 0;i < pageTextLen;i++)
+	{
+		char_inf& ci = pageChInf[i];
+		if(ci.node!=(fz_display_node*)hObj)
+			continue;
+
+		pageCoords[i].Offset((float)relMove.x,(float)relMove.y);
+
+		if(ci.iItem != -1)
+		{
+			assert(ci.iItem >= 0 && ci.iItem < ci.node->item.text->len);
+			ci.node->item.text->items[ci.iItem].x += (float)relMove.x;
+			ci.node->item.text->items[ci.iItem].y += (float)relMove.y;
+		}
+	}
+
+	fz_display_node* node = (fz_display_node*)hObj;
+	node->rect.x0 += (float)relMove.x;
+	node->rect.y0 += (float)relMove.y;
+	node->rect.x1 += (float)relMove.x;
+	node->rect.y1 += (float)relMove.y;
+
+	return TRUE;
+}
+
 BOOL TextSelection::MoveCursor(int pageNo, HPDFOBJ hObj, const PointD& pt, INT nMove, DOUBLE* xCursor)
 {
 	if(nMove==0)

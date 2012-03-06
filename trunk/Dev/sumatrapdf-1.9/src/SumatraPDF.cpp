@@ -5053,26 +5053,29 @@ static WCHAR* ExtractObjLineText(int pageNo, HPDFOBJ hObj, const FPoint* fPt, Su
 		pPtD = &ptD;
 	}
 
-// 	RectD* pRtD = NULL;
-// 	RectD rtD;
-// 	if(ltr.rtText)
-// 		pRtD = &rtD;
-	
-#if 0
-	WCHAR* rText = win->dm->engine->ExtractObjText(pageNo,pObj->m_hObj,pPtD,pRtD,xCursor);
-#else
 	WCHAR* rText = win->dm->textSelection->ExtractObjLineText(pageNo,hObj,pPtD,ltr);
-#endif
-
-// 	if(ltr.rtText)
-// 	{
-// 		ltr.rtText->x0 = rtD.x;
-// 		ltr.rtText->y0 = rtD.y;
-// 		ltr.rtText->x1 = rtD.x + rtD.dx;
-// 		ltr.rtText->y1 = rtD.y + rtD.dy;
-// 	}
-
 	return rText;
+}
+
+static BOOL MoveObject(int pageNo, HPDFOBJ hObj, const FPoint& relMove, int textPos, int textLen)
+{
+	WindowInfo* win = WindowInfo::g_pWinInf;
+	if(!win)
+		return FALSE;
+
+	if(!win->dm || !win->dm->engine)
+		return FALSE;
+
+	if(!hObj)
+		return FALSE;
+
+	BOOL bRet = win->dm->textSelection->MoveObject(pageNo,hObj,relMove);
+	if(bRet)
+	{
+		gRenderCache.DropAllCache();
+		win->dm->Redraw();
+	}
+	return bRet;
 }
 
 static void GetObjRect(HPDFOBJ hObj,FRect& rtObj)
@@ -5421,6 +5424,7 @@ int APIENTRY LaunchPdf(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmd
 	g_pIntf->InsertCharByPos = InsertCharByPos;
 	g_pIntf->MoveCursor = MoveCursor;
 	g_pIntf->GetPropertyDescr = GetPropertyDescr;
+	g_pIntf->MoveObject = MoveObject;
 
 	return WinMain(hInstance,hPrevInstance,lpCmdLine,SW_SHOW);
 }
