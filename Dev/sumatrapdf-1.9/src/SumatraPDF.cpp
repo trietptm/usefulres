@@ -1827,6 +1827,13 @@ static void OnMouseLeftButtonDown(WindowInfo& win, int x, int y, WPARAM key)
 
     SetFocus(win.hwndFrame);
 
+	/*MyCode*/
+	if(g_pIntf)
+	{
+		if(g_pIntf->OnMouseLeftButtonDown(x,y,key))
+			return;
+	}
+
     assert(!win.linkOnLastButtonDown);
     PageElement *pageEl = win.dm->GetElementAtPos(PointI(x, y));
     if (pageEl && pageEl->AsLink())
@@ -1845,11 +1852,7 @@ static void OnMouseLeftButtonDown(WindowInfo& win, int x, int y, WPARAM key)
     if (!HasPermission(Perm_CopySelection) || ((key & MK_SHIFT) || !win.dm->IsOverText(PointI(x, y))) && !(key & MK_CONTROL))
         OnDraggingStart(win, x, y);
     else
-        OnSelectionStart(&win, x, y, key);
-
-	/*MyCode*/
-	if(g_pIntf)
-		g_pIntf->OnMouseLeftButtonDown(x,y,key);
+        OnSelectionStart(&win, x, y, key);	
 }
 
 static void OnMouseLeftButtonUp(WindowInfo& win, int x, int y, WPARAM key)
@@ -1878,10 +1881,18 @@ static void OnMouseLeftButtonUp(WindowInfo& win, int x, int y, WPARAM key)
     if (!win.IsDocLoaded())
         return;
 
+	/*MyCode*/
+	if(g_pIntf)
+	{
+		if(g_pIntf->OnMouseLeftButtonUp(x,y,key))
+			return;
+	}
+	//////////////////////////////////////////////////////////////////////////
+
     assert(win.dm);
     if (MA_IDLE == win.mouseAction || MA_DRAGGING_RIGHT == win.mouseAction)
         return;
-    assert(MA_SELECTING == win.mouseAction || MA_SELECTING_TEXT == win.mouseAction || MA_DRAGGING == win.mouseAction);
+    assert(MA_SELECTING == win.mouseAction || MA_SELECTING_TEXT == win.mouseAction || MA_DRAGGING == win.mouseAction);	
 
     bool didDragMouse = !win.dragStartPending ||
         abs(x - win.dragStart.x) > GetSystemMetrics(SM_CXDRAG) ||
