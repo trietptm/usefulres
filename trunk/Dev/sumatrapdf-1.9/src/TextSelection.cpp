@@ -244,7 +244,7 @@ TCHAR *TextSelection::ExtractText(TCHAR *lineSep)
 
 /*MyCode*/
 //chPos：光标所在的字符位置
-INT TextSelection::GetObjLineText(int pageNo, HPDFOBJ hObj, const PointD* pt, RectD* rtText, DOUBLE* xCursor, INT* chPos, INT* endLinePos)
+INT TextSelection::GetObjLineText(int pageNo, HPDFOBJ hObj, const PointD* pt, FRect* rtText, DOUBLE* xCursor, INT* chPos, INT* endLinePos)
 {
 	INT lineTextPos = -1;
 
@@ -398,10 +398,10 @@ INT TextSelection::GetObjLineText(int pageNo, HPDFOBJ hObj, const PointD* pt, Re
 
 					if(rtText)
 					{
-						rtText->x = left;
-						rtText->y = top;
-						rtText->dx = right - left;
-						rtText->dy = bottom - top;
+						rtText->x0 = left;
+						rtText->y0 = top;
+						rtText->x1 = right;
+						rtText->y1 = bottom;
 					}
 				}
 			}
@@ -410,22 +410,25 @@ INT TextSelection::GetObjLineText(int pageNo, HPDFOBJ hObj, const PointD* pt, Re
 
 	return lineTextPos;
 }
-TCHAR* TextSelection::ExtractObjLineText(int pageNo, HPDFOBJ hObj, const PointD* pt, RectD* rtText, DOUBLE* xCursor, INT* textLen, LPWSTR* ppRawText)
+TCHAR* TextSelection::ExtractObjLineText(int pageNo, HPDFOBJ hObj, const PointD* pt, SumatraPdfIntf::LineTextResult& ltr)
 {
 	assert(1 <= pageNo && pageNo <= engine->PageCount());
 	if (!coords[pageNo - 1])
 		FindClosestGlyph(pageNo, 0, 0);
 
 	INT endLinePos = 0;
-	INT lineTextPos = GetObjLineText(pageNo,hObj,pt,rtText,xCursor,NULL,&endLinePos);
+	INT lineTextPos = GetObjLineText(pageNo,hObj,pt,ltr.rtText,ltr.xCursor,NULL,&endLinePos);
 	if(lineTextPos==-1)
 		return NULL;
 
-	INT tLen = endLinePos - lineTextPos;
-	if(textLen)
-		*textLen = tLen;
+	if(ltr.textPos)
+		*ltr.textPos = lineTextPos;
 
-	if(ppRawText)
+	INT tLen = endLinePos - lineTextPos;
+	if(ltr.textLen)
+		*ltr.textLen = tLen;
+
+	if(ltr.ppRawText)
 	{
 		if(tLen > 0)
 		{
@@ -466,7 +469,7 @@ TCHAR* TextSelection::ExtractObjLineText(int pageNo, HPDFOBJ hObj, const PointD*
 			}
 
 			if(buf)
-				*ppRawText = buf;
+				*ltr.ppRawText = buf;
 		}
 	}
 	

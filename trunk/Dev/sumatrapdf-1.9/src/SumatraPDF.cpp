@@ -5032,7 +5032,7 @@ static HPDFOBJ GetNextPdfObj(HPDFOBJ hObj)
 	return (HPDFOBJ)node->next;
 }
 
-static WCHAR* ExtractObjLineText(int pageNo, HPDFOBJ hObj, const FPoint* fPt, FRect* rtText, DOUBLE* xCursor, INT* textLen, LPWSTR* ppRawText)
+static WCHAR* ExtractObjLineText(int pageNo, HPDFOBJ hObj, const FPoint* fPt, SumatraPdfIntf::LineTextResult& ltr)
 {
 	WindowInfo* win = WindowInfo::g_pWinInf;
 	if(!win)
@@ -5053,24 +5053,24 @@ static WCHAR* ExtractObjLineText(int pageNo, HPDFOBJ hObj, const FPoint* fPt, FR
 		pPtD = &ptD;
 	}
 
-	RectD* pRtD = NULL;
-	RectD rtD;
-	if(rtText)
-		pRtD = &rtD;
+// 	RectD* pRtD = NULL;
+// 	RectD rtD;
+// 	if(ltr.rtText)
+// 		pRtD = &rtD;
 	
 #if 0
 	WCHAR* rText = win->dm->engine->ExtractObjText(pageNo,pObj->m_hObj,pPtD,pRtD,xCursor);
 #else
-	WCHAR* rText = win->dm->textSelection->ExtractObjLineText(pageNo,hObj,pPtD,pRtD,xCursor,textLen,ppRawText);
+	WCHAR* rText = win->dm->textSelection->ExtractObjLineText(pageNo,hObj,pPtD,ltr);
 #endif
 
-	if(rtText)
-	{
-		rtText->x0 = rtD.x;
-		rtText->y0 = rtD.y;
-		rtText->x1 = rtD.x + rtD.dx;
-		rtText->y1 = rtD.y + rtD.dy;
-	}
+// 	if(ltr.rtText)
+// 	{
+// 		ltr.rtText->x0 = rtD.x;
+// 		ltr.rtText->y0 = rtD.y;
+// 		ltr.rtText->x1 = rtD.x + rtD.dx;
+// 		ltr.rtText->y1 = rtD.y + rtD.dy;
+// 	}
 
 	return rText;
 }
