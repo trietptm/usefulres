@@ -1003,8 +1003,6 @@ BOOL TextSelection::MoveObject(int pageNo, HPDFOBJ hObj, const FPoint& relMove)
 	char_inf* pageChInf = chInf[pageNo - 1];
 	RectD* pageCoords = coords[pageNo - 1];
 	INT pageTextLen = lens[pageNo - 1];
-// 	assert(textPos >= 0 && textPos < pageTextLen);
-// 	assert(textPos + textLen > 0 && textPos + textLen <= pageTextLen);
 
 	for(INT i = 0;i < pageTextLen;i++)
 	{
@@ -1019,6 +1017,13 @@ BOOL TextSelection::MoveObject(int pageNo, HPDFOBJ hObj, const FPoint& relMove)
 			assert(ci.iItem >= 0 && ci.iItem < ci.node->item.text->len);
 			ci.node->item.text->items[ci.iItem].x += (float)relMove.x;
 			ci.node->item.text->items[ci.iItem].y += (float)relMove.y;
+
+			if(ci.node->last && ci.node->last->is_dup)
+			{
+				assert(ci.iItem >= 0 && ci.iItem < ci.node->item.text->len);
+				ci.node->last->item.text->items[ci.iItem].x += (float)relMove.x;
+				ci.node->last->item.text->items[ci.iItem].y += (float)relMove.y;
+			}
 		}
 	}
 
@@ -1027,6 +1032,14 @@ BOOL TextSelection::MoveObject(int pageNo, HPDFOBJ hObj, const FPoint& relMove)
 	node->rect.y0 += (float)relMove.y;
 	node->rect.x1 += (float)relMove.x;
 	node->rect.y1 += (float)relMove.y;
+
+	if(node->last && node->last->is_dup)
+	{
+		node->last->rect.x0 += (float)relMove.x;
+		node->last->rect.y0 += (float)relMove.y;
+		node->last->rect.x1 += (float)relMove.x;
+		node->last->rect.y1 += (float)relMove.y;
+	}
 
 	return TRUE;
 }
