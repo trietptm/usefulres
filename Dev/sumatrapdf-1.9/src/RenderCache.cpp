@@ -137,6 +137,17 @@ void RenderCache::Add(PageRenderRequest &req, RenderedBitmap *bitmap)
         req.dm->engine->RunGC();
 }
 
+/*MyCode*/
+void RenderCache::DropAllCache()
+{
+	for(int i = 0;i < cacheCount;i++)
+	{
+		DropCacheEntry(cache[i]);
+	}
+	cacheCount = 0;
+}
+//////////////////////////////////////////////////////////////////////////
+
 // get the (user) coordinates of a specific tile
 static RectD GetTileRect(BaseEngine *engine, int pageNo, int rotation, float zoom, TilePosition tile)
 {

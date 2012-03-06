@@ -940,7 +940,6 @@ void DisplayModel::Redraw(RectD* updateRect)
 		engine->m_forceTileRect = &engine->m_forceTileRectTmp;
 	}
 	RenderVisibleParts(true,true);
-	//engine->m_forceTileRect = NULL;
 }
 //////////////////////////////////////////////////////////////////////////
 
