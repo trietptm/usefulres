@@ -1756,6 +1756,12 @@ static void OnMouseMove(WindowInfo& win, int x, int y, WPARAM flags)
         return;
     assert(win.dm);
 
+	if(g_pIntf)
+	{
+		if(g_pIntf->OnMouseMove(x,y,flags))
+			return;
+	}
+
     if (win.presentation) {
         // shortly display the cursor if the mouse has moved and the cursor is hidden
         if (PointI(x, y) != win.dragPrevPos && !GetCursor()) {
