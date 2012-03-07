@@ -5424,7 +5424,7 @@ static BOOL GetPropertyDescr(HPDFOBJ hObj,LPCTSTR lpPropName,LPSTR lpDescr)
 	return FALSE;
 }
 
-static BOOL SetFillColor(int pageNo, HPDFOBJ hObj, INT r, INT g, INT b, INT a)
+static BOOL SetFillColor(HPDFOBJ hObj, INT r, INT g, INT b, INT a)
 {
 	WindowInfo* win = WindowInfo::g_pWinInf;
 	if(!win)
@@ -5487,7 +5487,7 @@ static BOOL SetFillColor(int pageNo, HPDFOBJ hObj, INT r, INT g, INT b, INT a)
 	return TRUE;
 }
 
-static BOOL SetStrokeColor(int pageNo, HPDFOBJ hObj, INT r, INT g, INT b, INT a)
+static BOOL SetStrokeColor(HPDFOBJ hObj, INT r, INT g, INT b, INT a)
 {
 	WindowInfo* win = WindowInfo::g_pWinInf;
 	if(!win)
