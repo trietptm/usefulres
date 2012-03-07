@@ -5487,6 +5487,44 @@ static BOOL SetFillColor(int pageNo, HPDFOBJ hObj, INT r, INT g, INT b, INT a)
 	return TRUE;
 }
 
+static BOOL SetStrokeColor(int pageNo, HPDFOBJ hObj, INT r, INT g, INT b, INT a)
+{
+	WindowInfo* win = WindowInfo::g_pWinInf;
+	if(!win)
+		return FALSE;
+
+	if(!win->dm || !win->dm->engine)
+		return FALSE;
+
+	if(!hObj)
+		return FALSE;
+
+	fz_display_node* node = (fz_display_node*)hObj;
+
+	node->item.text->gstate.stroke_alpha = (float)a / 100.0f;
+	node->item.text->gstate.stroke_colorspace_n = 3;
+	node->item.text->gstate.stroke_v[0] = (float)r / 100.0f;
+	node->item.text->gstate.stroke_v[1] = (float)g / 100.0f;
+	node->item.text->gstate.stroke_v[2] = (float)b / 100.0f;
+
+	if(node->cmd==FZ_CMD_STROKE_TEXT)
+	{
+		node->alpha = (float)a / 100.0f;
+
+		fz_drop_colorspace(node->colorspace);
+		node->colorspace = fz_keep_colorspace(fz_find_device_colorspace("DeviceRGB"));
+
+		node->color[0] = (float)r / 100.0f;
+		node->color[1] = (float)g / 100.0f;
+		node->color[2] = (float)b / 100.0f;
+
+		gRenderCache.DropAllCache();
+		win->dm->Redraw();
+	}
+
+	return TRUE;
+}
+
 int APIENTRY LaunchPdf(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, SumatraPdfIntf* pIntf)
 {
 	g_pIntf = pIntf;
@@ -5506,6 +5544,7 @@ int APIENTRY LaunchPdf(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmd
 	g_pIntf->GetPropertyDescr = GetPropertyDescr;
 	g_pIntf->MoveObject = MoveObject;
 	g_pIntf->SetFillColor = SetFillColor;
+	g_pIntf->SetStrokeColor = SetStrokeColor;
 
 	return WinMain(hInstance,hPrevInstance,lpCmdLine,SW_SHOW);
 }
