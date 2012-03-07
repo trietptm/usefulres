@@ -5074,7 +5074,7 @@ static WCHAR* ExtractObjLineText(int pageNo, HPDFOBJ hObj, const FPoint* fPt, Su
 	return rText;
 }
 
-static BOOL MoveObject(int pageNo, HPDFOBJ hObj, const FPoint& relMove, int textPos, int textLen)
+static BOOL MoveObject(int pageNo, HPDFOBJ hObj, const FPoint& relMove)
 {
 	WindowInfo* win = WindowInfo::g_pWinInf;
 	if(!win)
