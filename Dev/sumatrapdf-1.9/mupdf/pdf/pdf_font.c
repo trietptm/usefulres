@@ -785,6 +785,360 @@ cleanup:
 	return fz_rethrow(error, "cannot load simple font (%d %d R)", fz_to_num(dict), fz_to_gen(dict));
 }
 
+
+/*MyCode*/
+fz_error my_pdf_load_simple_font(pdf_font_desc **fontdescp, char *fontname)
+{
+	fz_error error;
+	//fz_obj *descriptor;
+	//fz_obj *encoding;
+	//fz_obj *widths;
+	unsigned short *etable = NULL;
+	pdf_font_desc *fontdesc;
+	FT_Face face;
+	FT_CharMap cmap;
+	int symbolic;
+	int kind;
+
+	//char *basefont;
+	//char *fontname;
+	char *estrings[256];
+	char ebuffer[256][32];
+	int i, k/*, n*/;
+	int fterr;
+
+// 	basefont = fz_to_name(fz_dict_gets(dict, "BaseFont"));
+// 	fontname = clean_font_name(basefont);
+
+	/* Load font file */
+
+	fontdesc = pdf_new_font_desc();
+
+// 	descriptor = fz_dict_gets(dict, "FontDescriptor");
+// 	if (descriptor)
+// 		error = pdf_load_font_descriptor(fontdesc, xref, descriptor, NULL, basefont, fz_dict_gets(dict, "Encoding") != NULL);
+// 	else
+		error = pdf_load_builtin_font(fontdesc, fontname);
+	/* cf. http://bugs.ghostscript.com/show_bug.cgi?id=691690 */
+	if (error && (fontdesc->flags & PDF_FD_SYMBOLIC))
+	{
+		//fz_catch(error, "using bullet-substitute font for '%s' (%d %d R)", fontname, fz_to_num(dict), fz_to_gen(dict));
+		pdf_drop_font(fontdesc);
+		fontdesc = pdf_new_font_desc();
+		error = pdf_load_builtin_font(fontdesc, "Symbol");
+		if (!error)
+		{
+			face = fontdesc->font->ft_face;
+			kind = ft_kind(face);
+			fontdesc->encoding = pdf_new_identity_cmap(0, 1);
+			fontdesc->cid_to_gid_len = 256;
+			fontdesc->cid_to_gid = fz_calloc(256, sizeof(unsigned short));
+			k = FT_Get_Name_Index(face, "bullet");
+			for (i = 0; i < 256; i++)
+				fontdesc->cid_to_gid[i] = k;
+			goto skip_encoding;
+		}
+	}
+	if (error)
+		goto cleanup;
+
+#if 0
+	/* Some chinese documents mistakenly consider WinAnsiEncoding to be codepage 936 */
+	if (!*fontdesc->font->name &&
+		!fz_dict_gets(dict, "ToUnicode") &&
+		!strcmp(fz_to_name(fz_dict_gets(dict, "Encoding")), "WinAnsiEncoding") &&
+		fz_to_int(fz_dict_gets(descriptor, "Flags")) == 4)
+	{
+		/* note: without the comma, pdf_load_font_descriptor would prefer /FontName over /BaseFont */
+		char *cp936fonts[] = {
+			"\xCB\xCE\xCC\xE5", "SimSun,Regular",
+			"\xBA\xDA\xCC\xE5", "SimHei,Regular",
+			"\xBF\xAC\xCC\xE5_GB2312", "SimKai,Regular",
+			"\xB7\xC2\xCB\xCE_GB2312", "SimFang,Regular",
+			"\xC1\xA5\xCA\xE9", "SimLi,Regular",
+			NULL
+		};
+		for (i = 0; cp936fonts[i]; i += 2)
+			if (!strcmp(basefont, cp936fonts[i]))
+				break;
+		if (cp936fonts[i])
+		{
+			fz_warn("workaround for S22PDF lying about chinese font encodings");
+			pdf_drop_font(fontdesc);
+			fontdesc = pdf_new_font_desc();
+			error = pdf_load_font_descriptor(fontdesc, xref, descriptor, "Adobe-GB1", cp936fonts[i+1], 1);
+			error |= pdf_load_system_cmap(&fontdesc->encoding, "GBK-EUC-H");
+			error |= pdf_load_system_cmap(&fontdesc->to_unicode, "Adobe-GB1-UCS2");
+			error |= pdf_load_system_cmap(&fontdesc->to_ttf_cmap, "Adobe-GB1-UCS2");
+			if (error)
+				return fz_rethrow(error, "cannot load font");
+
+			face = fontdesc->font->ft_face;
+			kind = ft_kind(face);
+			goto skip_encoding;
+		}
+	}
+#endif
+
+	face = fontdesc->font->ft_face;
+	kind = ft_kind(face);
+
+	/* Encoding */
+
+	symbolic = fontdesc->flags & 4;
+
+	if (face->num_charmaps > 0)
+		cmap = face->charmaps[0];
+	else
+		cmap = NULL;
+
+	for (i = 0; i < face->num_charmaps; i++)
+	{
+		FT_CharMap test = face->charmaps[i];
+
+		if (kind == TYPE1)
+		{
+			if (test->platform_id == 7)
+				cmap = test;
+		}
+
+		if (kind == TRUETYPE)
+		{
+			if (test->platform_id == 1 && test->encoding_id == 0)
+				cmap = test;
+			if (test->platform_id == 3 && test->encoding_id == 1)
+				cmap = test;
+		}
+	}
+
+	if (cmap)
+	{
+		fterr = FT_Set_Charmap(face, cmap);
+		if (fterr)
+			fz_warn("freetype could not set cmap: %s", ft_error_string(fterr));
+	}
+	else
+		fz_warn("freetype could not find any cmaps");
+
+	etable = fz_calloc(256, sizeof(unsigned short));
+	for (i = 0; i < 256; i++)
+	{
+		estrings[i] = NULL;
+		etable[i] = 0;
+	}
+
+#if 0
+	encoding = fz_dict_gets(dict, "Encoding");
+	if (encoding)
+	{
+		if (fz_is_name(encoding))
+			pdf_load_encoding(estrings, fz_to_name(encoding));
+
+		if (fz_is_dict(encoding))
+		{
+			fz_obj *base, *diff, *item;
+
+			base = fz_dict_gets(encoding, "BaseEncoding");
+			if (fz_is_name(base))
+				pdf_load_encoding(estrings, fz_to_name(base));
+			else if (!fontdesc->is_embedded && !symbolic)
+				pdf_load_encoding(estrings, "StandardEncoding");
+
+			diff = fz_dict_gets(encoding, "Differences");
+			if (fz_is_array(diff))
+			{
+				n = fz_array_len(diff);
+				k = 0;
+				for (i = 0; i < n; i++)
+				{
+					item = fz_array_get(diff, i);
+					if (fz_is_int(item))
+						k = fz_to_int(item);
+					if (fz_is_name(item))
+						estrings[k++] = fz_to_name(item);
+					if (k < 0) k = 0;
+					if (k > 255) k = 255;
+				}
+			}
+		}
+	}
+#endif
+
+	/* start with the builtin encoding */
+	for (i = 0; i < 256; i++)
+		etable[i] = ft_char_index(face, i);
+
+	/* encode by glyph name where we can */
+	if (kind == TYPE1)
+	{
+		for (i = 0; i < 256; i++)
+		{
+			if (estrings[i])
+			{
+				etable[i] = FT_Get_Name_Index(face, estrings[i]);
+				if (etable[i] == 0)
+				{
+					int aglcode = pdf_lookup_agl(estrings[i]);
+					const char **dupnames = pdf_lookup_agl_duplicates(aglcode);
+					while (*dupnames)
+					{
+						etable[i] = FT_Get_Name_Index(face, (char*)*dupnames);
+						if (etable[i])
+							break;
+						dupnames++;
+					}
+				}
+			}
+		}
+	}
+
+#if 0
+	/* encode by glyph name where we can */
+	/* cf. http://bugs.ghostscript.com/show_bug.cgi?id=692090 */
+	if (kind == TRUETYPE || !strcmp(fz_to_name(fz_dict_gets(dict, "Subtype")), "TrueType") && symbolic)
+	{
+		/* Unicode cmap */
+		if (!symbolic && face->charmap && face->charmap->platform_id == 3)
+		{
+			for (i = 0; i < 256; i++)
+			{
+				if (estrings[i])
+				{
+					int aglcode = pdf_lookup_agl(estrings[i]);
+					if (!aglcode)
+						etable[i] = FT_Get_Name_Index(face, estrings[i]);
+					else
+						etable[i] = ft_char_index(face, aglcode);
+				}
+			}
+		}
+
+		/* MacRoman cmap */
+		else if (!symbolic && face->charmap && face->charmap->platform_id == 1)
+		{
+			for (i = 0; i < 256; i++)
+			{
+				if (estrings[i])
+				{
+					k = lookup_mre_code(estrings[i]);
+					if (k <= 0)
+						etable[i] = FT_Get_Name_Index(face, estrings[i]);
+					else
+						etable[i] = ft_char_index(face, k);
+				}
+			}
+		}
+
+		/* Symbolic cmap */
+		/* cf. http://bugs.ghostscript.com/show_bug.cgi?id=692493 */
+		else if (!symbolic || !face->charmap || face->charmap->encoding != FT_ENCODING_MS_SYMBOL)
+		{
+			for (i = 0; i < 256; i++)
+			{
+				if (estrings[i])
+				{
+					etable[i] = FT_Get_Name_Index(face, estrings[i]);
+					if (etable[i] == 0)
+						etable[i] = ft_char_index(face, i);
+				}
+			}
+		}
+	}
+#endif
+
+	/* try to reverse the glyph names from the builtin encoding */
+	for (i = 0; i < 256; i++)
+	{
+		if (etable[i] && !estrings[i])
+		{
+			if (FT_HAS_GLYPH_NAMES(face))
+			{
+				fterr = FT_Get_Glyph_Name(face, etable[i], ebuffer[i], 32);
+				if (fterr)
+					fz_warn("freetype get glyph name (gid %d): %s", etable[i], ft_error_string(fterr));
+				if (ebuffer[i][0])
+					estrings[i] = ebuffer[i];
+			}
+			else
+			{
+				estrings[i] = (char*) pdf_win_ansi[i]; /* discard const */
+			}
+		}
+	}
+
+	/* SumatraPDF: handle symbolic Type 1 fonts with an implicit encoding similar to Adobe Reader */
+	if (kind == TYPE1 && symbolic)
+		for (i = 0; i < 256; i++)
+			if (etable[i] && estrings[i] && !pdf_lookup_agl(estrings[i]))
+				estrings[i] = (char *)pdf_standard[i];
+
+	fontdesc->encoding = pdf_new_identity_cmap(0, 1);
+	fontdesc->cid_to_gid_len = 256;
+	fontdesc->cid_to_gid = etable;
+
+#if 0
+	error = pdf_load_to_unicode(fontdesc, xref, estrings, NULL, fz_dict_gets(dict, "ToUnicode"));
+	if (error)
+		fz_catch(error, "cannot load to_unicode");
+#endif
+
+skip_encoding:
+
+	/* Widths */
+
+	pdf_set_default_hmtx(fontdesc, fontdesc->missing_width);
+
+#if 0
+	widths = fz_dict_gets(dict, "Widths");
+	if (widths)
+	{
+		int first, last;
+
+		first = fz_to_int(fz_dict_gets(dict, "FirstChar"));
+		last = fz_to_int(fz_dict_gets(dict, "LastChar"));
+
+		if (first < 0 || last > 255 || first > last)
+			first = last = 0;
+
+		for (i = 0; i < last - first + 1; i++)
+		{
+			int wid = fz_to_int(fz_array_get(widths, i));
+			/* cf. http://code.google.com/p/sumatrapdf/issues/detail?id=1616 */
+			if (!wid && i >= fz_array_len(widths))
+			{
+				fz_warn("font width missing for glyph %d (%d %d R)", i + first, fz_to_num(dict), fz_to_gen(dict));
+				FT_Set_Char_Size(face, 1000, 1000, 72, 72);
+				wid = ft_width(fontdesc, i + first);
+			}
+			pdf_add_hmtx(fontdesc, i + first, i + first, wid);
+		}
+	}
+	else
+#endif
+	{
+		fterr = FT_Set_Char_Size(face, 1000, 1000, 72, 72);
+		if (fterr)
+			fz_warn("freetype set character size: %s", ft_error_string(fterr));
+		for (i = 0; i < 256; i++)
+		{
+			pdf_add_hmtx(fontdesc, i, i, ft_width(fontdesc, i));
+		}
+	}
+
+	pdf_end_hmtx(fontdesc);
+
+	*fontdescp = fontdesc;
+	return fz_okay;
+
+cleanup:
+	if (etable != fontdesc->cid_to_gid)
+		fz_free(etable);
+	pdf_drop_font(fontdesc);
+	//return fz_rethrow(error, "cannot load simple font (%d %d R)", fz_to_num(dict), fz_to_gen(dict));
+	return -1;
+}
+//////////////////////////////////////////////////////////////////////////
+
 /*
  * CID Fonts
  */

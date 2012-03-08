@@ -407,6 +407,7 @@ void pdf_drop_font(pdf_font_desc *font);
 
 /*MyCode*/
 fz_error pdf_load_builtin_font(pdf_font_desc *fontdesc, char *fontname);
+fz_error my_pdf_load_simple_font(pdf_font_desc **fontdescp, char *fontname);
 //////////////////////////////////////////////////////////////////////////
 
 void pdf_debug_font(pdf_font_desc *fontdesc);
