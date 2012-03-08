@@ -298,6 +298,7 @@ EXPORTS
 	fz_blend_pixmap
 	fz_synchronize_begin
 	fz_synchronize_end
+	my_pdf_load_simple_font
 
 ; MuPDF exports
 
