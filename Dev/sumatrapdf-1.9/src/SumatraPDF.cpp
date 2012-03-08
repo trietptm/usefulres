@@ -5666,6 +5666,60 @@ static BOOL SetStrokeColor(HPDFOBJ hObj, INT r, INT g, INT b, INT a)
 	return TRUE;
 }
 
+static BOOL SetFontSize(HPDFOBJ hObj,INT fontSize)
+{
+	WindowInfo* win = WindowInfo::g_pWinInf;
+	if(!win)
+		return FALSE;
+
+	if(!win->dm || !win->dm->engine)
+		return FALSE;
+
+	if(!hObj)
+		return FALSE;
+
+	fz_display_node* node = (fz_display_node*)hObj;
+
+	if(!node->item.text)
+		return FALSE;
+
+	assert(node->item.text->trm.d > 0.0);
+	float rate = (float)fontSize / node->item.text->trm.d;
+	if(rate <= 0.0)
+		return FALSE;
+
+	node->item.text->trm.d *= rate;
+	node->item.text->trm.a *= rate;
+
+	if(node->item.text->gstate.font)
+	{
+		node->item.text->gstate.tm.d *= rate;
+		node->item.text->gstate.tm.a *= rate;
+	}
+
+	if(node->cmd==FZ_CMD_STROKE_TEXT)
+	{
+		if(node->last && node->last->is_dup && node->last->cmd==FZ_CMD_FILL_TEXT)
+		{
+			node = node->last;
+
+			node->item.text->trm.d *= rate;
+			node->item.text->trm.a *= rate;
+
+			if(node->item.text->gstate.font)
+			{
+				node->item.text->gstate.tm.d *= rate;
+				node->item.text->gstate.tm.a *= rate;
+			}
+		}
+	}
+
+	gRenderCache.DropAllCache();
+	win->dm->Redraw();
+
+	return TRUE;
+}
+
 int APIENTRY LaunchPdf(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, SumatraPdfIntf* pIntf)
 {
 	g_pIntf = pIntf;
@@ -5687,6 +5741,7 @@ int APIENTRY LaunchPdf(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmd
 	g_pIntf->SetFillColor = SetFillColor;
 	g_pIntf->SetStrokeColor = SetStrokeColor;
 	g_pIntf->SetObjectFont = SetObjectFont;
+	g_pIntf->SetFontSize = SetFontSize;
 
 	return WinMain(hInstance,hPrevInstance,lpCmdLine,SW_SHOW);
 }
