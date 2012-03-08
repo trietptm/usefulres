@@ -402,6 +402,7 @@ EXPORTS
 	pdf_find_builtin_font
 	pdf_find_substitute_font
 	pdf_find_substitute_cjk_font
+	pdf_load_builtin_font
 	pdf_load_windows_font
 	pdf_load_similar_cjk_font
 	pdf_load_type3_font

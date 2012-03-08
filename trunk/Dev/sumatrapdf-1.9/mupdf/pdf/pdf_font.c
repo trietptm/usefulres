@@ -170,7 +170,7 @@ static int lookup_mre_code(char *name)
  * Load font files.
  */
 
-static fz_error
+/*static*/ fz_error
 pdf_load_builtin_font(pdf_font_desc *fontdesc, char *fontname)
 {
 	fz_error error;

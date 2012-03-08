@@ -40,6 +40,12 @@
 /*MyCode*/
 #include "..\..\..\..\biggod.app\PDFEditor\sumatrapdf_intf.h"
 extern SumatraPdfIntf* g_pIntf;
+
+extern "C" {
+__pragma(warning(push))
+#include <mupdf.h>
+__pragma(warning(pop))
+}
 //////////////////////////////////////////////////////////////////////////
 
 #ifdef BUILD_RIBBON
@@ -5288,6 +5294,90 @@ static BOOL IsColorProperty(const fz_display_node* node,LPCTSTR lpPropName,fz_di
 	return FALSE;
 }
 
+static LPCSTR GetStdFontBuiltinName(LPCSTR lpFontName)
+{
+	static LPCSTR _std_font[][2] = {
+		{"NimbusMonL-Regu"				, "Courier"},
+		{"NimbusMonL-ReguObli"			, "Courier-Oblique"},
+		{"NimbusMonL-Bold"				, "Courier-Bold"},
+		{"NimbusMonL-BoldObli"			, "Courier-BoldOblique"},
+
+		{"NimbusSanL-Regu"				, "Helvetica"},			
+		{"NimbusSanL-ReguItal"			, "Helvetica-Oblique"},
+		{"NimbusSanL-Bold"				, "Helvetica-Bold"},	
+		{"NimbusSanL-BoldItal"			, "Helvetica-BoldOblique"},
+
+		{"NimbusRomNo9L-Regu"			, "Times-Roman"},
+		{"NimbusRomNo9L-ReguItal"		, "Times-Italic"},
+		{"NimbusRomNo9L-Medi"			, "Times-Bold"},
+		{"NimbusRomNo9L-MediItal"		, "Times-BoldItalic"},
+
+		{"StandardSymL"				, "Symbol"},
+		{"Dingbats"					, "ZapfDingbats"}
+	};
+
+	for(INT i = 0;i < sizeof(_std_font)/sizeof(_std_font[0]);i++)
+	{
+		if(lstrcmpA(_std_font[i][0],lpFontName)==0)
+			return _std_font[i][1];
+	}
+
+	return NULL;
+}
+
+static BOOL SetObjectFont(HPDFOBJ hObj,LPCSTR lpFontName)
+{
+	WindowInfo* win = WindowInfo::g_pWinInf;
+	if(!win)
+		return FALSE;
+
+	if(!win->dm || !win->dm->engine)
+		return FALSE;
+
+	if(!hObj)
+		return FALSE;
+
+	fz_display_node* node = (fz_display_node*)hObj;
+
+	if(!node->item.text || !node->item.text->font)
+		return FALSE;
+
+	if(lstrcmpA(node->item.text->font->name,lpFontName)==0)
+		return TRUE;
+
+	pdf_font_desc *fontdesc = NULL;
+
+	LPCSTR lpBuiltinName = GetStdFontBuiltinName(lpFontName);
+	if(lpBuiltinName)
+	{
+		fontdesc = pdf_new_font_desc();
+		fz_error error = pdf_load_builtin_font(fontdesc, (char*)lpBuiltinName);
+		if (error)
+		{
+			pdf_drop_font(fontdesc);
+			return FALSE;
+		}
+	}
+
+	if(!fontdesc)
+		return FALSE;
+
+	fz_drop_font(node->item.text->font);
+	node->item.text->font = fz_keep_font(fontdesc->font);
+
+	if(node->item.text->gstate.font)
+	{
+		pdf_drop_font(node->item.text->gstate.font);
+		node->item.text->gstate.font = pdf_keep_font(fontdesc);
+	}
+
+	pdf_drop_font(fontdesc);
+
+	gRenderCache.DropAllCache();
+	win->dm->Redraw();
+	return TRUE;
+}
+
 static BOOL GetPropertyDescr(HPDFOBJ hObj,LPCTSTR lpPropName,LPSTR lpDescr)
 {
 	fz_display_node* node = (fz_display_node*)hObj;
@@ -5545,6 +5635,7 @@ int APIENTRY LaunchPdf(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmd
 	g_pIntf->MoveObject = MoveObject;
 	g_pIntf->SetFillColor = SetFillColor;
 	g_pIntf->SetStrokeColor = SetStrokeColor;
+	g_pIntf->SetObjectFont = SetObjectFont;
 
 	return WinMain(hInstance,hPrevInstance,lpCmdLine,SW_SHOW);
 }
