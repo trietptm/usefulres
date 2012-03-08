@@ -41,6 +41,8 @@
 #include "..\..\..\..\biggod.app\PDFEditor\sumatrapdf_intf.h"
 extern SumatraPdfIntf* g_pIntf;
 
+unsigned char* ansii_to_cid(pdf_font_desc *fontdesc,unsigned char* buf,int& cid);
+
 extern "C" {
 __pragma(warning(push))
 #include <mupdf.h>
@@ -5304,7 +5306,8 @@ static LPCSTR GetStdFontBuiltinName(LPCSTR lpFontName)
 
 		{"NimbusSanL-Regu"				, "Helvetica"},			
 		{"NimbusSanL-ReguItal"			, "Helvetica-Oblique"},
-		{"NimbusSanL-Bold"				, "Helvetica-Bold"},	
+		{"NimbusSanL"					, "Helvetica-Bold"},
+		{"NimbusSanL-Bold"				, "Helvetica-Bold"},		
 		{"NimbusSanL-BoldItal"			, "Helvetica-BoldOblique"},
 
 		{"NimbusRomNo9L-Regu"			, "Times-Roman"},
@@ -5350,11 +5353,9 @@ static BOOL SetObjectFont(HPDFOBJ hObj,LPCSTR lpFontName)
 	LPCSTR lpBuiltinName = GetStdFontBuiltinName(lpFontName);
 	if(lpBuiltinName)
 	{
-		fontdesc = pdf_new_font_desc();
-		fz_error error = pdf_load_builtin_font(fontdesc, (char*)lpBuiltinName);
+		fz_error error = my_pdf_load_simple_font(&fontdesc, (char*)lpBuiltinName);
 		if (error)
 		{
-			pdf_drop_font(fontdesc);
 			return FALSE;
 		}
 	}
@@ -5369,6 +5370,22 @@ static BOOL SetObjectFont(HPDFOBJ hObj,LPCSTR lpFontName)
 	{
 		pdf_drop_font(node->item.text->gstate.font);
 		node->item.text->gstate.font = pdf_keep_font(fontdesc);
+	}
+
+	//¸üÐÂcidºÍgid
+	{
+		for(INT i = 0;i < node->item.text->len;i++)
+		{
+			WCHAR wbuf[] = {node->item.text->items[i].ucs,0};
+			unsigned char buf[MAX_PATH] = {0};
+			WideCharToMultiByte(CP_ACP,WC_COMPOSITECHECK,wbuf,-1,(LPSTR)buf,sizeof(buf),NULL,NULL);
+
+			int cid = 0;
+			if(!ansii_to_cid(fontdesc,buf,cid))
+				continue;
+
+			node->item.text->items[i].gid = pdf_font_cid_to_gid(fontdesc, cid);
+		}
 	}
 
 	pdf_drop_font(fontdesc);
