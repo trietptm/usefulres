@@ -405,6 +405,10 @@ pdf_font_desc *pdf_new_font_desc(void);
 pdf_font_desc *pdf_keep_font(pdf_font_desc *fontdesc);
 void pdf_drop_font(pdf_font_desc *font);
 
+/*MyCode*/
+fz_error pdf_load_builtin_font(pdf_font_desc *fontdesc, char *fontname);
+//////////////////////////////////////////////////////////////////////////
+
 void pdf_debug_font(pdf_font_desc *fontdesc);
 
 /* SumatraPDF */
