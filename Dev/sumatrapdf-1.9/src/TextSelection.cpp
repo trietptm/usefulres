@@ -737,7 +737,7 @@ my_pdf_show_char(my_pdf_gstate *gstate,int cid,fz_matrix& tm)
 	}
 }
 
-static unsigned char* ansii_to_cid(pdf_font_desc *fontdesc,unsigned char* buf,int& cid)
+unsigned char* ansii_to_cid(pdf_font_desc *fontdesc,unsigned char* buf,int& cid)
 {
 	int cpt;
 
