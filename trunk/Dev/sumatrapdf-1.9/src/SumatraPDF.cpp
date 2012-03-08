@@ -5388,6 +5388,40 @@ static BOOL SetObjectFont(HPDFOBJ hObj,LPCSTR lpFontName)
 		}
 	}
 
+	if(node->cmd==FZ_CMD_STROKE_TEXT)
+	{
+		if(node->last && node->last->is_dup && node->last->cmd==FZ_CMD_FILL_TEXT)
+		{
+			node = node->last;
+
+			assert(node->item.text->font);
+			fz_drop_font(node->item.text->font);
+			node->item.text->font = fz_keep_font(fontdesc->font);
+
+			if(node->item.text->gstate.font)
+			{
+				pdf_drop_font(node->item.text->gstate.font);
+				node->item.text->gstate.font = pdf_keep_font(fontdesc);
+			}
+
+			//¸üÐÂcidºÍgid
+			{
+				for(INT i = 0;i < node->item.text->len;i++)
+				{
+					WCHAR wbuf[] = {node->item.text->items[i].ucs,0};
+					unsigned char buf[MAX_PATH] = {0};
+					WideCharToMultiByte(CP_ACP,WC_COMPOSITECHECK,wbuf,-1,(LPSTR)buf,sizeof(buf),NULL,NULL);
+
+					int cid = 0;
+					if(!ansii_to_cid(fontdesc,buf,cid))
+						continue;
+
+					node->item.text->items[i].gid = pdf_font_cid_to_gid(fontdesc, cid);
+				}
+			}
+		}
+	}
+
 	pdf_drop_font(fontdesc);
 
 	gRenderCache.DropAllCache();
