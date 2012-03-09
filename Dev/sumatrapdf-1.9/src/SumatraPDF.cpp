@@ -42,6 +42,7 @@
 extern SumatraPdfIntf* g_pIntf;
 
 unsigned char* ansii_to_cid(pdf_font_desc *fontdesc,unsigned char* buf,int& cid);
+void my_pdf_show_char(my_pdf_gstate *gstate,int cid,fz_matrix& tm);
 
 extern "C" {
 __pragma(warning(push))
@@ -5328,6 +5329,37 @@ static LPCSTR GetStdFontBuiltinName(LPCSTR lpFontName)
 	return NULL;
 }
 
+static BOOL UpdateTextXPos(fz_display_node* node)
+{
+	if(!node->item.text || !node->item.text->font)
+		return FALSE;
+
+	pdf_font_desc *fontdesc = node->item.text->gstate.font;
+	if(!fontdesc)
+		return FALSE;
+
+	fz_matrix tm = node->item.text->gstate.tm;
+	tm.e = 0.0;
+	tm.f = 0.0;
+
+	for(INT i = 0;i < node->item.text->len;i++)
+	{
+		WCHAR wbuf[] = {node->item.text->items[i].ucs,0};
+		unsigned char buf[MAX_PATH] = {0};
+		WideCharToMultiByte(CP_ACP,WC_COMPOSITECHECK,wbuf,-1,(LPSTR)buf,sizeof(buf),NULL,NULL);
+
+		int cid = 0;
+		if(!ansii_to_cid(fontdesc,buf,cid))
+			continue;
+
+		node->item.text->items[i].x = node->item.text->items[0].x + tm.e;
+
+		my_pdf_show_char(&node->item.text->gstate,cid,tm);		
+	}
+
+	return TRUE;
+}
+
 static BOOL SetObjectFont(HPDFOBJ hObj,LPCSTR lpFontName)
 {
 	WindowInfo* win = WindowInfo::g_pWinInf;
@@ -5697,6 +5729,8 @@ static BOOL SetFontSize(HPDFOBJ hObj,INT fontSize)
 		node->item.text->gstate.tm.a *= rate;
 	}
 
+	UpdateTextXPos(node);
+
 	if(node->cmd==FZ_CMD_STROKE_TEXT)
 	{
 		if(node->last && node->last->is_dup && node->last->cmd==FZ_CMD_FILL_TEXT)
@@ -5712,7 +5746,7 @@ static BOOL SetFontSize(HPDFOBJ hObj,INT fontSize)
 				node->item.text->gstate.tm.a *= rate;
 			}
 		}
-	}
+	}	
 
 	gRenderCache.DropAllCache();
 	win->dm->Redraw();
