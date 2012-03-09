@@ -5667,7 +5667,7 @@ static BOOL SetStrokeColor(HPDFOBJ hObj, INT r, INT g, INT b, INT a)
 	return TRUE;
 }
 
-static BOOL SetFontSize(int pageNo, HPDFOBJ hObj, INT fontSize, FRect* rtText)
+static BOOL SetFontSize(int pageNo, HPDFOBJ hObj, float fontSize, FRect* rtText)
 {
 	WindowInfo* win = WindowInfo::g_pWinInf;
 	if(!win)
