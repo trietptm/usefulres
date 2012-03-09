@@ -5329,49 +5329,6 @@ static LPCSTR GetStdFontBuiltinName(LPCSTR lpFontName)
 	return NULL;
 }
 
-static BOOL UpdateTextXPos(fz_display_node* node)
-{
-	if(!node->item.text || !node->item.text->font)
-		return FALSE;
-
-	pdf_font_desc *fontdesc = node->item.text->gstate.font;
-	if(!fontdesc)
-		return FALSE;
-
-	float newObjRight = node->rect.x1;
-
-	fz_matrix tm = node->item.text->gstate.tm;
-	tm.e = 0.0;
-	tm.f = 0.0;
-
-	for(INT i = 0;i < node->item.text->len;i++)
-	{
-		WCHAR wbuf[] = {node->item.text->items[i].ucs,0};
-		unsigned char buf[MAX_PATH] = {0};
-		WideCharToMultiByte(CP_ACP,WC_COMPOSITECHECK,wbuf,-1,(LPSTR)buf,sizeof(buf),NULL,NULL);
-
-		int cid = 0;
-		if(!ansii_to_cid(fontdesc,buf,cid))
-			continue;
-
-		node->item.text->items[i].x = node->item.text->items[0].x + tm.e;
-
-		my_pdf_show_char(&node->item.text->gstate,cid,tm);
-
-		if(newObjRight < node->item.text->items[0].x + tm.e)
-		{
-			newObjRight = node->item.text->items[0].x + tm.e;
-		}
-	}
-
-	if(node->rect.x1 < newObjRight)
-	{
-		node->rect.x1 = newObjRight;
-	}
-
-	return TRUE;
-}
-
 static BOOL SetObjectFont(HPDFOBJ hObj,LPCSTR lpFontName)
 {
 	WindowInfo* win = WindowInfo::g_pWinInf;
@@ -5710,7 +5667,7 @@ static BOOL SetStrokeColor(HPDFOBJ hObj, INT r, INT g, INT b, INT a)
 	return TRUE;
 }
 
-static BOOL SetFontSize(HPDFOBJ hObj,INT fontSize)
+static BOOL SetFontSize(int pageNo, HPDFOBJ hObj,INT fontSize)
 {
 	WindowInfo* win = WindowInfo::g_pWinInf;
 	if(!win)
@@ -5741,7 +5698,7 @@ static BOOL SetFontSize(HPDFOBJ hObj,INT fontSize)
 		node->item.text->gstate.tm.a *= rate;
 	}
 
-	UpdateTextXPos(node);
+	win->dm->textSelection->UpdateTextXPos(pageNo,node);
 
 	if(node->cmd==FZ_CMD_STROKE_TEXT)
 	{

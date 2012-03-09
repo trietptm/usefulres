@@ -1116,4 +1116,102 @@ BOOL TextSelection::MoveCursor(int pageNo, HPDFOBJ hObj, const PointD& pt, INT n
 
 	return TRUE;
 }
+
+BOOL TextSelection::UpdateTextXPos(int pageNo, fz_display_node* node)
+{
+	assert(1 <= pageNo && pageNo <= engine->PageCount());
+	if (!coords[pageNo - 1])
+		FindClosestGlyph(pageNo, 0, 0);
+
+	if(!node->item.text || !node->item.text->font)
+		return FALSE;
+
+	pdf_font_desc *fontdesc = node->item.text->gstate.font;
+	if(!fontdesc)
+		return FALSE;
+
+	float newLineHeight = node->rect.y1 - node->rect.y0;
+	float newObjRight = node->rect.x1;
+
+	fz_matrix tm = node->item.text->gstate.tm;
+	tm.e = 0.0;
+	tm.f = 0.0;
+
+	for(INT i = 0;i < node->item.text->len;i++)
+	{
+		WCHAR wbuf[] = {node->item.text->items[i].ucs,0};
+		unsigned char buf[MAX_PATH] = {0};
+		WideCharToMultiByte(CP_ACP,WC_COMPOSITECHECK,wbuf,-1,(LPSTR)buf,sizeof(buf),NULL,NULL);
+
+		int cid = 0;
+		if(!ansii_to_cid(fontdesc,buf,cid))
+			continue;
+
+		node->item.text->items[i].x = node->item.text->items[0].x + tm.e;
+
+		my_pdf_show_char(&node->item.text->gstate,cid,tm);
+
+		//if(newObjRight < node->item.text->items[0].x + tm.e)
+		{
+			newObjRight = node->item.text->items[0].x + tm.e;
+		}
+
+		float chWidth, lineHeight;
+		if(fz_get_char_width_line_height(node->item.text,i,&chWidth,&lineHeight))
+		{
+			if(i == 0)
+			{
+				newLineHeight = lineHeight;
+			}
+		}
+	}
+
+	//if(node->rect.x1 < newObjRight)
+	{
+		node->rect.x1 = newObjRight;
+	}
+
+	float oldLineHeight = node->rect.y1 - node->rect.y0;
+	float oldBtmSpace = node->item.text->items[0].y - node->rect.y0;
+	if(oldBtmSpace < 0)
+		oldBtmSpace = 0;
+
+	float heightRate = newLineHeight / oldLineHeight;
+	float newBtmSpace = oldBtmSpace * heightRate;
+
+	node->rect.y0 = node->item.text->items[0].y - newBtmSpace;
+	node->rect.y1 = node->rect.y0 + newLineHeight;
+
+	WCHAR* pageText = text[pageNo - 1];
+	RectD* pageCoords = coords[pageNo - 1];
+	char_inf* pageChInf = chInf[pageNo - 1];
+	INT pageTextLen = lens[pageNo - 1];
+
+	for(INT i = 0;i < pageTextLen;i++)
+	{
+		char_inf& ci = pageChInf[i];
+		if(ci.node!=node)
+			continue;
+
+		if(pageText[i]=='\n')
+			break;
+
+		if(ci.iItem != -1)
+		{
+			assert(ci.iItem >= 0 && ci.iItem < ci.node->item.text->len);
+			pageCoords[i].x = ci.node->item.text->items[ci.iItem].x;
+
+			float chWidth, lineHeight;
+			if(fz_get_char_width_line_height(node->item.text,i,&chWidth,&lineHeight))
+			{
+				pageCoords[i].dx = chWidth;
+			}
+		}
+
+		pageCoords[i].y = node->rect.y0;
+		pageCoords[i].dy = node->rect.y1 - node->rect.y0;
+	}
+
+	return TRUE;
+}
 //////////////////////////////////////////////////////////////////////////
