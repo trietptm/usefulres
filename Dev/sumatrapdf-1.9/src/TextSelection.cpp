@@ -1019,7 +1019,7 @@ BOOL TextSelection::MoveObject(int pageNo, HPDFOBJ hObj, const FPoint& relMove)
 
 			if(ci.node->last && ci.node->last->is_dup)
 			{
-				assert(ci.iItem >= 0 && ci.iItem < ci.node->item.text->len);
+				assert(ci.iItem >= 0 && ci.iItem < ci.node->last->item.text->len);
 				ci.node->last->item.text->items[ci.iItem].x += (float)relMove.x;
 				ci.node->last->item.text->items[ci.iItem].y += (float)relMove.y;
 			}
@@ -1152,13 +1152,20 @@ BOOL TextSelection::UpdateTextXPos(int pageNo, fz_display_node* node, FRect* rtT
 
 		node->item.text->items[i].x = node->item.text->items[0].x + tm.e;
 
+		if(node->last && node->last->is_dup)
+		{
+			assert(i >= 0 && i < node->last->item.text->len);
+			node->last->item.text->items[i].x = node->last->item.text->items[0].x + tm.e;
+		}
+
+
 		my_pdf_show_char(&node->item.text->gstate,cid,tm);
 
 		if(node->item.text->items[i].offset != 0.0)
 		{
 			tm.e += my_pdf_show_space(&node->item.text->gstate, -node->item.text->items[i].offset * node->item.text->gstate.size * 0.001f);
 		}
-		
+				
 		newObjRight = node->item.text->items[0].x + tm.e;
 		
 		float chWidth, lineHeight;
@@ -1183,6 +1190,11 @@ BOOL TextSelection::UpdateTextXPos(int pageNo, fz_display_node* node, FRect* rtT
 
 	node->rect.y0 = node->item.text->items[0].y - newBtmSpace;
 	node->rect.y1 = node->rect.y0 + newLineHeight;
+
+	if(node->last && node->last->is_dup)
+	{
+		node->last->rect = node->rect;
+	}
 
 	WCHAR* pageText = text[pageNo - 1];
 	RectD* pageCoords = coords[pageNo - 1];
