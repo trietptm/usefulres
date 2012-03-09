@@ -1091,6 +1091,8 @@ struct char_inf
 
 	//fz_bbox bbox;	
 };
+
+int fz_get_char_width_line_height(fz_text *text, int iChar, float* width, float* height);
 //////////////////////////////////////////////////////////////////////////
 
 struct fz_text_char_s

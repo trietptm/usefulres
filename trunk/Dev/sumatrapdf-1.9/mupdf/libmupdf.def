@@ -299,6 +299,7 @@ EXPORTS
 	fz_synchronize_begin
 	fz_synchronize_end
 	my_pdf_load_simple_font
+	fz_get_char_width_line_height
 
 ; MuPDF exports
 
