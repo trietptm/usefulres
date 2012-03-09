@@ -862,6 +862,8 @@ struct my_pdf_gstate_s
 	int stroke_colorspace_n;
 	float stroke_v[3]; //r,g,b
 };
+
+float my_pdf_show_space(my_pdf_gstate* gstate, float tadj);
 //////////////////////////////////////////////////////////////////////////
 
 /*
