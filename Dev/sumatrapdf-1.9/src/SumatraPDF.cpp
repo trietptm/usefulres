@@ -5329,7 +5329,7 @@ static LPCSTR GetStdFontBuiltinName(LPCSTR lpFontName)
 	return NULL;
 }
 
-static BOOL SetObjectFont(HPDFOBJ hObj,LPCSTR lpFontName)
+static BOOL SetObjectFont(int pageNo, HPDFOBJ hObj,LPCSTR lpFontName, FRect* rtText)
 {
 	WindowInfo* win = WindowInfo::g_pWinInf;
 	if(!win)
@@ -5424,6 +5424,8 @@ static BOOL SetObjectFont(HPDFOBJ hObj,LPCSTR lpFontName)
 	}
 
 	pdf_drop_font(fontdesc);
+
+	win->dm->textSelection->UpdateTextXPos(pageNo,node,rtText);
 
 	gRenderCache.DropAllCache();
 	win->dm->Redraw();
@@ -5698,8 +5700,6 @@ static BOOL SetFontSize(int pageNo, HPDFOBJ hObj, float fontSize, FRect* rtText)
 		node->item.text->gstate.tm.a *= rate;
 	}
 
-	win->dm->textSelection->UpdateTextXPos(pageNo,node,rtText);
-
 	if(node->cmd==FZ_CMD_STROKE_TEXT)
 	{
 		if(node->last && node->last->is_dup && node->last->cmd==FZ_CMD_FILL_TEXT)
@@ -5715,7 +5715,9 @@ static BOOL SetFontSize(int pageNo, HPDFOBJ hObj, float fontSize, FRect* rtText)
 				node->item.text->gstate.tm.a *= rate;
 			}
 		}
-	}	
+	}
+
+	win->dm->textSelection->UpdateTextXPos(pageNo,node,rtText);
 
 	gRenderCache.DropAllCache();
 	win->dm->Redraw();
