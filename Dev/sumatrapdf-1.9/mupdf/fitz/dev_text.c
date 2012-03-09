@@ -591,6 +591,73 @@ fz_text_extract_span(fz_text_span **last, fz_text *text, fz_matrix ctm, fz_point
 	}
 }
 
+/*MyCode*/
+int fz_get_char_width_line_height(fz_text *text, int iChar, float* width, float* height)
+{
+	fz_font *font = text->font;
+	FT_Face face = font->ft_face;
+	float ascender = 1;
+	float descender = 0;
+	int err;
+	float adv;
+	fz_rect rect;
+	fz_matrix trm = text->trm;
+
+	if (text->len == 0)
+		return 0;
+	if(!(iChar >= 0 && iChar < text->len))
+		return 0;
+
+	trm.e = 0;
+	trm.f = 0;
+
+	if (font->ft_face)
+	{
+		err = FT_Set_Char_Size(font->ft_face, 64, 64, 72, 72);
+		if (err)
+			fz_warn("freetype set character size: %s", ft_error_string(err));
+		ascender = (float)face->ascender / face->units_per_EM;
+		descender = (float)face->descender / face->units_per_EM;
+	}
+
+	if (text->items[iChar].gid < 0)
+		return 0;
+
+	/* Calculate bounding box and new pen position based on font metrics */
+	if (font->ft_face)
+	{
+		FT_Fixed ftadv = 0;
+		int mask = FT_LOAD_NO_BITMAP | FT_LOAD_NO_HINTING | FT_LOAD_IGNORE_TRANSFORM;
+
+		/* TODO: freetype returns broken vertical metrics */
+		/* if (text->wmode) mask |= FT_LOAD_VERTICAL_LAYOUT; */
+
+		FT_Get_Advance(font->ft_face, text->items[iChar].gid, mask, &ftadv);
+		adv = ftadv / 65536.0f;
+
+		rect.x0 = 0;
+		rect.y0 = descender;
+		rect.x1 = adv;
+		rect.y1 = ascender;
+	}
+	else
+	{
+		adv = font->t3widths[text->items[iChar].gid];
+		rect.x0 = 0;
+		rect.y0 = descender;
+		rect.x1 = adv;
+		rect.y1 = ascender;
+	}
+
+	rect = fz_transform_rect(trm, rect);
+
+	*width = rect.x1 - rect.x0;
+	*height = rect.y1 - rect.y0;
+
+	return 1;
+}
+//////////////////////////////////////////////////////////////////////////
+
 static void
 fz_text_fill_text(void *user, fz_text *text, fz_matrix ctm,
 	fz_colorspace *colorspace, float *color, float alpha, void *node)
