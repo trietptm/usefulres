@@ -5717,6 +5717,37 @@ static BOOL SetFontSize(int pageNo, HPDFOBJ hObj, float fontSize, FRect* rtText)
 		}
 	}
 
+	win->dm->textSelection->UpdateTextXPos(pageNo,(fz_display_node*)hObj,rtText);
+
+	gRenderCache.DropAllCache();
+	win->dm->Redraw();
+
+	return TRUE;
+}
+static BOOL SetCharSpace(int pageNo, HPDFOBJ hObj,float char_space, FRect* rtText)
+{
+	WindowInfo* win = WindowInfo::g_pWinInf;
+	if(!win)
+		return FALSE;
+
+	if(!win->dm || !win->dm->engine)
+		return FALSE;
+
+	if(!hObj)
+		return FALSE;
+
+	fz_display_node* node = (fz_display_node*)hObj;
+
+	if(!node->item.text)
+		return FALSE;
+
+	node->item.text->gstate.char_space = char_space;
+
+	if(node->last && node->last->is_dup)
+	{
+		node->last->item.text->gstate.char_space = char_space;
+	}
+
 	win->dm->textSelection->UpdateTextXPos(pageNo,node,rtText);
 
 	gRenderCache.DropAllCache();
@@ -5747,6 +5778,7 @@ int APIENTRY LaunchPdf(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmd
 	g_pIntf->SetStrokeColor = SetStrokeColor;
 	g_pIntf->SetObjectFont = SetObjectFont;
 	g_pIntf->SetFontSize = SetFontSize;
+	g_pIntf->SetCharSpace = SetCharSpace;
 
 	return WinMain(hInstance,hPrevInstance,lpCmdLine,SW_SHOW);
 }
