@@ -805,7 +805,7 @@ BOOL TextSelection::InsertCharByPos(int pageNo, HPDFOBJ hObj, const PointD& pt, 
 		}
 	}
 
-	INT widthDelta = 7;
+	float widthDelta = 7;
 	
 	INT indexChanged = 0;
 
@@ -852,7 +852,8 @@ BOOL TextSelection::InsertCharByPos(int pageNo, HPDFOBJ hObj, const PointD& pt, 
 		WideCharToMultiByte(CP_ACP,WC_COMPOSITECHECK,wbuf,-1,(LPSTR)buf,sizeof(buf),NULL,NULL);
 
 		int cid = 0;
-		if(!ansii_to_cid(ci.node->item.text->gstate.font,buf,cid,NULL))
+		int cpt = 0;
+		if(!ansii_to_cid(ci.node->item.text->gstate.font,buf,cid,&cpt))
 			return FALSE;
 
 		txtItem.gid = pdf_font_cid_to_gid(ci.node->item.text->gstate.font, cid);
@@ -861,7 +862,10 @@ BOOL TextSelection::InsertCharByPos(int pageNo, HPDFOBJ hObj, const PointD& pt, 
 		tm.e = 0.0;
 		tm.f = 0.0;
 		my_pdf_show_char(&ci.node->item.text->gstate,cid,tm);
-		widthDelta = (int)ceilf(tm.e - 0.001f);
+		widthDelta = tm.e; //(int)ceilf(tm.e - 0.001f);
+
+		if(cpt == 32)
+			widthDelta += my_pdf_show_space(&node->item.text->gstate, node->item.text->gstate.word_space);
 
 		ArrayInsertElements(ci.node->item.text->items,ci.node->item.text->len,iTextItem,&txtItem,1);
 
