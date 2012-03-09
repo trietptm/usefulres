@@ -967,7 +967,7 @@ BOOL TextSelection::InsertCharByPos(int pageNo, HPDFOBJ hObj, const PointD& pt, 
 
 	if(node->rect.x1 < newObjRight)
 	{
-		node->rect.x1 = newObjRight;		
+		node->rect.x1 = newObjRight;
 	}
 
 	if(node->last && node->last->is_dup)

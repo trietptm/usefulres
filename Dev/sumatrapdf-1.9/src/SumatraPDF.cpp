@@ -5338,6 +5338,8 @@ static BOOL UpdateTextXPos(fz_display_node* node)
 	if(!fontdesc)
 		return FALSE;
 
+	float newObjRight = node->rect.x1;
+
 	fz_matrix tm = node->item.text->gstate.tm;
 	tm.e = 0.0;
 	tm.f = 0.0;
@@ -5354,7 +5356,17 @@ static BOOL UpdateTextXPos(fz_display_node* node)
 
 		node->item.text->items[i].x = node->item.text->items[0].x + tm.e;
 
-		my_pdf_show_char(&node->item.text->gstate,cid,tm);		
+		my_pdf_show_char(&node->item.text->gstate,cid,tm);
+
+		if(newObjRight < node->item.text->items[0].x + tm.e)
+		{
+			newObjRight = node->item.text->items[0].x + tm.e;
+		}
+	}
+
+	if(node->rect.x1 < newObjRight)
+	{
+		node->rect.x1 = newObjRight;
 	}
 
 	return TRUE;
