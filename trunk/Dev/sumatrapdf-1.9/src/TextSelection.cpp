@@ -1117,11 +1117,14 @@ BOOL TextSelection::MoveCursor(int pageNo, HPDFOBJ hObj, const PointD& pt, INT n
 	return TRUE;
 }
 
-BOOL TextSelection::UpdateTextXPos(int pageNo, fz_display_node* node)
+BOOL TextSelection::UpdateTextXPos(int pageNo, fz_display_node* node, FRect* rtText)
 {
 	assert(1 <= pageNo && pageNo <= engine->PageCount());
 	if (!coords[pageNo - 1])
 		FindClosestGlyph(pageNo, 0, 0);
+
+	if(node->item.text->len <= 0)
+		return FALSE;
 
 	if(!node->item.text || !node->item.text->font)
 		return FALSE;
@@ -1187,6 +1190,7 @@ BOOL TextSelection::UpdateTextXPos(int pageNo, fz_display_node* node)
 	char_inf* pageChInf = chInf[pageNo - 1];
 	INT pageTextLen = lens[pageNo - 1];
 
+	INT iFirstGoodCh = -1;
 	for(INT i = 0;i < pageTextLen;i++)
 	{
 		char_inf& ci = pageChInf[i];
@@ -1198,6 +1202,8 @@ BOOL TextSelection::UpdateTextXPos(int pageNo, fz_display_node* node)
 
 		if(ci.iItem != -1)
 		{
+			iFirstGoodCh = i;
+
 			assert(ci.iItem >= 0 && ci.iItem < ci.node->item.text->len);
 			pageCoords[i].x = ci.node->item.text->items[ci.iItem].x;
 
@@ -1210,6 +1216,16 @@ BOOL TextSelection::UpdateTextXPos(int pageNo, fz_display_node* node)
 
 		pageCoords[i].y = node->rect.y0;
 		pageCoords[i].dy = node->rect.y1 - node->rect.y0;
+	}
+
+	if(rtText && iFirstGoodCh != -1)
+	{
+		PointD pt;
+		pt.x = pageCoords[iFirstGoodCh].x +  pageCoords[iFirstGoodCh].dx / 2.0;
+		pt.y = pageCoords[iFirstGoodCh].y +  pageCoords[iFirstGoodCh].dy / 2.0;
+
+		DOUBLE xCursor;
+		GetObjLineText(pageNo,(HPDFOBJ)node,&pt,rtText,&xCursor);
 	}
 
 	return TRUE;

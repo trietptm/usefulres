@@ -5667,7 +5667,7 @@ static BOOL SetStrokeColor(HPDFOBJ hObj, INT r, INT g, INT b, INT a)
 	return TRUE;
 }
 
-static BOOL SetFontSize(int pageNo, HPDFOBJ hObj,INT fontSize)
+static BOOL SetFontSize(int pageNo, HPDFOBJ hObj, INT fontSize, FRect* rtText)
 {
 	WindowInfo* win = WindowInfo::g_pWinInf;
 	if(!win)
@@ -5698,7 +5698,7 @@ static BOOL SetFontSize(int pageNo, HPDFOBJ hObj,INT fontSize)
 		node->item.text->gstate.tm.a *= rate;
 	}
 
-	win->dm->textSelection->UpdateTextXPos(pageNo,node);
+	win->dm->textSelection->UpdateTextXPos(pageNo,node,rtText);
 
 	if(node->cmd==FZ_CMD_STROKE_TEXT)
 	{
