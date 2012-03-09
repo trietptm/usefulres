@@ -1154,11 +1154,13 @@ BOOL TextSelection::UpdateTextXPos(int pageNo, fz_display_node* node, FRect* rtT
 
 		my_pdf_show_char(&node->item.text->gstate,cid,tm);
 
-		//if(newObjRight < node->item.text->items[0].x + tm.e)
+		if(node->item.text->items[i].offset != 0.0)
 		{
-			newObjRight = node->item.text->items[0].x + tm.e;
+			tm.e += my_pdf_show_space(&node->item.text->gstate, -node->item.text->items[i].offset * node->item.text->gstate.size * 0.001f);
 		}
-
+		
+		newObjRight = node->item.text->items[0].x + tm.e;
+		
 		float chWidth, lineHeight;
 		if(fz_get_char_width_line_height(node->item.text,i,&chWidth,&lineHeight))
 		{
@@ -1169,10 +1171,7 @@ BOOL TextSelection::UpdateTextXPos(int pageNo, fz_display_node* node, FRect* rtT
 		}
 	}
 
-	//if(node->rect.x1 < newObjRight)
-	{
-		node->rect.x1 = newObjRight;
-	}
+	node->rect.x1 = newObjRight;
 
 	float oldLineHeight = node->rect.y1 - node->rect.y0;
 	float oldBtmSpace = node->item.text->items[0].y - node->rect.y0;

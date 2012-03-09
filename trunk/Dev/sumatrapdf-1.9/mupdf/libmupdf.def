@@ -300,6 +300,7 @@ EXPORTS
 	fz_synchronize_end
 	my_pdf_load_simple_font
 	fz_get_char_width_line_height
+	my_pdf_show_space
 
 ; MuPDF exports
 

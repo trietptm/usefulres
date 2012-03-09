@@ -658,6 +658,31 @@ pdf_show_space(pdf_csi *csi, float tadj)
 		csi->tm = fz_concat(fz_translate(0, tadj), csi->tm);
 }
 
+/*MyCode*/
+float my_pdf_show_space(my_pdf_gstate* gstate, float tadj)
+{
+	fz_matrix tm;
+	pdf_font_desc *fontdesc = gstate->font;
+
+	if (!fontdesc)
+	{
+		fz_warn("cannot draw text since font and size not set");
+		return 0.0;
+	}
+
+	tm = gstate->tm;
+	tm.e = 0;
+	tm.f = 0;
+
+	if (fontdesc->wmode == 0)
+		tm = fz_concat(fz_translate(tadj * gstate->scale, 0), tm);
+	else
+		tm = fz_concat(fz_translate(0, tadj), tm);
+
+	return tm.e;
+}
+//////////////////////////////////////////////////////////////////////////
+
 static void
 pdf_show_string(pdf_csi *csi, unsigned char *buf, int len)
 {
