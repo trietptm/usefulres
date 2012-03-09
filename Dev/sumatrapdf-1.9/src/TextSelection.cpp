@@ -736,7 +736,7 @@ void my_pdf_show_char(my_pdf_gstate *gstate,int cid,fz_matrix& tm)
 	}
 }
 
-unsigned char* ansii_to_cid(pdf_font_desc *fontdesc,unsigned char* buf,int& cid)
+unsigned char* ansii_to_cid(pdf_font_desc *fontdesc,unsigned char* buf,int& cid,int* o_cpt)
 {
 	int cpt;
 
@@ -749,6 +749,9 @@ unsigned char* ansii_to_cid(pdf_font_desc *fontdesc,unsigned char* buf,int& cid)
 	}
 //	if (cpt == 32)
 //			pdf_show_space(csi, gstate->word_space);
+
+	if(o_cpt)
+		*o_cpt = cpt;
 
 	return buf;
 }
@@ -849,7 +852,7 @@ BOOL TextSelection::InsertCharByPos(int pageNo, HPDFOBJ hObj, const PointD& pt, 
 		WideCharToMultiByte(CP_ACP,WC_COMPOSITECHECK,wbuf,-1,(LPSTR)buf,sizeof(buf),NULL,NULL);
 
 		int cid = 0;
-		if(!ansii_to_cid(ci.node->item.text->gstate.font,buf,cid))
+		if(!ansii_to_cid(ci.node->item.text->gstate.font,buf,cid,NULL))
 			return FALSE;
 
 		txtItem.gid = pdf_font_cid_to_gid(ci.node->item.text->gstate.font, cid);
@@ -1147,7 +1150,8 @@ BOOL TextSelection::UpdateTextXPos(int pageNo, fz_display_node* node, FRect* rtT
 		WideCharToMultiByte(CP_ACP,WC_COMPOSITECHECK,wbuf,-1,(LPSTR)buf,sizeof(buf),NULL,NULL);
 
 		int cid = 0;
-		if(!ansii_to_cid(fontdesc,buf,cid))
+		int cpt = 0;
+		if(!ansii_to_cid(fontdesc,buf,cid,&cpt))
 			continue;
 
 		node->item.text->items[i].x = node->item.text->items[0].x + tm.e;
@@ -1158,8 +1162,10 @@ BOOL TextSelection::UpdateTextXPos(int pageNo, fz_display_node* node, FRect* rtT
 			node->last->item.text->items[i].x = node->last->item.text->items[0].x + tm.e;
 		}
 
-
 		my_pdf_show_char(&node->item.text->gstate,cid,tm);
+
+		if(cpt == 32)
+			tm.e += my_pdf_show_space(&node->item.text->gstate, node->item.text->gstate.word_space);
 
 		if(node->item.text->items[i].offset != 0.0)
 		{

@@ -41,7 +41,7 @@
 #include "..\..\..\..\biggod.app\PDFEditor\sumatrapdf_intf.h"
 extern SumatraPdfIntf* g_pIntf;
 
-unsigned char* ansii_to_cid(pdf_font_desc *fontdesc,unsigned char* buf,int& cid);
+unsigned char* ansii_to_cid(pdf_font_desc *fontdesc,unsigned char* buf,int& cid,int* o_cpt = NULL);
 void my_pdf_show_char(my_pdf_gstate *gstate,int cid,fz_matrix& tm);
 
 extern "C" {
@@ -5755,6 +5755,37 @@ static BOOL SetCharSpace(int pageNo, HPDFOBJ hObj,float char_space, FRect* rtTex
 
 	return TRUE;
 }
+static BOOL SetWordSpace(int pageNo, HPDFOBJ hObj,float word_space, FRect* rtText)
+{
+	WindowInfo* win = WindowInfo::g_pWinInf;
+	if(!win)
+		return FALSE;
+
+	if(!win->dm || !win->dm->engine)
+		return FALSE;
+
+	if(!hObj)
+		return FALSE;
+
+	fz_display_node* node = (fz_display_node*)hObj;
+
+	if(!node->item.text)
+		return FALSE;
+
+	node->item.text->gstate.word_space = word_space;
+
+	if(node->last && node->last->is_dup)
+	{
+		node->last->item.text->gstate.word_space = word_space;
+	}
+
+	win->dm->textSelection->UpdateTextXPos(pageNo,node,rtText);
+
+	gRenderCache.DropAllCache();
+	win->dm->Redraw();
+
+	return TRUE;
+}
 
 int APIENTRY LaunchPdf(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, SumatraPdfIntf* pIntf)
 {
@@ -5779,6 +5810,7 @@ int APIENTRY LaunchPdf(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmd
 	g_pIntf->SetObjectFont = SetObjectFont;
 	g_pIntf->SetFontSize = SetFontSize;
 	g_pIntf->SetCharSpace = SetCharSpace;
+	g_pIntf->SetWordSpace = SetWordSpace;
 
 	return WinMain(hInstance,hPrevInstance,lpCmdLine,SW_SHOW);
 }
