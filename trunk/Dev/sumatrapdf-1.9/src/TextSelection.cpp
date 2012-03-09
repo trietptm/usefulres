@@ -644,8 +644,7 @@ fz_grow_text(fz_text *text, int n)
 	text->items = (fz_text_item*)fz_realloc(text->items, text->cap, sizeof(fz_text_item));
 }
 
-static void
-my_pdf_show_char(my_pdf_gstate *gstate,int cid,fz_matrix& tm)
+void my_pdf_show_char(my_pdf_gstate *gstate,int cid,fz_matrix& tm)
 {
 	//pdf_gstate *gstate = csi->gstate + csi->gtop;
 	pdf_font_desc *fontdesc = gstate->font;
