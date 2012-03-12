@@ -5425,7 +5425,7 @@ static BOOL SetObjectFont(int pageNo, HPDFOBJ hObj,LPCSTR lpFontName, FRect* rtT
 
 	pdf_drop_font(fontdesc);
 
-	win->dm->textSelection->UpdateTextXPos(pageNo,node,rtText);
+	win->dm->textSelection->UpdateTextPos(pageNo,node,rtText);
 
 	gRenderCache.DropAllCache();
 	win->dm->Redraw();
@@ -5726,7 +5726,7 @@ static BOOL SetFontSize(int pageNo, HPDFOBJ hObj, float fontSize, FRect* rtText)
 		}
 	}
 
-	win->dm->textSelection->UpdateTextXPos(pageNo,(fz_display_node*)hObj,rtText);
+	win->dm->textSelection->UpdateTextPos(pageNo,(fz_display_node*)hObj,rtText);
 
 	gRenderCache.DropAllCache();
 	win->dm->Redraw();
@@ -5757,7 +5757,7 @@ static BOOL SetCharSpace(int pageNo, HPDFOBJ hObj,float char_space, FRect* rtTex
 		node->last->item.text->gstate.char_space = char_space;
 	}
 
-	win->dm->textSelection->UpdateTextXPos(pageNo,node,rtText);
+	win->dm->textSelection->UpdateTextPos(pageNo,node,rtText);
 
 	gRenderCache.DropAllCache();
 	win->dm->Redraw();
@@ -5788,7 +5788,7 @@ static BOOL SetWordSpace(int pageNo, HPDFOBJ hObj,float word_space, FRect* rtTex
 		node->last->item.text->gstate.word_space = word_space;
 	}
 
-	win->dm->textSelection->UpdateTextXPos(pageNo,node,rtText);
+	win->dm->textSelection->UpdateTextPos(pageNo,node,rtText);
 
 	gRenderCache.DropAllCache();
 	win->dm->Redraw();
@@ -5814,6 +5814,8 @@ static BOOL RotateObject(int pageNo, HPDFOBJ hObj,INT rotation, FRect* rtText)
 
 	node->item.text->trm = fz_concat(node->item.text->trm, fz_rotate((float)rotation));
 	node->item.text->gstate.tm = fz_concat(node->item.text->gstate.tm, fz_rotate((float)rotation));
+
+	win->dm->textSelection->UpdateTextPos(pageNo,node,rtText);
 
 	if(node->cmd==FZ_CMD_STROKE_TEXT)
 	{
