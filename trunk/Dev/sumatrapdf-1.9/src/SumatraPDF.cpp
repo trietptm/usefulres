@@ -5477,7 +5477,8 @@ static BOOL GetPropertyDescr(HPDFOBJ hObj,LPCTSTR lpPropName,LPSTR lpDescr)
 	{
 		if(node->item.text)
 		{
-			snprintf(lpDescr,MAX_PATH - 1,"%.2f",node->item.text->trm.d); //trm.d才是字体大小,trm.a不是
+			float size = fz_matrix_expansion(node->item.text->trm);
+			snprintf(lpDescr,MAX_PATH - 1,"%.2f",size); //trm.d是没旋转时字体大小,trm.a不是
 			return TRUE;
 		}
 	}
@@ -5686,18 +5687,22 @@ static BOOL SetFontSize(int pageNo, HPDFOBJ hObj, float fontSize, FRect* rtText)
 	if(!node->item.text)
 		return FALSE;
 
-	assert(node->item.text->trm.d > 0.0);
-	float rate = (float)fontSize / node->item.text->trm.d;
+	float old_size = fz_matrix_expansion(node->item.text->trm);
+	float rate = (float)fontSize / old_size;
 	if(rate <= 0.0)
 		return FALSE;
-
+	
 	node->item.text->trm.d *= rate;
 	node->item.text->trm.a *= rate;
+	node->item.text->trm.b *= rate;
+	node->item.text->trm.c *= rate;
 
 	if(node->item.text->gstate.font)
 	{
 		node->item.text->gstate.tm.d *= rate;
 		node->item.text->gstate.tm.a *= rate;
+		node->item.text->gstate.tm.b *= rate;
+		node->item.text->gstate.tm.c *= rate;
 	}
 
 	if(node->cmd==FZ_CMD_STROKE_TEXT)
@@ -5708,11 +5713,15 @@ static BOOL SetFontSize(int pageNo, HPDFOBJ hObj, float fontSize, FRect* rtText)
 
 			node->item.text->trm.d *= rate;
 			node->item.text->trm.a *= rate;
+			node->item.text->trm.b *= rate;
+			node->item.text->trm.c *= rate;
 
 			if(node->item.text->gstate.font)
 			{
 				node->item.text->gstate.tm.d *= rate;
 				node->item.text->gstate.tm.a *= rate;
+				node->item.text->gstate.tm.b *= rate;
+				node->item.text->gstate.tm.c *= rate;
 			}
 		}
 	}
@@ -5786,6 +5795,42 @@ static BOOL SetWordSpace(int pageNo, HPDFOBJ hObj,float word_space, FRect* rtTex
 
 	return TRUE;
 }
+static BOOL RotateObject(int pageNo, HPDFOBJ hObj,INT rotation, FRect* rtText)
+{
+	WindowInfo* win = WindowInfo::g_pWinInf;
+	if(!win)
+		return FALSE;
+
+	if(!win->dm || !win->dm->engine)
+		return FALSE;
+
+	if(!hObj)
+		return FALSE;
+
+	fz_display_node* node = (fz_display_node*)hObj;
+
+	if(!node->item.text)
+		return FALSE;
+
+	node->item.text->trm = fz_concat(node->item.text->trm, fz_rotate((float)rotation));
+	node->item.text->gstate.tm = fz_concat(node->item.text->gstate.tm, fz_rotate((float)rotation));
+
+	if(node->cmd==FZ_CMD_STROKE_TEXT)
+	{
+		if(node->last && node->last->is_dup && node->last->cmd==FZ_CMD_FILL_TEXT)
+		{
+			node = node->last;
+
+			node->item.text->trm = fz_concat(node->item.text->trm, fz_rotate((float)rotation));
+			node->item.text->gstate.tm = fz_concat(node->item.text->gstate.tm, fz_rotate((float)rotation));
+		}
+	}
+
+	gRenderCache.DropAllCache();
+	win->dm->Redraw();
+
+	return TRUE;
+}
 
 int APIENTRY LaunchPdf(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, SumatraPdfIntf* pIntf)
 {
@@ -5811,6 +5856,7 @@ int APIENTRY LaunchPdf(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmd
 	g_pIntf->SetFontSize = SetFontSize;
 	g_pIntf->SetCharSpace = SetCharSpace;
 	g_pIntf->SetWordSpace = SetWordSpace;
+	g_pIntf->RotateObject = RotateObject;
 
 	return WinMain(hInstance,hPrevInstance,lpCmdLine,SW_SHOW);
 }
