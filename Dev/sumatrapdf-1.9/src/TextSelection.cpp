@@ -865,7 +865,11 @@ BOOL TextSelection::InsertCharByPos(int pageNo, HPDFOBJ hObj, const PointD& pt, 
 		widthDelta = tm.e; //(int)ceilf(tm.e - 0.001f);
 
 		if(cpt == 32)
-			widthDelta += my_pdf_show_space(&node->item.text->gstate, node->item.text->gstate.word_space);
+		{
+			float e = 0, f = 0;
+			my_pdf_show_space(&node->item.text->gstate, node->item.text->gstate.word_space, &e, &f);
+			widthDelta += e;
+		}
 
 		ArrayInsertElements(ci.node->item.text->items,ci.node->item.text->len,iTextItem,&txtItem,1);
 
@@ -1124,7 +1128,7 @@ BOOL TextSelection::MoveCursor(int pageNo, HPDFOBJ hObj, const PointD& pt, INT n
 	return TRUE;
 }
 
-BOOL TextSelection::UpdateTextXPos(int pageNo, fz_display_node* node, FRect* rtText)
+BOOL TextSelection::UpdateTextPos(int pageNo, fz_display_node* node, FRect* rtText)
 {
 	assert(1 <= pageNo && pageNo <= engine->PageCount());
 	if (!coords[pageNo - 1])
@@ -1159,21 +1163,32 @@ BOOL TextSelection::UpdateTextXPos(int pageNo, fz_display_node* node, FRect* rtT
 			continue;
 
 		node->item.text->items[i].x = node->item.text->items[0].x + tm.e;
+		node->item.text->items[i].y = node->item.text->items[0].y + tm.f;
 
 		if(node->last && node->last->is_dup)
 		{
 			assert(i >= 0 && i < node->last->item.text->len);
 			node->last->item.text->items[i].x = node->last->item.text->items[0].x + tm.e;
+			node->last->item.text->items[i].y = node->last->item.text->items[0].y + tm.f;
 		}
 
 		my_pdf_show_char(&node->item.text->gstate,cid,tm);
 
 		if(cpt == 32)
-			tm.e += my_pdf_show_space(&node->item.text->gstate, node->item.text->gstate.word_space);
+		{
+			float e = 0, f = 0;
+			my_pdf_show_space(&node->item.text->gstate, node->item.text->gstate.word_space, &e, &f);
+			tm.e += e;
+			tm.f += f;
+		}
 
 		if(node->item.text->items[i].offset != 0.0)
 		{
-			tm.e += my_pdf_show_space(&node->item.text->gstate, -node->item.text->items[i].offset * node->item.text->gstate.size * 0.001f);
+			float e = 0, f = 0;
+			my_pdf_show_space(&node->item.text->gstate, 
+				-node->item.text->items[i].offset * node->item.text->gstate.size * 0.001f, &e, &f);
+			tm.e += e;
+			tm.f += f;
 		}
 				
 		newObjRight = node->item.text->items[0].x + tm.e;

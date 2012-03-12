@@ -863,7 +863,7 @@ struct my_pdf_gstate_s
 	float stroke_v[3]; //r,g,b
 };
 
-float my_pdf_show_space(my_pdf_gstate* gstate, float tadj);
+void my_pdf_show_space(my_pdf_gstate* gstate, float tadj, float* e, float* f);
 //////////////////////////////////////////////////////////////////////////
 
 /*
