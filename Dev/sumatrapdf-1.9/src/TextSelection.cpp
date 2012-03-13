@@ -68,7 +68,7 @@ int TextSelection::FindClosestGlyph(int pageNo, double x, double y)
         text[pageNo - 1] = engine->ExtractPageTextD(pageNo, _T("\n"), &coords[pageNo - 1], Target_View, &chInf[pageNo - 1]);
 
 		/*MyCode*/
-		if(chInf[pageNo - 1])
+		if(text[pageNo - 1] && text[pageNo - 1][0] && text[pageNo - 1][0] != '\n' && chInf[pageNo - 1])
 		{
 			assert(chInf[pageNo - 1][0].node);
 		}
@@ -565,6 +565,13 @@ BOOL TextSelection::DeleteCharByPos(int pageNo, HPDFOBJ hObj, const PointD& pt, 
 			updateRect->y = rtTextNew.y0;
 			updateRect->dx = rtTextNew.x1 - rtTextNew.x0;
 			updateRect->dy = rtTextNew.y1 - rtTextNew.y0;
+		}
+
+		{
+			/* add some fuzz at the edges, as especially glyph rects
+			* are sometimes not actually completely bounding the glyph */
+			updateRect->x -= 20; updateRect->y -= 20;
+			updateRect->dx += 2*20; updateRect->dy += 2*20;
 		}
 #endif
 	}
@@ -1063,6 +1070,13 @@ BOOL TextSelection::InsertCharByPos(int pageNo, HPDFOBJ hObj, const PointD& pt, 
 			updateRect->y = rtTextNew.y0;
 			updateRect->dx = rtTextNew.x1 - rtTextNew.x0;
 			updateRect->dy = rtTextNew.y1 - rtTextNew.y0;
+		}
+
+		{
+			/* add some fuzz at the edges, as especially glyph rects
+			* are sometimes not actually completely bounding the glyph */
+			updateRect->x -= 20; updateRect->y -= 20;
+			updateRect->dx += 2*20; updateRect->dy += 2*20;
 		}
 
 		if(updateRect->x < node->rect.x0)
