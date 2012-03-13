@@ -794,6 +794,7 @@ BOOL TextSelection::InsertCharByPos(int pageNo, HPDFOBJ hObj, const PointD& pt, 
 
 	if(updateRect)
 	{
+#if 0
 		if(iPosIns < pageTextLen)
 		{
 			RectD mediabox = engine->PageMediabox(pageNo);
@@ -803,9 +804,11 @@ BOOL TextSelection::InsertCharByPos(int pageNo, HPDFOBJ hObj, const PointD& pt, 
 			updateRect->dx = (mediabox.x + mediabox.dx) - updateRect->x;
 			updateRect->dy = pageCoords[iPosIns].dy;
 		}
+#endif
 	}
 
 	float widthDelta = 7;
+	float heightDelta = 7;
 	
 	INT indexChanged = 0;
 
@@ -862,13 +865,15 @@ BOOL TextSelection::InsertCharByPos(int pageNo, HPDFOBJ hObj, const PointD& pt, 
 		tm.e = 0.0;
 		tm.f = 0.0;
 		my_pdf_show_char(&ci.node->item.text->gstate,cid,tm);
-		widthDelta = tm.e; //(int)ceilf(tm.e - 0.001f);
+		widthDelta = tm.e;
+		heightDelta = tm.f;
 
 		if(cpt == 32)
 		{
 			float e = 0, f = 0;
 			my_pdf_show_space(&node->item.text->gstate, node->item.text->gstate.word_space, &e, &f);
 			widthDelta += e;
+			heightDelta += f;
 		}
 
 		ArrayInsertElements(ci.node->item.text->items,ci.node->item.text->len,iTextItem,&txtItem,1);
@@ -937,13 +942,19 @@ BOOL TextSelection::InsertCharByPos(int pageNo, HPDFOBJ hObj, const PointD& pt, 
 	for(INT i = iPosIns + 1;i < pageTextLen;i++)
 	{
 		if(pageText[i]=='\n')
+		{
 			widthDelta = 0;
+			heightDelta = 0;
+		}
 
 		char_inf& ci = pageChInf[i];
 		if(ci.iItem==-1)
 		{
 			if(widthDelta)
-				pageCoords[i].x += widthDelta;
+			{
+				pageCoords[i].x += widthDelta;			
+				pageCoords[i].y += heightDelta;
+			}
 
 			if(newObjRight < pageCoords[i].x + pageCoords[i].dx)
 			{
@@ -960,13 +971,16 @@ BOOL TextSelection::InsertCharByPos(int pageNo, HPDFOBJ hObj, const PointD& pt, 
 			if(widthDelta)
 			{
 				ci.node->item.text->items[ci.iItem].x += widthDelta;
+				ci.node->item.text->items[ci.iItem].y += heightDelta;
 
 				if(ci.node->last && ci.node->last->is_dup)
 				{
 					ci.node->last->item.text->items[ci.iItem].x += widthDelta;
+					ci.node->last->item.text->items[ci.iItem].y += heightDelta;
 				}
 
 				pageCoords[i].x += widthDelta;
+				pageCoords[i].y += heightDelta;
 
 				if(newObjRight < pageCoords[i].x + pageCoords[i].dx)
 				{
@@ -997,6 +1011,25 @@ BOOL TextSelection::InsertCharByPos(int pageNo, HPDFOBJ hObj, const PointD& pt, 
 		{
 			if(pageTextLen > 0)
 				*xCursor = pageCoords[pageTextLen - 1].x + pageCoords[pageTextLen - 1].dx;
+		}
+	}
+
+	if(updateRect)
+	{
+		assert(iPosIns < pageTextLen);
+		{
+			PointD pt;
+			pt.x = pageCoords[iPosIns].x +  pageCoords[iPosIns].dx / 2.0;
+			pt.y = pageCoords[iPosIns].y +  pageCoords[iPosIns].dy / 2.0;
+
+			DOUBLE xCursor;
+			FRect rtTextNew;
+			GetObjLineText(pageNo,(HPDFOBJ)node,&pt,&rtTextNew,&xCursor);
+
+			updateRect->x = rtTextNew.x0;
+			updateRect->y = rtTextNew.y0;
+			updateRect->dx = rtTextNew.x1 - rtTextNew.x0;
+			updateRect->dy = rtTextNew.y1 - rtTextNew.y0;
 		}
 	}
 
