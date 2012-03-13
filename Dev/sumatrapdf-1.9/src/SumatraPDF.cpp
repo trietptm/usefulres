@@ -38,6 +38,7 @@
 #include "HtmlWindow.h"
 
 /*MyCode*/
+#include "..\..\..\..\biggod.dev\Ctrl\Utility.hpp"
 #include "..\..\..\..\biggod.app\PDFEditor\sumatrapdf_intf.h"
 extern SumatraPdfIntf* g_pIntf;
 
@@ -5058,6 +5059,27 @@ static HPDFOBJ GetNextPdfObj(HPDFOBJ hObj)
 	return (HPDFOBJ)node->next;
 }
 
+static SumatraPdfIntf::ObjType GetObjType(HPDFOBJ hObj)
+{
+	if(!hObj)
+		SumatraPdfIntf::OT_Unknown;
+
+	fz_display_node* node = (fz_display_node*)hObj;
+	switch(node->cmd)
+	{
+	case FZ_CMD_FILL_TEXT:
+	case FZ_CMD_STROKE_TEXT:
+		return SumatraPdfIntf::OT_Text;
+		break;
+	case FZ_CMD_CLIP_IMAGE_MASK:
+	case FZ_CMD_FILL_IMAGE_MASK:
+		return SumatraPdfIntf::OT_Image;
+		break;
+	}
+
+	return SumatraPdfIntf::OT_Unknown;
+}
+
 static WCHAR* ExtractObjLineText(int pageNo, HPDFOBJ hObj, const FPoint* fPt, SumatraPdfIntf::LineTextResult& ltr)
 {
 	WindowInfo* win = WindowInfo::g_pWinInf;
@@ -5095,11 +5117,61 @@ static BOOL MoveObject(int pageNo, HPDFOBJ hObj, const FPoint& relMove)
 	if(!hObj)
 		return FALSE;
 
-	BOOL bRet = win->dm->textSelection->MoveObject(pageNo,hObj,relMove);
-	if(bRet)
+	BOOL bRet = FALSE;
+
+	SumatraPdfIntf::ObjType ot = GetObjType(hObj);
+
+	if(ot==SumatraPdfIntf::OT_Text)
 	{
-		gRenderCache.DropAllCache();
-		win->dm->Redraw();
+		bRet = win->dm->textSelection->MoveObject(pageNo,hObj,relMove);
+		if(bRet)
+		{
+			gRenderCache.DropAllCache();
+			win->dm->Redraw();
+		}
+	}
+	else if(ot==SumatraPdfIntf::OT_Image)
+	{
+		fz_display_node* node = (fz_display_node*)hObj;
+		if(node->cmd==FZ_CMD_CLIP_IMAGE_MASK)
+		{
+			if(node->next && node->next->cmd==FZ_CMD_FILL_IMAGE)
+			{
+				if(AnyEqual(node->rect,node->next->rect))
+				{
+					BOOL bPopClip = FALSE;
+					if(node->next->next && node->next->next->cmd==FZ_CMD_POP_CLIP)
+					{
+						if(AnyEqual(node->rect,node->next->next->rect))
+						{
+							bPopClip = TRUE;
+						}
+					}
+
+					node->rect.x0 += (float)relMove.x;
+					node->rect.y0 += (float)relMove.y;
+					node->rect.x1 += (float)relMove.x;
+					node->rect.y1 += (float)relMove.y;
+
+					node->ctm.e += (float)relMove.x;
+					node->ctm.f += (float)relMove.y;
+
+					node->next->rect = node->rect;
+
+					node->next->ctm.e += (float)relMove.x;
+					node->next->ctm.f += (float)relMove.y;
+	
+					if(bPopClip)
+						node->next->next->rect = node->rect;
+					
+
+					gRenderCache.DropAllCache();
+					win->dm->Redraw();
+
+					bRet = TRUE;
+				}
+			}
+		}
 	}
 	return bRet;
 }
@@ -5843,6 +5915,7 @@ int APIENTRY LaunchPdf(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmd
 	g_pIntf->ExtractObjLineText = ExtractObjLineText;
 	g_pIntf->FreeMem = FreeMem;
 	g_pIntf->GetObjRect = GetObjRect;
+	g_pIntf->GetObjType = GetObjType;
 	g_pIntf->CvtToScreen = CvtToScreen;
 	g_pIntf->CvtFromScreen = CvtFromScreen;
 	g_pIntf->GetPageNoByPoint = GetPageNoByPoint;
