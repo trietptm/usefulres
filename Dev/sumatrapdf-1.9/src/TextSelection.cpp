@@ -527,13 +527,16 @@ BOOL TextSelection::DeleteCharByPos(int pageNo, HPDFOBJ hObj, const PointD& pt, 
 	pageTextLen = lens[pageNo - 1];
 	
 	double widthDelta = -pageCoords[iPosDel].dx;
+	double heightDelta = -pageCoords[iPosDel].dx;
 	if(iPosDel + 1 < pageTextLen)
 	{
 		widthDelta = -(pageCoords[iPosDel + 1].x - pageCoords[iPosDel].x);
+		heightDelta = -(pageCoords[iPosDel + 1].y - pageCoords[iPosDel].y);
 	}
 
 	if(updateRect)
 	{
+#if 0
 		if(iPosDel < pageTextLen)
 		{
 			RectD mediabox = engine->PageMediabox(pageNo);
@@ -543,6 +546,23 @@ BOOL TextSelection::DeleteCharByPos(int pageNo, HPDFOBJ hObj, const PointD& pt, 
 			updateRect->dx = (mediabox.x + mediabox.dx) - updateRect->x;
 			updateRect->dy = pageCoords[iPosDel].dy;
 		}
+#else
+		assert(iPosDel < pageTextLen);
+		{
+			PointD pt;
+			pt.x = pageCoords[iPosDel].x +  pageCoords[iPosDel].dx / 2.0;
+			pt.y = pageCoords[iPosDel].y +  pageCoords[iPosDel].dy / 2.0;
+
+			DOUBLE xCursor;
+			FRect rtTextNew;
+			GetObjLineText(pageNo,hObj,&pt,&rtTextNew,&xCursor);
+
+			updateRect->x = rtTextNew.x0;
+			updateRect->y = rtTextNew.y0;
+			updateRect->dx = rtTextNew.x1 - rtTextNew.x0;
+			updateRect->dy = rtTextNew.y1 - rtTextNew.y0;
+		}
+#endif
 	}
 
 	INT indexChanged = 0;
@@ -580,13 +600,19 @@ BOOL TextSelection::DeleteCharByPos(int pageNo, HPDFOBJ hObj, const PointD& pt, 
 	for(INT i = iPosDel;i < pageTextLen;i++)
 	{
 		if(pageText[i]=='\n')
+		{
 			widthDelta = 0;
+			heightDelta = 0;
+		}
 
 		char_inf& ci = pageChInf[i];
 		if(ci.iItem==-1)
 		{
 			if(widthDelta)
+			{
 				pageCoords[i].x += widthDelta;
+				pageCoords[i].y += heightDelta;
+			}
 
 			continue;
 		}
@@ -599,13 +625,16 @@ BOOL TextSelection::DeleteCharByPos(int pageNo, HPDFOBJ hObj, const PointD& pt, 
 			if(widthDelta)
 			{
 				ci.node->item.text->items[ci.iItem].x += (float)widthDelta;
+				ci.node->item.text->items[ci.iItem].y += (float)heightDelta;
 
 				if(ci.node->last && ci.node->last->is_dup)
 				{
 					ci.node->last->item.text->items[ci.iItem].x += (float)widthDelta;
+					ci.node->last->item.text->items[ci.iItem].y += (float)heightDelta;
 				}
 
 				pageCoords[i].x += (float)widthDelta;
+				pageCoords[i].y += (float)heightDelta;
 			}
 		}
 	}
@@ -1031,6 +1060,15 @@ BOOL TextSelection::InsertCharByPos(int pageNo, HPDFOBJ hObj, const PointD& pt, 
 			updateRect->dx = rtTextNew.x1 - rtTextNew.x0;
 			updateRect->dy = rtTextNew.y1 - rtTextNew.y0;
 		}
+
+		if(updateRect->x < node->rect.x0)
+			node->rect.x0 = (float)updateRect->x;
+		if(updateRect->y < node->rect.y0)
+			node->rect.y0 = (float)updateRect->y;
+		if(updateRect->x + updateRect->dx > node->rect.x1)
+			node->rect.x1 = (float)(updateRect->x + updateRect->dx);
+		if(updateRect->y + updateRect->dy > node->rect.y1)
+			node->rect.y1 = (float)(updateRect->y + updateRect->dy);
 	}
 
 	return TRUE;
@@ -1246,6 +1284,7 @@ BOOL TextSelection::UpdateTextPos(int pageNo, fz_display_node* node, FRect* rtTe
 	float heightRate = newLineHeight / oldLineHeight;
 	float newBtmSpace = oldBtmSpace * heightRate;
 
+#if 0
 	node->rect.y0 = node->item.text->items[0].y - newBtmSpace;
 	node->rect.y1 = node->rect.y0 + newLineHeight;
 
@@ -1253,6 +1292,7 @@ BOOL TextSelection::UpdateTextPos(int pageNo, fz_display_node* node, FRect* rtTe
 	{
 		node->last->rect = node->rect;
 	}
+#endif
 
 	WCHAR* pageText = text[pageNo - 1];
 	RectD* pageCoords = coords[pageNo - 1];
@@ -1275,26 +1315,39 @@ BOOL TextSelection::UpdateTextPos(int pageNo, fz_display_node* node, FRect* rtTe
 
 			assert(ci.iItem >= 0 && ci.iItem < ci.node->item.text->len);
 			pageCoords[i].x = ci.node->item.text->items[ci.iItem].x;
+			pageCoords[i].y = ci.node->item.text->items[ci.iItem].y;
 
 			float chWidth, lineHeight;
 			if(fz_get_char_width_line_height(node->item.text,i,&chWidth,&lineHeight))
 			{
 				pageCoords[i].dx = chWidth;
+				pageCoords[i].dy = lineHeight;
 			}
 		}
-
-		pageCoords[i].y = node->rect.y0;
-		pageCoords[i].dy = node->rect.y1 - node->rect.y0;
 	}
 
-	if(rtText && iFirstGoodCh != -1)
+	if(/*rtText && */iFirstGoodCh != -1)
 	{
 		PointD pt;
 		pt.x = pageCoords[iFirstGoodCh].x +  pageCoords[iFirstGoodCh].dx / 2.0;
 		pt.y = pageCoords[iFirstGoodCh].y +  pageCoords[iFirstGoodCh].dy / 2.0;
 
 		DOUBLE xCursor;
-		GetObjLineText(pageNo,(HPDFOBJ)node,&pt,rtText,&xCursor);
+		FRect rtNewText;
+		GetObjLineText(pageNo,(HPDFOBJ)node,&pt,&rtNewText,&xCursor);
+
+		node->rect.x0 = (float)rtNewText.x0;
+		node->rect.y0 = (float)rtNewText.y0;
+		node->rect.x1 = (float)rtNewText.x1;
+		node->rect.y1 = (float)rtNewText.y1;		
+
+		if(node->last && node->last->is_dup)
+		{
+			node->last->rect = node->rect;
+		}
+
+		if(rtText)
+			*rtText = rtNewText;
 	}
 
 	return TRUE;
