@@ -278,6 +278,7 @@ INT TextSelection::GetObjLineText(int pageNo, HPDFOBJ hObj, const PointD* pt, FR
 				if(iObjFirstCh == -1)
 					break;
 
+#if 0
 				int iFirstGoodCh = -1;
 				for(int i = iObjFirstCh;i < textLen;i++)
 				{
@@ -295,6 +296,9 @@ INT TextSelection::GetObjLineText(int pageNo, HPDFOBJ hObj, const PointD* pt, FR
 						break;
 					}
 				}
+#else
+				int iFirstGoodCh = iObjFirstCh;
+#endif
 
 				if(iFirstGoodCh != -1)
 				{
