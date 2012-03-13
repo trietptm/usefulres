@@ -5075,6 +5075,11 @@ static SumatraPdfIntf::ObjType GetObjType(HPDFOBJ hObj)
 	case FZ_CMD_FILL_IMAGE_MASK:
 		return SumatraPdfIntf::OT_Image;
 		break;
+	case FZ_CMD_STROKE_PATH:
+		return SumatraPdfIntf::OT_Path;
+		break;
+	default:
+		break;
 	}
 
 	return SumatraPdfIntf::OT_Unknown;
@@ -5171,6 +5176,25 @@ static BOOL MoveObject(int pageNo, HPDFOBJ hObj, const FPoint& relMove)
 					bRet = TRUE;
 				}
 			}
+		}
+	}
+	else if(ot==SumatraPdfIntf::OT_Path)
+	{
+		fz_display_node* node = (fz_display_node*)hObj;
+		if(node->cmd==FZ_CMD_STROKE_PATH)
+		{
+			node->rect.x0 += (float)relMove.x;
+			node->rect.y0 += (float)relMove.y;
+			node->rect.x1 += (float)relMove.x;
+			node->rect.y1 += (float)relMove.y;
+
+			node->ctm.e += (float)relMove.x;
+			node->ctm.f += (float)relMove.y;
+
+			gRenderCache.DropAllCache();
+			win->dm->Redraw();
+
+			bRet = TRUE;
 		}
 	}
 	return bRet;
@@ -5508,20 +5532,31 @@ static BOOL GetPropertyDescr(HPDFOBJ hObj,LPCTSTR lpPropName,LPSTR lpDescr)
 {
 	fz_display_node* node = (fz_display_node*)hObj;
 
+	SumatraPdfIntf::ObjType ot = GetObjType(hObj);
+
 	if(lstrcmp(lpPropName,_T("Char Space"))==0)
 	{
+		if(ot != SumatraPdfIntf::OT_Text)
+			return FALSE;
+
 		snprintf(lpDescr,MAX_PATH - 1,"%.2f",node->item.text->gstate.char_space);
 
 		return TRUE;
 	}
 	else if(lstrcmp(lpPropName,_T("Word Space"))==0)
 	{
+		if(ot != SumatraPdfIntf::OT_Text)
+			return FALSE;
+
 		snprintf(lpDescr,MAX_PATH - 1,"%.2f",node->item.text->gstate.word_space);
 
 		return TRUE;
 	}
 	else if(lstrcmp(lpPropName,_T("Text Mode"))==0)
 	{
+		if(ot != SumatraPdfIntf::OT_Text)
+			return FALSE;
+
 		switch(node->cmd)
 		{
 		case FZ_CMD_FILL_TEXT:
@@ -5539,6 +5574,9 @@ static BOOL GetPropertyDescr(HPDFOBJ hObj,LPCTSTR lpPropName,LPSTR lpDescr)
 	}
 	else if(lstrcmp(lpPropName,_T("Font"))==0)
 	{
+		if(ot != SumatraPdfIntf::OT_Text)
+			return FALSE;
+
 		if(node->item.text && node->item.text->font)
 		{
 			lstrcpynA(lpDescr,node->item.text->font->name,MAX_PATH - 1);
@@ -5547,6 +5585,9 @@ static BOOL GetPropertyDescr(HPDFOBJ hObj,LPCTSTR lpPropName,LPSTR lpDescr)
 	}
 	else if(lstrcmp(lpPropName,_T("Font Size"))==0)
 	{
+		if(ot != SumatraPdfIntf::OT_Text)
+			return FALSE;
+
 		if(node->item.text)
 		{
 			float size = fz_matrix_expansion(node->item.text->trm);
@@ -5556,22 +5597,35 @@ static BOOL GetPropertyDescr(HPDFOBJ hObj,LPCTSTR lpPropName,LPSTR lpDescr)
 	}
 	else if(lstrcmp(lpPropName,_T("Position X(points)"))==0)
 	{
+#if 0
 		if(node->item.text)
 		{
 			snprintf(lpDescr,MAX_PATH - 1,"%.2f",node->item.text->gstate.tm.e);
 			return TRUE;
 		}
+#else
+		snprintf(lpDescr,MAX_PATH - 1,"%.2f",node->ctm.e);
+		return TRUE;
+#endif
 	}
 	else if(lstrcmp(lpPropName,_T("Position Y(points)"))==0)
 	{
+#if 0
 		if(node->item.text)
 		{
 			snprintf(lpDescr,MAX_PATH - 1,"%.2f",node->item.text->gstate.tm.f);
 			return TRUE;
 		}
+#else
+		snprintf(lpDescr,MAX_PATH - 1,"%.2f",node->ctm.f);
+		return TRUE;
+#endif
 	}
 	else if(lstrcmp(lpPropName,_T("Horizontal Scale(%)"))==0)
 	{
+		if(ot != SumatraPdfIntf::OT_Text)
+			return FALSE;
+
 		if(node->item.text)
 		{
 			double fRate = (node->item.text->trm.a / node->item.text->trm.d) * 100.0;
@@ -5581,6 +5635,9 @@ static BOOL GetPropertyDescr(HPDFOBJ hObj,LPCTSTR lpPropName,LPSTR lpDescr)
 	}
 	else if(lstrcmp(lpPropName,_T("Fill Color"))==0 && node->item.text)
 	{
+		if(ot != SumatraPdfIntf::OT_Text)
+			return FALSE;
+
 		if(node->cmd==FZ_CMD_STROKE_TEXT)
 		{
 			if(node->last && node->last->is_dup && node->last->cmd==FZ_CMD_FILL_TEXT)
@@ -5613,6 +5670,9 @@ static BOOL GetPropertyDescr(HPDFOBJ hObj,LPCTSTR lpPropName,LPSTR lpDescr)
 	}
 	else if(lstrcmp(lpPropName,_T("Stroke Color"))==0 && node->item.text)
 	{
+		if(ot != SumatraPdfIntf::OT_Text)
+			return FALSE;
+
 		INT r = 0,g = 0,b = 0,a = 100;
 
 		if(node->item.text->gstate.stroke_colorspace_n >= 1)
