@@ -5075,7 +5075,9 @@ static SumatraPdfIntf::ObjType GetObjType(HPDFOBJ hObj)
 	case FZ_CMD_FILL_IMAGE_MASK:
 		return SumatraPdfIntf::OT_Image;
 		break;
+	case FZ_CMD_CLIP_PATH:
 	case FZ_CMD_STROKE_PATH:
+	case FZ_CMD_FILL_SHADE:
 		return SumatraPdfIntf::OT_Path;
 		break;
 	default:
@@ -5195,6 +5197,45 @@ static BOOL MoveObject(int pageNo, HPDFOBJ hObj, const FPoint& relMove)
 			win->dm->Redraw();
 
 			bRet = TRUE;
+		}
+		else if(node->cmd==FZ_CMD_CLIP_PATH)
+		{
+			if(node->next && node->next->cmd==FZ_CMD_FILL_SHADE)
+			{
+				//if(AnyEqual(node->rect,node->next->rect))
+				{
+					BOOL bPopClip = FALSE;
+					if(node->next->next && node->next->next->cmd==FZ_CMD_POP_CLIP)
+					{
+						if(AnyEqual(node->rect,node->next->next->rect))
+						{
+							bPopClip = TRUE;
+						}
+					}
+
+					node->rect.x0 += (float)relMove.x;
+					node->rect.y0 += (float)relMove.y;
+					node->rect.x1 += (float)relMove.x;
+					node->rect.y1 += (float)relMove.y;
+
+					node->ctm.e += (float)relMove.x;
+					node->ctm.f += (float)relMove.y;
+
+					//node->next->rect = node->rect;
+
+					node->next->ctm.e += (float)relMove.x;
+					node->next->ctm.f += (float)relMove.y;
+
+					if(bPopClip)
+						node->next->next->rect = node->rect;
+
+
+					gRenderCache.DropAllCache();
+					win->dm->Redraw();
+
+					bRet = TRUE;
+				}
+			}
 		}
 	}
 	return bRet;
