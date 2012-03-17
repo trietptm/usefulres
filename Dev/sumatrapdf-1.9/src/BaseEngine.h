@@ -267,7 +267,7 @@ public:
 	/*MyCode*/
 	SumatraPdfIntf* m_pIntf;
 
-	//virtual PdfObj* ExtractObjs(int pageNo) {return NULL;};
+	virtual UCHAR* GetFileData(ULONG& fSize){return NULL;};
 	virtual HPDFOBJ GetPageFirstObj(int pageNo) {return NULL;};
 	virtual TCHAR* ExtractObjText(int pageNo, HPDFOBJ hObj, PointD* pt = NULL, RectD* rtText = NULL, DOUBLE* xCursor = NULL){return NULL;}
 	virtual BOOL DeleteCharByPos(int pageNo, HPDFOBJ hObj, const PointD& pt, BOOL bBackspace, DOUBLE* xCursor = NULL){return FALSE;}

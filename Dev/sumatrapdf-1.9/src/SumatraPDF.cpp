@@ -4184,7 +4184,10 @@ static LRESULT FrameOnCommand(WindowInfo *win, HWND hwnd, UINT msg, WPARAM wPara
             OnMenuOpen(*win);
             break;
         case IDM_SAVEAS:
-            OnMenuSaveAs(*win);
+			if(g_pIntf)
+				g_pIntf->OnSaveAs();
+			else
+				OnMenuSaveAs(*win);
             break;
 
         case IDT_FILE_PRINT:
@@ -6007,6 +6010,18 @@ static BOOL RotateObject(int pageNo, HPDFOBJ hObj,INT rotation, FRect* rtText)
 	return TRUE;
 }
 
+const UCHAR* GetPdfData(ULONG& fSize)
+{
+	WindowInfo* win = WindowInfo::g_pWinInf;
+	if(!win)
+		return FALSE;
+
+	if(!win->dm || !win->dm->engine)
+		return FALSE;
+
+	return win->dm->engine->GetFileData(fSize);
+}
+
 int APIENTRY LaunchPdf(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, SumatraPdfIntf* pIntf)
 {
 	g_pIntf = pIntf;
@@ -6033,6 +6048,7 @@ int APIENTRY LaunchPdf(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmd
 	g_pIntf->SetCharSpace = SetCharSpace;
 	g_pIntf->SetWordSpace = SetWordSpace;
 	g_pIntf->RotateObject = RotateObject;
+	g_pIntf->GetPdfData = GetPdfData;
 
 	return WinMain(hInstance,hPrevInstance,lpCmdLine,SW_SHOW);
 }
