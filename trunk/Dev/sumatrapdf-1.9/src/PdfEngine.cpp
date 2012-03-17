@@ -915,7 +915,7 @@ public:
     virtual void RunGC();
 
 	/*MyCode*/
-	//virtual PdfObj* ExtractObjs(int pageNo);
+	virtual UCHAR* GetFileData(ULONG& fSize);
 	virtual HPDFOBJ GetPageFirstObj(int pageNo);
 	virtual TCHAR* ExtractObjText(int pageNo, HPDFOBJ hObj, PointD* pt = NULL, RectD* rtText = NULL, DOUBLE* xCursor = NULL);
 	virtual BOOL DeleteCharByPos(int pageNo, HPDFOBJ hObj, const PointD& pt, BOOL bBackspace, DOUBLE* xCursor = NULL);
@@ -1466,6 +1466,14 @@ fz_error CPdfEngine::RunPage(pdf_page *page, fz_device *dev, fz_matrix ctm, Rend
 }
 
 /*MyCode*/
+UCHAR* CPdfEngine::GetFileData(ULONG& fSize)
+{
+	if(!_xref->file)
+		return NULL;
+
+	fSize = _xref->file->ep - _xref->file->bp;
+	return _xref->file->bp;
+}
 HPDFOBJ CPdfEngine::GetPageFirstObj(int pageNo)
 {
 	pdf_page *page = GetPdfPage(pageNo, true);
