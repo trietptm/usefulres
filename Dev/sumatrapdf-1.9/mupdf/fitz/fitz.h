@@ -1236,6 +1236,7 @@ struct fz_display_node_s
 	/*MyCode*/
 	fz_display_node *last;
 	int is_dup; //ÖØ¸´µÄ
+	int cont_pos; //page content position
 	//////////////////////////////////////////////////////////////////////////
 
 	fz_rect rect;

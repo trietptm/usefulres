@@ -5572,6 +5572,28 @@ static BOOL SetObjectFont(int pageNo, HPDFOBJ hObj,LPCSTR lpFontName, FRect* rtT
 	return TRUE;
 }
 
+static BOOL GetFirstElementPos(HPDFOBJ hObj,FPoint& pos)
+{
+	fz_display_node* node = (fz_display_node*)hObj;
+
+	switch(node->cmd)
+	{
+	case FZ_CMD_FILL_TEXT:
+	case FZ_CMD_STROKE_TEXT:
+		if(node->item.text && node->item.text->len > 0)
+		{
+			pos.x = node->item.text->items[0].x;
+			pos.y = node->item.text->items[0].y;
+			return TRUE;
+		}
+		break;
+	default:
+		break;
+	};
+
+	return FALSE;
+}
+
 static BOOL GetPropertyDescr(HPDFOBJ hObj,LPCTSTR lpPropName,LPSTR lpDescr)
 {
 	fz_display_node* node = (fz_display_node*)hObj;
@@ -6010,7 +6032,7 @@ static BOOL RotateObject(int pageNo, HPDFOBJ hObj,INT rotation, FRect* rtText)
 	return TRUE;
 }
 
-const UCHAR* GetPdfData(ULONG& fSize)
+static const UCHAR* GetPdfData(ULONG& fSize)
 {
 	WindowInfo* win = WindowInfo::g_pWinInf;
 	if(!win)
@@ -6020,6 +6042,23 @@ const UCHAR* GetPdfData(ULONG& fSize)
 		return FALSE;
 
 	return win->dm->engine->GetFileData(fSize);
+}
+
+static const CHAR* GetPageContent(int pageNo, INT& len)
+{
+	WindowInfo* win = WindowInfo::g_pWinInf;
+	if(!win)
+		return FALSE;
+
+	if(!win->dm || !win->dm->engine)
+		return FALSE;
+
+	pdf_page* pPage = win->dm->engine->GetPdfPage(pageNo,true);
+	if(!pPage)
+		return NULL;
+
+	len = pPage->contents->len;
+	return (CHAR*)pPage->contents->data;
 }
 
 int APIENTRY LaunchPdf(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, SumatraPdfIntf* pIntf)
@@ -6040,6 +6079,7 @@ int APIENTRY LaunchPdf(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmd
 	g_pIntf->InsertCharByPos = InsertCharByPos;
 	g_pIntf->MoveCursor = MoveCursor;
 	g_pIntf->GetPropertyDescr = GetPropertyDescr;
+	g_pIntf->GetFirstElementPos = GetFirstElementPos;
 	g_pIntf->MoveObject = MoveObject;
 	g_pIntf->SetFillColor = SetFillColor;
 	g_pIntf->SetStrokeColor = SetStrokeColor;
@@ -6049,6 +6089,7 @@ int APIENTRY LaunchPdf(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmd
 	g_pIntf->SetWordSpace = SetWordSpace;
 	g_pIntf->RotateObject = RotateObject;
 	g_pIntf->GetPdfData = GetPdfData;
+	g_pIntf->GetPageContent = GetPageContent;
 
 	return WinMain(hInstance,hPrevInstance,lpCmdLine,SW_SHOW);
 }

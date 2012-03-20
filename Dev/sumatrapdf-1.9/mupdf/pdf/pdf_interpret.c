@@ -2287,6 +2287,10 @@ pdf_run_keyword(pdf_csi *csi, fz_obj *rdb, fz_stream *file, char *buf)
 	return fz_okay;
 }
 
+/*MyCode*/
+fz_stream *g_running_stream;
+//////////////////////////////////////////////////////////////////////////
+
 static fz_error
 pdf_run_stream(pdf_csi *csi, fz_obj *rdb, fz_stream *file, char *buf, int buflen)
 {
@@ -2296,6 +2300,8 @@ pdf_run_stream(pdf_csi *csi, fz_obj *rdb, fz_stream *file, char *buf, int buflen
 	/* make sure we have a clean slate if we come here from flush_text */
 	pdf_clear_stack(csi);
 	in_array = 0;
+
+	g_running_stream = file; //MyCode
 
 	while (1)
 	{
