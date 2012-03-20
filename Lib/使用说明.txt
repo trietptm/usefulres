@@ -16,3 +16,20 @@ if(img.Load(sPngFile))
 {
 	img.Save(_T("down.bmp"),CXIMAGE_FORMAT_BMP);
 }
+
+zlibMfcStatic.lib:
+#include "..\..\usefulres\Include\zlib.h"
+#pragma comment(lib,"../../usefulres/Lib/zlibMfcStatic.lib")
+
+—πÀı£∫
+UCHAR* pBuf = (UCHAR*)::malloc(1024);
+Ptr ptr(pBuf);
+ULONG size = 1024;
+compress(pBuf,&size,(UCHAR*)pageCont,lenPageCont);
+
+Ω‚—πÀı£∫
+UCHAR* pBuf = (UCHAR*)::malloc(m_fSize);
+Ptr ptr(pBuf);
+ULONG size = fSize;
+if(uncompress(pBuf,&size,pData,fSize)!=Z_OK || size!=fSize)
+	return FALSE;
