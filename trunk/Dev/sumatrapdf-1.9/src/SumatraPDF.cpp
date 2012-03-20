@@ -5594,6 +5594,97 @@ static BOOL GetFirstElementPos(HPDFOBJ hObj,FPoint& pos)
 	return FALSE;
 }
 
+static INT GetObjContentPos(HPDFOBJ hObj)
+{
+	fz_display_node* node = (fz_display_node*)hObj;
+	return node->cont_pos;
+}
+
+static BOOL GetObjOutputText(HPDFOBJ hObj,LPWSTR& lpOutText)
+{
+	fz_display_node* node = (fz_display_node*)hObj;
+
+	switch(node->cmd)
+	{
+	case FZ_CMD_FILL_TEXT:
+	case FZ_CMD_STROKE_TEXT:
+		if(node->item.text && node->item.text->len > 0)
+		{
+			INT bufSize = 0;
+			INT len = 0;
+			WCHAR* buf = NULL;
+			EnsureBufSize(&buf,bufSize,len,node->item.text->len + 1,EBS_CAlloc | EBS_ZeroInit);
+
+			buf[len] = '[';
+			buf[len + 1] = 0;
+			len++;
+
+			BOOL bBrackets = FALSE;
+			WCHAR ofsBuf[MAX_PATH] = {0};
+
+			for(INT i = 0;i < node->item.text->len;i++)
+			{
+				if(!bBrackets)
+				{
+					EnsureBufSize(&buf,bufSize,len,len + 1 + 1,EBS_CAlloc | EBS_ZeroInit);
+					buf[len] = '(';
+					buf[len + 1] = 0;
+					len++;
+
+					bBrackets = TRUE;
+				}
+
+				EnsureBufSize(&buf,bufSize,len,len + 1 + 1,EBS_CAlloc | EBS_ZeroInit);
+				buf[len] = node->item.text->items[i].ucs;
+				buf[len + 1] = 0;
+				len++;
+
+				if(node->item.text->items[i].offset==0.0)
+					continue;
+
+				if(bBrackets)
+				{
+					EnsureBufSize(&buf,bufSize,len,len + 1 + 1,EBS_CAlloc | EBS_ZeroInit);
+					buf[len] = ')';
+					buf[len + 1] = 0;
+					len++;
+
+					bBrackets = FALSE;
+				}
+
+				_snwprintf(ofsBuf,MAX_PATH - 1,L"%.2f",node->item.text->items[i].offset);
+				INT ofsBufLen = wcslen(ofsBuf);
+				EnsureBufSize(&buf,bufSize,len,len + 1 + ofsBufLen,EBS_CAlloc | EBS_ZeroInit);
+				memcpy(&buf[len],ofsBuf,(ofsBufLen + 1) * sizeof(WCHAR));
+				len += ofsBufLen;
+			}
+
+			if(bBrackets)
+			{
+				EnsureBufSize(&buf,bufSize,len,len + 1 + 1,EBS_CAlloc | EBS_ZeroInit);
+				buf[len] = ')';
+				buf[len + 1] = 0;
+				len++;
+
+				bBrackets = FALSE;
+			}
+
+			EnsureBufSize(&buf,bufSize,len,len + 1 + 1,EBS_CAlloc | EBS_ZeroInit);
+			buf[len] = ']';
+			buf[len + 1] = 0;
+			len++;
+			
+			lpOutText = buf;
+			return TRUE;
+		}
+		break;
+	default:
+		break;
+	};
+
+	return FALSE;
+}
+
 static BOOL GetPropertyDescr(HPDFOBJ hObj,LPCTSTR lpPropName,LPSTR lpDescr)
 {
 	fz_display_node* node = (fz_display_node*)hObj;
@@ -6080,6 +6171,8 @@ int APIENTRY LaunchPdf(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmd
 	g_pIntf->MoveCursor = MoveCursor;
 	g_pIntf->GetPropertyDescr = GetPropertyDescr;
 	g_pIntf->GetFirstElementPos = GetFirstElementPos;
+	g_pIntf->GetObjContentPos = GetObjContentPos;
+	g_pIntf->GetObjOutputText = GetObjOutputText;
 	g_pIntf->MoveObject = MoveObject;
 	g_pIntf->SetFillColor = SetFillColor;
 	g_pIntf->SetStrokeColor = SetStrokeColor;
