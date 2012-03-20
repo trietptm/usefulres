@@ -939,7 +939,7 @@ protected:
     bool            Load(fz_stream *stm, PasswordUI *pwdUI=NULL);
     bool            LoadFromStream(fz_stream *stm, PasswordUI *pwdUI=NULL);
     bool            FinishLoading();
-    pdf_page      * GetPdfPage(int pageNo, bool failIfBusy=false);
+    virtual pdf_page      * GetPdfPage(int pageNo, bool failIfBusy=false);
     fz_matrix       viewctm(int pageNo, float zoom, int rotation);
     fz_matrix       viewctm(pdf_page *page, float zoom, int rotation);
     bool            RenderPage(HDC hDC, pdf_page *page, RectI screenRect,

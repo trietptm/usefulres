@@ -14,6 +14,7 @@
 extern "C" {
 __pragma(warning(push))
 #include "..\mupdf\fitz\fitz.h"
+#include "..\mupdf\pdf\mupdf.h"
 __pragma(warning(pop))
 }
 //////////////////////////////////////////////////////////////////////////
@@ -271,6 +272,7 @@ public:
 	virtual HPDFOBJ GetPageFirstObj(int pageNo) {return NULL;};
 	virtual TCHAR* ExtractObjText(int pageNo, HPDFOBJ hObj, PointD* pt = NULL, RectD* rtText = NULL, DOUBLE* xCursor = NULL){return NULL;}
 	virtual BOOL DeleteCharByPos(int pageNo, HPDFOBJ hObj, const PointD& pt, BOOL bBackspace, DOUBLE* xCursor = NULL){return FALSE;}
+	virtual pdf_page* GetPdfPage(int pageNo, bool failIfBusy=false){return NULL;}
 	//////////////////////////////////////////////////////////////////////////
 };
 

@@ -64,6 +64,10 @@ struct fz_display_list_s
 
 #endif
 
+/*MyCode*/
+extern fz_stream *g_running_stream;
+//////////////////////////////////////////////////////////////////////////
+
 enum { ISOLATED = 1, KNOCKOUT = 2 };
 
 static fz_display_node *
@@ -77,9 +81,13 @@ fz_new_display_node(fz_display_command cmd, fz_matrix ctm,
 	node->cmd = cmd;
 	node->next = NULL;
 
-	node->last = NULL; //MyCode
-	node->is_dup = 0; //MyCode
-
+	/*MyCode*/
+	node->last = NULL;
+	node->is_dup = 0;
+	assert(g_running_stream);
+	node->cont_pos = g_running_stream->rp - g_running_stream->bp;
+	//////////////////////////////////////////////////////////////////////////
+	
 	node->rect = fz_empty_rect;
 	node->item.path = NULL;
 	node->stroke = NULL;
