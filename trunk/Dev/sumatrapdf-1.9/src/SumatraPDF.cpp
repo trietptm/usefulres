@@ -5775,6 +5775,58 @@ static BOOL GetObjStrokeCode(HPDFOBJ hObj,LPSTR lpOutCode)
 	return FALSE;
 }
 
+static BOOL GetObjFillAlpha(HPDFOBJ hObj,float& alpha)
+{
+	fz_display_node* node = (fz_display_node*)hObj;
+
+	switch(node->cmd)
+	{
+	case FZ_CMD_FILL_TEXT:
+	case FZ_CMD_STROKE_TEXT:
+		{
+			if(node->cmd==FZ_CMD_STROKE_TEXT)
+			{
+				if(node->last && node->last->is_dup && node->last->cmd==FZ_CMD_FILL_TEXT)
+					node = node->last;
+			}
+
+			alpha = node->item.text->gstate.fill_alpha;
+			return TRUE;
+		}
+		break;
+	default:
+		break;
+	}
+
+	return FALSE;
+}
+
+static BOOL GetObjStrokeAlpha(HPDFOBJ hObj,float& alpha)
+{
+	fz_display_node* node = (fz_display_node*)hObj;
+
+	switch(node->cmd)
+	{
+	case FZ_CMD_FILL_TEXT:
+	case FZ_CMD_STROKE_TEXT:
+		{
+			if(node->cmd==FZ_CMD_FILL_TEXT)
+			{
+				if(node->next && node->is_dup && node->next->cmd==FZ_CMD_STROKE_TEXT)
+					node = node->next;
+			}
+
+			alpha = node->item.text->gstate.stroke_alpha;
+			return TRUE;
+		}
+		break;
+	default:
+		break;
+	}
+
+	return FALSE;
+}
+
 static BOOL GetPropertyDescr(HPDFOBJ hObj,LPCTSTR lpPropName,LPSTR lpDescr)
 {
 	fz_display_node* node = (fz_display_node*)hObj;
@@ -6265,6 +6317,8 @@ int APIENTRY LaunchPdf(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmd
 	g_pIntf->GetObjOutputText = GetObjOutputText;
 	g_pIntf->GetObjFillCode = GetObjFillCode;
 	g_pIntf->GetObjStrokeCode = GetObjStrokeCode;
+	g_pIntf->GetObjFillAlpha = GetObjFillAlpha;
+	g_pIntf->GetObjStrokeAlpha = GetObjStrokeAlpha;
 	g_pIntf->MoveObject = MoveObject;
 	g_pIntf->SetFillColor = SetFillColor;
 	g_pIntf->SetStrokeColor = SetStrokeColor;
