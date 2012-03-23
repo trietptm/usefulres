@@ -5894,6 +5894,37 @@ static float GetObjFontYSize(HPDFOBJ hObj)
 	return 0.0;
 }
 
+static BOOL GetObjTextMatrix(HPDFOBJ hObj, Matrix& mat)
+{
+	fz_display_node* node = (fz_display_node*)hObj;
+
+	switch(node->cmd)
+	{
+	case FZ_CMD_FILL_TEXT:
+	case FZ_CMD_STROKE_TEXT:
+		{
+			//返回gstate.tm而不返回trm，以使得保存文件时尽量不修改原文件内容
+#if 0
+			mat.a = node->item.text->trm.a;
+			mat.b = node->item.text->trm.b;
+			mat.c = node->item.text->trm.c;
+			mat.d = node->item.text->trm.d;
+#else
+			mat.a = node->item.text->gstate.tm.a;
+			mat.b = node->item.text->gstate.tm.b;
+			mat.c = node->item.text->gstate.tm.c;
+			mat.d = node->item.text->gstate.tm.d;
+#endif
+			return TRUE;
+		}
+		break;
+	default:
+		break;
+	}
+
+	return FALSE;
+}
+
 static BOOL GetPropertyDescr(HPDFOBJ hObj,LPCTSTR lpPropName,LPSTR lpDescr)
 {
 	fz_display_node* node = (fz_display_node*)hObj;
@@ -6389,6 +6420,7 @@ int APIENTRY LaunchPdf(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmd
 	g_pIntf->GetObjFontName = GetObjFontName;
 	g_pIntf->GetObjFontSize = GetObjFontSize;
 	g_pIntf->GetObjFontYSize = GetObjFontYSize;
+	g_pIntf->GetObjTextMatrix = GetObjTextMatrix;
 	g_pIntf->MoveObject = MoveObject;
 	g_pIntf->SetFillColor = SetFillColor;
 	g_pIntf->SetStrokeColor = SetStrokeColor;
