@@ -623,7 +623,8 @@ pdf_load_simple_font(pdf_font_desc **fontdescp, pdf_xref *xref, fz_obj *dict)
 		etable[i] = ft_char_index(face, i);
 
 	/* encode by glyph name where we can */
-	if (kind == TYPE1)
+	//strcmp:(MyCode)修正sumatrapdf无法显示ZapfDingbats字符的bug
+	if (kind == TYPE1 && strcmp(fontname,"ZapfDingbats")!=0)
 	{
 		for (i = 0; i < 256; i++)
 		{

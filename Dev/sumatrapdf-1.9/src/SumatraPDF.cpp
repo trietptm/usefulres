@@ -5827,6 +5827,73 @@ static BOOL GetObjStrokeAlpha(HPDFOBJ hObj,float& alpha)
 	return FALSE;
 }
 
+static LPCSTR GetObjFontName(HPDFOBJ hObj)
+{
+	fz_display_node* node = (fz_display_node*)hObj;
+
+	switch(node->cmd)
+	{
+	case FZ_CMD_FILL_TEXT:
+	case FZ_CMD_STROKE_TEXT:
+		{
+			if(node->item.text && node->item.text->font)
+			{
+				return node->item.text->font->name;
+			}
+		}
+		break;
+	default:
+		break;
+	}
+
+	return NULL;
+}
+
+static float GetObjFontSize(HPDFOBJ hObj)
+{
+	fz_display_node* node = (fz_display_node*)hObj;
+
+	switch(node->cmd)
+	{
+	case FZ_CMD_FILL_TEXT:
+	case FZ_CMD_STROKE_TEXT:
+		{
+			if(node->item.text && node->item.text->font)
+			{
+				float size = fz_matrix_expansion(node->item.text->trm);
+				return size;
+			}
+		}
+		break;
+	default:
+		break;
+	}
+
+	return 0.0;
+}
+
+static float GetObjFontYSize(HPDFOBJ hObj)
+{
+	fz_display_node* node = (fz_display_node*)hObj;
+
+	switch(node->cmd)
+	{
+	case FZ_CMD_FILL_TEXT:
+	case FZ_CMD_STROKE_TEXT:
+		{
+			if(node->item.text && node->item.text->font)
+			{
+				return node->item.text->trm.d;
+			}
+		}
+		break;
+	default:
+		break;
+	}
+
+	return 0.0;
+}
+
 static BOOL GetPropertyDescr(HPDFOBJ hObj,LPCTSTR lpPropName,LPSTR lpDescr)
 {
 	fz_display_node* node = (fz_display_node*)hObj;
@@ -6319,6 +6386,9 @@ int APIENTRY LaunchPdf(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmd
 	g_pIntf->GetObjStrokeCode = GetObjStrokeCode;
 	g_pIntf->GetObjFillAlpha = GetObjFillAlpha;
 	g_pIntf->GetObjStrokeAlpha = GetObjStrokeAlpha;
+	g_pIntf->GetObjFontName = GetObjFontName;
+	g_pIntf->GetObjFontSize = GetObjFontSize;
+	g_pIntf->GetObjFontYSize = GetObjFontYSize;
 	g_pIntf->MoveObject = MoveObject;
 	g_pIntf->SetFillColor = SetFillColor;
 	g_pIntf->SetStrokeColor = SetStrokeColor;
