@@ -89,6 +89,9 @@
 #define IDM_DEBUG_SHOW_LINKS            590
 #define IDM_DEBUG_GDI_RENDERER          591
 #define IDM_DEBUG_CRASH_ME              592
+//MyCode
+#define IDM_ADD_TEXT		            593
+//////////////////////////////////////////////////////////////////////////
 #define IDM_FAV_FIRST                   600
 #define IDM_FAV_LAST                    800
 #define IDC_GOTO_PAGE_EDIT              1000

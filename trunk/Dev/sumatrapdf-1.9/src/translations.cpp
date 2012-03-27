@@ -119,6 +119,11 @@ static int FreeData()
 // done at program exit so that we're guaranteed no-one is using the data
 const TCHAR *GetTranslation(const char *txt)
 {
+	//MyCode
+	if(*txt=='\0')
+		return _T("");
+	//////////////////////////////////////////////////////////////////////////
+
     if (!gTranslationCache) {
         assert(dimof(gTranslations) == STRINGS_COUNT * LANGS_COUNT);
         gTranslationCache = SAZA(const TCHAR *, dimof(gTranslations));
