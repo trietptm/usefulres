@@ -684,7 +684,7 @@ fz_grow_text(fz_text *text, int n)
 	text->items = (fz_text_item*)fz_realloc(text->items, text->cap, sizeof(fz_text_item));
 }
 
-void my_pdf_show_char(my_pdf_gstate *gstate,int cid,fz_matrix& tm)
+int my_pdf_show_char(my_pdf_gstate *gstate,int cid,fz_matrix& tm)
 {
 	//pdf_gstate *gstate = csi->gstate + csi->gtop;
 	pdf_font_desc *fontdesc = gstate->font;
@@ -774,6 +774,8 @@ void my_pdf_show_char(my_pdf_gstate *gstate,int cid,fz_matrix& tm)
 		ty = w1 * gstate->size + gstate->char_space;
 		tm = fz_concat(fz_translate(0, ty), tm);
 	}
+
+	return gid;
 }
 
 unsigned char* ansii_to_cid(pdf_font_desc *fontdesc,unsigned char* buf,int& cid,int* o_cpt)
@@ -784,6 +786,9 @@ unsigned char* ansii_to_cid(pdf_font_desc *fontdesc,unsigned char* buf,int& cid,
 	cid = pdf_lookup_cmap(fontdesc->encoding, cpt);
 	if (cid < 0)
 	{
+		if(o_cpt)
+			*o_cpt = cpt;
+
 		fz_warn("cannot encode character with code point %#x", cpt);
 		return NULL;
 	}
@@ -794,6 +799,37 @@ unsigned char* ansii_to_cid(pdf_font_desc *fontdesc,unsigned char* buf,int& cid,
 		*o_cpt = cpt;
 
 	return buf;
+}
+
+/*仅插入文本，不设置文本位置*/
+void my_pdf_show_string(fz_text *text, LPCWSTR lpStr)
+{
+	my_pdf_gstate *gstate = &text->gstate;
+	pdf_font_desc *fontdesc = gstate->font;
+
+	if (!fontdesc)
+	{
+		fz_warn("cannot draw text since font and size not set");
+		return;
+	}
+
+	LPCWSTR p = lpStr;
+	for(;*p;p++)
+	{
+		WCHAR wbuf[] = {*p,0};
+		unsigned char buf[16] = {0};
+		WideCharToMultiByte(CP_ACP,WC_COMPOSITECHECK,wbuf,-1,(LPSTR)buf,sizeof(buf),NULL,NULL);
+
+		int cid = 0;
+		int cpt = 0;
+		if(!ansii_to_cid(fontdesc,buf,cid,&cpt))
+		{
+			fz_warn("cannot encode character with code point %#x", cpt);
+			continue;
+		}
+
+		my_pdf_show_char2(text, cid, *p);			
+	}
 }
 
 BOOL TextSelection::InsertCharByPos(int pageNo, HPDFOBJ hObj, const PointD& pt, WCHAR chIns, DOUBLE* xCursor, RectD* updateRect)
@@ -899,12 +935,12 @@ BOOL TextSelection::InsertCharByPos(int pageNo, HPDFOBJ hObj, const PointD& pt, 
 		if(!ansii_to_cid(ci.node->item.text->gstate.font,buf,cid,&cpt))
 			return FALSE;
 
-		txtItem.gid = pdf_font_cid_to_gid(ci.node->item.text->gstate.font, cid);
+		//txtItem.gid = pdf_font_cid_to_gid(ci.node->item.text->gstate.font, cid);
 
 		fz_matrix tm = ci.node->item.text->gstate.tm;
 		tm.e = 0.0;
 		tm.f = 0.0;
-		my_pdf_show_char(&ci.node->item.text->gstate,cid,tm);
+		txtItem.gid = my_pdf_show_char(&ci.node->item.text->gstate,cid,tm);
 		widthDelta = tm.e;
 		heightDelta = tm.f;
 
@@ -1266,7 +1302,13 @@ BOOL TextSelection::UpdateTextPos(int pageNo, fz_display_node* node, FRect* rtTe
 			node->last->item.text->items[i].y = node->last->item.text->items[0].y + tm.f;
 		}
 
-		my_pdf_show_char(&node->item.text->gstate,cid,tm);
+		int gid = my_pdf_show_char(&node->item.text->gstate,cid,tm);
+		node->item.text->items[i].gid = gid;
+		if(node->last && node->last->is_dup)
+		{
+			assert(i >= 0 && i < node->last->item.text->len);
+			node->last->item.text->items[i].gid = gid;
+		}
 
 		if(cpt == 32)
 		{

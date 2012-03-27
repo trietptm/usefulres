@@ -640,6 +640,51 @@ pdf_show_char(pdf_csi *csi, int cid)
 	}
 }
 
+
+/*MyCode*/
+void my_pdf_show_char2(fz_text *text, int cid, int ucs)
+{
+	my_pdf_gstate *gstate = &text->gstate;
+	pdf_font_desc *fontdesc = gstate->font;
+	int gid;
+	int ucsbuf[8];
+	int ucslen;
+	int i;
+
+	ucslen = 0;
+	if (fontdesc->to_unicode)
+		ucslen = pdf_lookup_cmap_full(fontdesc->to_unicode, cid, ucsbuf);
+	if (ucslen == 0 && cid < fontdesc->cid_to_ucs_len)
+	{
+		ucsbuf[0] = fontdesc->cid_to_ucs[cid];
+		ucslen = 1;
+	}
+	if (ucslen == 0 || (ucslen == 1 && ucsbuf[0] == 0))
+	{
+#if 0
+		ucsbuf[0] = '?';
+#else
+		ucsbuf[0] = ucs;
+#endif
+		ucslen = 1;
+	}
+
+	gid = pdf_font_cid_to_gid(fontdesc, cid);
+
+	/* cf. http://code.google.com/p/sumatrapdf/issues/detail?id=1149 */
+	if (fontdesc->wmode == 1 && fontdesc->font->ft_face)
+		gid = pdf_ft_get_vgid(fontdesc, gid);
+
+	/* add glyph to textobject */
+	fz_add_text(text, gid, ucsbuf[0], 0, 0);
+
+	/* add filler glyphs for one-to-many unicode mapping */
+	for (i = 1; i < ucslen; i++)
+		fz_add_text(text, -1, ucsbuf[i], 0, 0);
+}
+
+//////////////////////////////////////////////////////////////////////////
+
 static void
 pdf_show_space(pdf_csi *csi, float tadj)
 {
@@ -2431,6 +2476,7 @@ pdf_run_buffer(pdf_csi *csi, fz_obj *rdb, fz_buffer *contents)
 	int save_in_text = csi->in_text;
 	csi->in_text = 0;
 	error = pdf_run_stream(csi, rdb, file, buf, len);
+	g_running_stream = NULL; //MyCode
 	csi->in_text = save_in_text;
 	fz_close(file);
 	fz_free(buf);

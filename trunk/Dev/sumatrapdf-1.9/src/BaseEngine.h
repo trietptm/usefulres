@@ -273,6 +273,7 @@ public:
 	virtual TCHAR* ExtractObjText(int pageNo, HPDFOBJ hObj, PointD* pt = NULL, RectD* rtText = NULL, DOUBLE* xCursor = NULL){return NULL;}
 	virtual BOOL DeleteCharByPos(int pageNo, HPDFOBJ hObj, const PointD& pt, BOOL bBackspace, DOUBLE* xCursor = NULL){return FALSE;}
 	virtual pdf_page* GetPdfPage(int pageNo, bool failIfBusy=false){return NULL;}
+	virtual fz_display_list* GetDisplayList(int pageNo){return NULL;}
 	//////////////////////////////////////////////////////////////////////////
 };
 

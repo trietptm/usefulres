@@ -1267,6 +1267,9 @@ struct fz_display_list_s
 	} stack[STACK_SIZE];
 	int tiled;
 };
+
+void fz_list_fill_text(void *user, fz_text *text, fz_matrix ctm,
+					   fz_colorspace *colorspace, float *color, float alpha, void *_node);
 //////////////////////////////////////////////////////////////////////////
 
 #endif

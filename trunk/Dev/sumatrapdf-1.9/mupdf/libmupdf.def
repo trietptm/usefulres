@@ -301,7 +301,10 @@ EXPORTS
 	my_pdf_load_simple_font
 	fz_get_char_width_line_height
 	my_pdf_show_space
-
+	my_pdf_show_char2
+	fz_list_fill_text
+	fz_device_rgb
+	
 ; MuPDF exports
 
 	pdf_lex
