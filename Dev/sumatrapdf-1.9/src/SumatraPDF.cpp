@@ -42,8 +42,11 @@
 #include "..\..\..\..\biggod.app\PDFEditor\sumatrapdf_intf.h"
 extern SumatraPdfIntf* g_pIntf;
 
+static int s_newAddContPos;
+
 unsigned char* ansii_to_cid(pdf_font_desc *fontdesc,unsigned char* buf,int& cid,int* o_cpt = NULL);
 void my_pdf_show_char(my_pdf_gstate *gstate,int cid,fz_matrix& tm);
+void my_pdf_show_string(fz_text *text, LPCWSTR lpStr);
 
 extern "C" {
 __pragma(warning(push))
@@ -5378,6 +5381,19 @@ static void UpdateView()
 	::InvalidateRect(win->hwndCanvas,NULL,TRUE);
 }
 
+static void RedrawAll()
+{
+	WindowInfo* win = WindowInfo::g_pWinInf;
+	if(!win)
+		return;
+
+	if(!win->dm || !win->dm->engine)
+		return;
+
+	gRenderCache.DropAllCache();
+	win->dm->Redraw();
+}
+
 static BOOL MoveCursor(int pageNo, HPDFOBJ hObj, const FPoint& fPt, INT nMove, DOUBLE* xCursor)
 {
 	WindowInfo* win = WindowInfo::g_pWinInf;
@@ -5894,7 +5910,7 @@ static float GetObjFontYSize(HPDFOBJ hObj)
 	return 0.0;
 }
 
-static BOOL GetObjTextMatrix(HPDFOBJ hObj, Matrix& mat)
+static BOOL GetObjTextMatrix(HPDFOBJ hObj, PDF_Matrix& mat)
 {
 	fz_display_node* node = (fz_display_node*)hObj;
 
@@ -6392,6 +6408,90 @@ static const CHAR* GetPageContent(int pageNo, INT& len)
 	return (CHAR*)pPage->contents->data;
 }
 
+static BOOL AddText(int pageNo, const FPoint& posText, LPCWSTR lpText)
+{
+	WindowInfo* win = WindowInfo::g_pWinInf;
+	if(!win)
+		return FALSE;
+
+	if(!win->dm || !win->dm->engine)
+		return FALSE;
+
+	BOOL bRet = FALSE;
+
+	pdf_font_desc *fontdesc = NULL;
+	do
+	{
+		fz_display_list* list = win->dm->engine->GetDisplayList(pageNo);
+		if(!list)
+			break;
+
+		LPCSTR lpBuiltinName = GetStdFontBuiltinName("NimbusSanL-Regu");
+		if(lpBuiltinName)
+		{
+			fz_error error = my_pdf_load_simple_font(&fontdesc, (char*)lpBuiltinName);
+			if (error)
+				break;
+		}
+
+		if(!fontdesc)
+			break;
+
+// 		fz_matrix trm = {0};
+// 		trm.a = 12;
+// 		trm.d = 12;
+
+		fz_matrix tm = {0};
+		tm.a = 1;
+		tm.d = 1;
+
+		my_pdf_gstate my_gstate = {0};
+		my_gstate.font = fontdesc;
+		my_gstate.size = 1;
+		my_gstate.scale = 1;
+		my_gstate.tm.a = 12;
+		my_gstate.tm.d = 12;
+		my_gstate.fill_alpha = 1;
+		my_gstate.stroke_alpha = 1;
+		my_gstate.fill_colorspace_n = 1;
+		my_gstate.stroke_colorspace_n = 1;
+
+		fz_text* text = fz_new_text(fontdesc->font, my_gstate.tm, fontdesc->wmode, &my_gstate);
+		text->trm.e = 0;
+		text->trm.f = 0;
+
+		my_pdf_show_string(text,lpText);
+		if(text->len <= 0)
+		{
+			fz_free_text(text);
+			break;
+		}
+		text->items[0].x = (float)posText.x;
+		text->items[0].y = (float)posText.y;
+
+		fz_list_fill_text(list,text,tm,fz_device_rgb,my_gstate.fill_v,my_gstate.fill_alpha,NULL);
+		fz_free_text(text);
+		
+		fz_display_node *node = list->last;
+		FRect rtText;
+		win->dm->textSelection->UpdateTextPos(pageNo,node,&rtText);
+		node->rect = fz_bound_text(node->item.text, tm);
+
+		{
+			s_newAddContPos--;
+			node->cont_pos = s_newAddContPos;
+			assert(node->cont_pos < 0);
+		}
+		
+		bRet = TRUE;
+	}while (0);
+
+	if(fontdesc)
+		pdf_drop_font(fontdesc);
+
+	return bRet;
+}
+
 int APIENTRY LaunchPdf(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, SumatraPdfIntf* pIntf)
 {
 	g_pIntf = pIntf;
@@ -6406,6 +6506,7 @@ int APIENTRY LaunchPdf(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmd
 	g_pIntf->CvtFromScreen = CvtFromScreen;
 	g_pIntf->GetPageNoByPoint = GetPageNoByPoint;
 	g_pIntf->UpdateView = UpdateView;
+	g_pIntf->RedrawAll = RedrawAll;
 	g_pIntf->DeleteCharByPos = DeleteCharByPos;
 	g_pIntf->InsertCharByPos = InsertCharByPos;
 	g_pIntf->MoveCursor = MoveCursor;
@@ -6431,6 +6532,7 @@ int APIENTRY LaunchPdf(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmd
 	g_pIntf->RotateObject = RotateObject;
 	g_pIntf->GetPdfData = GetPdfData;
 	g_pIntf->GetPageContent = GetPageContent;
+	g_pIntf->AddText = AddText;
 
 	return WinMain(hInstance,hPrevInstance,lpCmdLine,SW_SHOW);
 }

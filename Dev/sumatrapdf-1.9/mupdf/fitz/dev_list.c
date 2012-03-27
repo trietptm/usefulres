@@ -84,8 +84,11 @@ fz_new_display_node(fz_display_command cmd, fz_matrix ctm,
 	/*MyCode*/
 	node->last = NULL;
 	node->is_dup = 0;
-	assert(g_running_stream);
-	node->cont_pos = g_running_stream->rp - g_running_stream->bp;
+	//assert(g_running_stream);
+	if(g_running_stream)
+		node->cont_pos = g_running_stream->rp - g_running_stream->bp;
+	else
+		node->cont_pos = -1;
 	//////////////////////////////////////////////////////////////////////////
 	
 	node->rect = fz_empty_rect;
@@ -306,7 +309,7 @@ fz_list_clip_stroke_path(void *user, fz_path *path, fz_rect *rect, fz_stroke_sta
 	fz_append_display_node(user, node);
 }
 
-static void
+/*static */void
 fz_list_fill_text(void *user, fz_text *text, fz_matrix ctm,
 	fz_colorspace *colorspace, float *color, float alpha, void *_node)
 {

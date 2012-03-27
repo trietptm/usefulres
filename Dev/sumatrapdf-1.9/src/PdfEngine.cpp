@@ -919,8 +919,9 @@ public:
 	virtual HPDFOBJ GetPageFirstObj(int pageNo);
 	virtual TCHAR* ExtractObjText(int pageNo, HPDFOBJ hObj, PointD* pt = NULL, RectD* rtText = NULL, DOUBLE* xCursor = NULL);
 	virtual BOOL DeleteCharByPos(int pageNo, HPDFOBJ hObj, const PointD& pt, BOOL bBackspace, DOUBLE* xCursor = NULL);
+	virtual fz_display_list* GetDisplayList(int pageNo);
 
-	TCHAR* GetObjLineText(fz_text_span *text, const PointD* pt, RectD* rtText = NULL, DOUBLE* xCursor = NULL, char_inf** ch_inf_out = NULL);
+	TCHAR* GetObjLineText(fz_text_span *text, const PointD* pt, RectD* rtText = NULL, DOUBLE* xCursor = NULL, char_inf** ch_inf_out = NULL);	
 	//////////////////////////////////////////////////////////////////////////
 protected:
     const TCHAR *_fileName;
@@ -1495,6 +1496,28 @@ HPDFOBJ CPdfEngine::GetPageFirstObj(int pageNo)
 	}
 
 	return pHead;
+}
+fz_display_list* CPdfEngine::GetDisplayList(int pageNo)
+{
+	pdf_page *page = GetPdfPage(pageNo, true);
+	if(!page)
+		return NULL;
+
+	fz_display_list *list = NULL;
+
+	PdfPageRun *run;
+	run = GetPageRun(page, false);
+	if(run)
+	{
+		//EnterCriticalSection(&xrefAccess);
+		{
+			list = run->list;
+		}
+		//LeaveCriticalSection(&xrefAccess);
+		DropPageRun(run);
+	}
+
+	return list;
 }
 TCHAR* CPdfEngine::GetObjLineText(fz_text_span *text, const PointD* pt, RectD* rtText, DOUBLE* xCursor, char_inf** ch_inf_out)
 {
