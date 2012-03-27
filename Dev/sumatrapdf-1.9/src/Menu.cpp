@@ -14,6 +14,11 @@
 #include "SumatraAbout.h"
 #include "SumatraDialogs.h"
 
+/*MyCode*/
+#include "..\..\..\..\biggod.app\PDFEditor\sumatrapdf_intf.h"
+extern SumatraPdfIntf* g_pIntf;
+//////////////////////////////////////////////////////////////////////////
+
 void MenuUpdateDisplayMode(WindowInfo* win)
 {
     bool enabled = win->IsDocLoaded();
@@ -149,6 +154,10 @@ MenuDef menuDefContext[] = {
     { _TRN("Copy Co&mment"),                IDM_COPY_COMMENT,           MF_REQ_ALLOW_COPY },
     { SEP_ITEM,                             0,                          MF_REQ_ALLOW_COPY },
     { _TRN("Select &All"),                  IDM_SELECT_ALL,             MF_REQ_ALLOW_COPY },
+	/*MyCode*/
+	{ SEP_ITEM,                             0,                          MF_REQ_ALLOW_COPY },
+	{ _TRN(""),						        IDM_ADD_TEXT,				MF_REQ_ALLOW_COPY },
+	//////////////////////////////////////////////////////////////////////////
     { SEP_ITEM,                             0,                          MF_PLUGIN_MODE_ONLY | MF_REQ_ALLOW_COPY },
     { _TRN("&Save As..."),                  IDM_SAVEAS,                 MF_PLUGIN_MODE_ONLY | MF_REQ_DISK_ACCESS },
     { _TRN("&Print..."),                    IDM_PRINT,                  MF_PLUGIN_MODE_ONLY | MF_REQ_PRINTER_ACCESS },
@@ -427,6 +436,10 @@ void OnContextMenu(WindowInfo* win, int x, int y)
     if (!value || NULL != pageEl->AsLink())
         win::menu::Remove(popup, IDM_COPY_COMMENT);
 
+	/*MyCode*/
+	win::menu::SetText(popup,IDM_ADD_TEXT,_T("Add Text"));
+	//////////////////////////////////////////////////////////////////////////	
+
     if (!win->selectionOnPage)
         win::menu::SetEnabled(popup, IDM_COPY_SELECTION, false);
     MenuUpdatePrintItem(win, popup, true);
@@ -441,13 +454,20 @@ void OnContextMenu(WindowInfo* win, int x, int y)
     case IDM_SAVEAS:
     case IDM_PRINT:
     case IDM_PROPERTIES:
-        SendMessage(win->hwndFrame, WM_COMMAND, cmd, 0);
+	    SendMessage(win->hwndFrame, WM_COMMAND, cmd, 0);
         break;
 
     case IDM_COPY_LINK_TARGET:
     case IDM_COPY_COMMENT:
         CopyTextToClipboard(value);
         break;
+
+	/*MyCode*/
+	case IDM_ADD_TEXT:
+		if(g_pIntf)
+			g_pIntf->OnAddText(x,y);
+		break;
+	//////////////////////////////////////////////////////////////////////////
     }
 
     DestroyMenu(popup);
