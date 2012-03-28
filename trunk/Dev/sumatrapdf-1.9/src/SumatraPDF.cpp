@@ -5610,6 +5610,26 @@ static BOOL GetFirstElementPos(HPDFOBJ hObj,FPoint& pos)
 	return FALSE;
 }
 
+static _fz_path_item* GetPathItems(HPDFOBJ hObj,INT& nItem)
+{
+	fz_display_node* node = (fz_display_node*)hObj;
+
+	switch(node->cmd)
+	{
+	case FZ_CMD_STROKE_PATH:
+		if(node->item.path && node->item.path->len > 0)
+		{	
+			nItem = node->item.path->len;
+			return (_fz_path_item*)node->item.path->items;
+		}
+		break;
+	default:
+		break;
+	};
+
+	return NULL;
+}
+
 static INT GetObjContentPos(HPDFOBJ hObj)
 {
 	fz_display_node* node = (fz_display_node*)hObj;
@@ -5939,6 +5959,14 @@ static BOOL GetObjTextMatrix(HPDFOBJ hObj, PDF_Matrix& mat)
 	}
 
 	return FALSE;
+}
+
+static void GetObjEF(HPDFOBJ hObj,float& e,float& f)
+{
+	fz_display_node* node = (fz_display_node*)hObj;
+
+	e = node->ctm.e;
+	f = node->ctm.f;
 }
 
 static BOOL GetPropertyDescr(HPDFOBJ hObj,LPCTSTR lpPropName,LPSTR lpDescr)
@@ -6512,6 +6540,7 @@ int APIENTRY LaunchPdf(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmd
 	g_pIntf->MoveCursor = MoveCursor;
 	g_pIntf->GetPropertyDescr = GetPropertyDescr;
 	g_pIntf->GetFirstElementPos = GetFirstElementPos;
+	g_pIntf->GetPathItems = GetPathItems;
 	g_pIntf->GetObjContentPos = GetObjContentPos;
 	g_pIntf->GetObjOutputText = GetObjOutputText;
 	g_pIntf->GetObjFillCode = GetObjFillCode;
@@ -6522,6 +6551,7 @@ int APIENTRY LaunchPdf(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmd
 	g_pIntf->GetObjFontSize = GetObjFontSize;
 	g_pIntf->GetObjFontYSize = GetObjFontYSize;
 	g_pIntf->GetObjTextMatrix = GetObjTextMatrix;
+	g_pIntf->GetObjEF = GetObjEF;
 	g_pIntf->MoveObject = MoveObject;
 	g_pIntf->SetFillColor = SetFillColor;
 	g_pIntf->SetStrokeColor = SetStrokeColor;
