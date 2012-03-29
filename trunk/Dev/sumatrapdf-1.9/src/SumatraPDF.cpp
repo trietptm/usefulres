@@ -5118,6 +5118,17 @@ static WCHAR* ExtractObjLineText(int pageNo, HPDFOBJ hObj, const FPoint* fPt, Su
 	return rText;
 }
 
+static void MoveNode(fz_display_node* node,float xMove,float yMove)
+{
+	node->rect.x0 += xMove;
+	node->rect.y0 += yMove;
+	node->rect.x1 += xMove;
+	node->rect.y1 += yMove;
+
+	node->ctm.e += xMove;
+	node->ctm.f += yMove;
+}
+
 static BOOL MoveObject(int pageNo, HPDFOBJ hObj, const FPoint& relMove)
 {
 	WindowInfo* win = WindowInfo::g_pWinInf;
@@ -5191,13 +5202,38 @@ static BOOL MoveObject(int pageNo, HPDFOBJ hObj, const FPoint& relMove)
 		fz_display_node* node = (fz_display_node*)hObj;
 		if(node->cmd==FZ_CMD_STROKE_PATH)
 		{
-			node->rect.x0 += (float)relMove.x;
-			node->rect.y0 += (float)relMove.y;
-			node->rect.x1 += (float)relMove.x;
-			node->rect.y1 += (float)relMove.y;
+// 			node->rect.x0 += (float)relMove.x;
+// 			node->rect.y0 += (float)relMove.y;
+// 			node->rect.x1 += (float)relMove.x;
+// 			node->rect.y1 += (float)relMove.y;
+// 
+// 			node->ctm.e += (float)relMove.x;
+// 			node->ctm.f += (float)relMove.y;
 
-			node->ctm.e += (float)relMove.x;
-			node->ctm.f += (float)relMove.y;
+			INT cont_pos = node->cont_pos;
+			MoveNode(node,(float)relMove.x,(float)relMove.y);
+
+			fz_display_node* last = node->last;
+			while(last)
+			{
+				if(last->cont_pos != cont_pos)
+					break;
+
+				MoveNode(last,(float)relMove.x,(float)relMove.y);
+
+				last = last->last;
+			}
+
+			fz_display_node* next = node->next;
+			while(next)
+			{
+				if(next->cont_pos != cont_pos)
+					break;
+
+				MoveNode(next,(float)relMove.x,(float)relMove.y);
+
+				next = next->next;
+			}
 
 			gRenderCache.DropAllCache();
 			win->dm->Redraw();
@@ -5610,15 +5646,22 @@ static BOOL GetFirstElementPos(HPDFOBJ hObj,FPoint& pos)
 	return FALSE;
 }
 
-static _fz_path_item* GetPathItems(HPDFOBJ hObj,INT& nItem)
+static _fz_path_item* GetPathItems(HPDFOBJ hObj,INT& nItem,CHAR& pathType)
 {
 	fz_display_node* node = (fz_display_node*)hObj;
 
 	switch(node->cmd)
 	{
+	case FZ_CMD_FILL_PATH:
 	case FZ_CMD_STROKE_PATH:
 		if(node->item.path && node->item.path->len > 0)
 		{	
+			pathType = 'S';
+			if(node->cmd==FZ_CMD_FILL_PATH)
+				pathType = 'B';
+			else if(node->cmd==FZ_CMD_STROKE_PATH)
+				pathType = 'S';
+
 			nItem = node->item.path->len;
 			return (_fz_path_item*)node->item.path->items;
 		}
