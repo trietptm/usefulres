@@ -4587,6 +4587,13 @@ InitMouseWheelInfo:
             ReloadPrefs();
             break;
 
+		/*MyCode*/
+		case WM_ACTIVATE:
+			if(g_pIntf)
+				g_pIntf->OnActivate();
+			break;
+		//////////////////////////////////////////////////////////////////////////
+
         default:
             return DefWindowProc(hwnd, msg, wParam, lParam);
     }
@@ -5077,8 +5084,9 @@ static SumatraPdfIntf::ObjType GetObjType(HPDFOBJ hObj)
 	case FZ_CMD_STROKE_TEXT:
 		return SumatraPdfIntf::OT_Text;
 		break;
-	case FZ_CMD_CLIP_IMAGE_MASK:
-	case FZ_CMD_FILL_IMAGE_MASK:
+	//case FZ_CMD_CLIP_IMAGE_MASK:
+	//case FZ_CMD_FILL_IMAGE_MASK:
+	case FZ_CMD_FILL_IMAGE:
 		return SumatraPdfIntf::OT_Image;
 		break;
 	case FZ_CMD_CLIP_PATH:
@@ -5116,6 +5124,27 @@ static WCHAR* ExtractObjLineText(int pageNo, HPDFOBJ hObj, const FPoint* fPt, Su
 
 	WCHAR* rText = win->dm->textSelection->ExtractObjLineText(pageNo,hObj,pPtD,ltr);
 	return rText;
+}
+
+static const UCHAR* GetBmpSamples(HPDFOBJ hObj,INT& w,INT& h,INT& n)
+{
+	fz_display_node* node = (fz_display_node*)hObj;
+
+	switch(node->cmd)
+	{
+	case FZ_CMD_FILL_IMAGE:
+		{
+			w = node->item.image->w;
+			h = node->item.image->h;
+			n = node->item.image->n;
+			return node->item.image->samples;
+		}
+		break;
+	default:
+		break;
+	}
+
+	return NULL;
 }
 
 static void MoveNode(fz_display_node* node,float xMove,float yMove)
@@ -5157,6 +5186,7 @@ static BOOL MoveObject(int pageNo, HPDFOBJ hObj, const FPoint& relMove)
 	else if(ot==SumatraPdfIntf::OT_Image)
 	{
 		fz_display_node* node = (fz_display_node*)hObj;
+#if 0
 		if(node->cmd==FZ_CMD_CLIP_IMAGE_MASK)
 		{
 			if(node->next && node->next->cmd==FZ_CMD_FILL_IMAGE)
@@ -5196,20 +5226,43 @@ static BOOL MoveObject(int pageNo, HPDFOBJ hObj, const FPoint& relMove)
 				}
 			}
 		}
+#else
+		INT cont_pos = node->cont_pos;
+		MoveNode(node,(float)relMove.x,(float)relMove.y);
+
+		fz_display_node* last = node->last;
+		while(last)
+		{
+			if(last->cont_pos != cont_pos)
+				break;
+
+			MoveNode(last,(float)relMove.x,(float)relMove.y);
+
+			last = last->last;
+		}
+
+		fz_display_node* next = node->next;
+		while(next)
+		{
+			if(next->cont_pos != cont_pos)
+				break;
+
+			MoveNode(next,(float)relMove.x,(float)relMove.y);
+
+			next = next->next;
+		}
+
+		gRenderCache.DropAllCache();
+		win->dm->Redraw();
+
+		bRet = TRUE;
+#endif
 	}
 	else if(ot==SumatraPdfIntf::OT_Path)
 	{
 		fz_display_node* node = (fz_display_node*)hObj;
 		if(node->cmd==FZ_CMD_STROKE_PATH)
 		{
-// 			node->rect.x0 += (float)relMove.x;
-// 			node->rect.y0 += (float)relMove.y;
-// 			node->rect.x1 += (float)relMove.x;
-// 			node->rect.y1 += (float)relMove.y;
-// 
-// 			node->ctm.e += (float)relMove.x;
-// 			node->ctm.f += (float)relMove.y;
-
 			INT cont_pos = node->cont_pos;
 			MoveNode(node,(float)relMove.x,(float)relMove.y);
 
@@ -6595,6 +6648,7 @@ int APIENTRY LaunchPdf(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmd
 	g_pIntf->GetObjFontYSize = GetObjFontYSize;
 	g_pIntf->GetObjTextMatrix = GetObjTextMatrix;
 	g_pIntf->GetObjEF = GetObjEF;
+	g_pIntf->GetBmpSamples = GetBmpSamples;
 	g_pIntf->MoveObject = MoveObject;
 	g_pIntf->SetFillColor = SetFillColor;
 	g_pIntf->SetStrokeColor = SetStrokeColor;
