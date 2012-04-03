@@ -6132,7 +6132,7 @@ static BOOL GetPropertyDescr(HPDFOBJ hObj,LPCTSTR lpPropName,LPSTR lpDescr)
 			return TRUE;
 		}
 	}
-	else if(lstrcmp(lpPropName,_T("Position X(points)"))==0)
+	else if(lstrcmp(lpPropName,_T("Position X"))==0)
 	{
 #if 0
 		if(node->item.text)
@@ -6145,7 +6145,7 @@ static BOOL GetPropertyDescr(HPDFOBJ hObj,LPCTSTR lpPropName,LPSTR lpDescr)
 		return TRUE;
 #endif
 	}
-	else if(lstrcmp(lpPropName,_T("Position Y(points)"))==0)
+	else if(lstrcmp(lpPropName,_T("Position Y"))==0)
 	{
 #if 0
 		if(node->item.text)
