@@ -6126,8 +6126,11 @@ static BOOL GetPropertyDescr(HPDFOBJ hObj,LPCTSTR lpPropName,LPSTR lpDescr)
 			return FALSE;
 
 		if(node->item.text)
-		{
-			float size = fz_matrix_expansion(node->item.text->trm);
+		{			
+			fz_matrix trm = node->item.text->trm;
+			trm.a = trm.d; //使xyScale变为1
+
+			float size = fz_matrix_expansion(trm);
 			snprintf(lpDescr,MAX_PATH - 1,"%.2f",size); //trm.d是没旋转时字体大小,trm.a不是
 			return TRUE;
 		}
@@ -6166,7 +6169,11 @@ static BOOL GetPropertyDescr(HPDFOBJ hObj,LPCTSTR lpPropName,LPSTR lpDescr)
 		if(node->item.text)
 		{
 			double fRate = (node->item.text->trm.a / node->item.text->trm.d) * 100.0;
+#if 0
 			snprintf(lpDescr,MAX_PATH - 1,"%d",(int)ceilf((float)fRate - 0.001f));
+#else
+			snprintf(lpDescr,MAX_PATH - 1,"%.2f",fRate);
+#endif
 			return TRUE;
 		}
 	}
@@ -6236,6 +6243,70 @@ static BOOL GetPropertyDescr(HPDFOBJ hObj,LPCTSTR lpPropName,LPSTR lpDescr)
 	}
 
 	return FALSE;
+}
+
+static BOOL SetXYScale(int pageNo, HPDFOBJ hObj,float xyScale, FRect* rtText)
+{
+	WindowInfo* win = WindowInfo::g_pWinInf;
+	if(!win)
+		return FALSE;
+
+	if(!win->dm || !win->dm->engine)
+		return FALSE;
+
+	if(!hObj)
+		return FALSE;
+
+	fz_display_node* node = (fz_display_node*)hObj;
+
+	if(node->cmd!=FZ_CMD_STROKE_TEXT && node->cmd!=FZ_CMD_FILL_TEXT)
+		return FALSE;
+
+	float rate = xyScale / 100.0f;
+
+	node->item.text->trm.a = node->item.text->trm.d * rate;
+	if(node->item.text->gstate.font)
+		node->item.text->gstate.tm.a = node->item.text->gstate.tm.d * rate;
+
+	INT cont_pos = node->cont_pos;
+
+	fz_display_node* last = node->last;
+	while(last)
+	{
+		if(last->cont_pos != cont_pos)
+			break;
+
+		assert(last->cmd==FZ_CMD_STROKE_TEXT || last->cmd==FZ_CMD_FILL_TEXT);
+
+		last->item.text->trm.a = last->item.text->trm.d * rate;
+		if(last->item.text->gstate.font)
+			last->item.text->gstate.tm.a = last->item.text->gstate.tm.d * rate;
+
+		last = last->last;
+	}
+
+	fz_display_node* next = node->next;
+	while(next)
+	{
+		if(next->cont_pos != cont_pos)
+			break;
+
+		assert(next->cmd==FZ_CMD_STROKE_TEXT || next->cmd==FZ_CMD_FILL_TEXT);
+
+		next->item.text->trm.a = next->item.text->trm.d * rate;
+		if(next->item.text->gstate.font)
+			next->item.text->gstate.tm.a = next->item.text->gstate.tm.d * rate;
+
+		next = next->next;
+	}
+
+	win->dm->textSelection->UpdateTextPos(pageNo,(fz_display_node*)hObj,rtText);
+
+	gRenderCache.DropAllCache();
+	win->dm->Redraw();
+
+
+	return TRUE;		
 }
 
 static BOOL SetFillColor(HPDFOBJ hObj, INT r, INT g, INT b, INT a)
@@ -6356,7 +6427,10 @@ static BOOL SetFontSize(int pageNo, HPDFOBJ hObj, float fontSize, FRect* rtText)
 	if(!node->item.text)
 		return FALSE;
 
-	float old_size = fz_matrix_expansion(node->item.text->trm);
+	fz_matrix trm = node->item.text->trm;
+	trm.a = trm.d; //使xyScale变为1
+
+	float old_size = fz_matrix_expansion(trm);
 	float rate = (float)fontSize / old_size;
 	if(rate <= 0.0)
 		return FALSE;
@@ -6657,6 +6731,7 @@ int APIENTRY LaunchPdf(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmd
 	g_pIntf->SetCharSpace = SetCharSpace;
 	g_pIntf->SetWordSpace = SetWordSpace;
 	g_pIntf->RotateObject = RotateObject;
+	g_pIntf->SetXYScale = SetXYScale;
 	g_pIntf->GetPdfData = GetPdfData;
 	g_pIntf->GetPageContent = GetPageContent;
 	g_pIntf->AddText = AddText;
