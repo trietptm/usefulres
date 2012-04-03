@@ -6158,7 +6158,7 @@ static BOOL GetPropertyDescr(HPDFOBJ hObj,LPCTSTR lpPropName,LPSTR lpDescr)
 		return TRUE;
 #endif
 	}
-	else if(lstrcmp(lpPropName,_T("Horizontal Scale(%)"))==0)
+	else if(lstrcmp(lpPropName,_T("X Y Scale(%)"))==0)
 	{
 		if(ot != SumatraPdfIntf::OT_Text)
 			return FALSE;
