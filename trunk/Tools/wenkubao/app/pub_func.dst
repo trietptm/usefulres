@@ -1,0 +1,27 @@
+#language pascal
+
+var 
+	sitename : string;
+	_para	 : array[0..1] of string;
+	_savedir : string;
+
+procedure _callback(r:tregexp;m:string;para:variant);
+begin
+	surl := abspath(para[0], r.submatchs['url']);
+	addlist(r.submatchs['icon'], html2txt(r.submatchs['title']), r.submatchs['desc'], surl, sitename);
+end;
+
+function _callbacktxt(s:string):string;
+begin
+	result := '    '+trim(s);
+	result := replace(result, 'www.docin.com', 'www.mozhua.net');
+	result := regreplace(result, '^[?]', '');
+	result := regreplace(result, '[°£.]{3,}', '°≠°≠');
+	result := regreplace(result, '[\r\n]+?[\s°°]+', #13#10'    ')+#13#10+#13#10+'±æTXT”…°∞'+_Caption+'°±œ¬‘ÿ:http://www.mozhua.net/wenkubao';
+end;
+
+begin
+	sitename := GetFileName(_ScriptPath);
+	sitename := regreplace(sitename, '/\S*?_(.*?)\.dst/is', '$1');
+	_savedir := _path()+'download/'
+end.
