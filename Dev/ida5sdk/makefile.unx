@@ -1,0 +1,6 @@
+
+ALLDIRS=module ldr plugins
+.PHONY: $(ALLDIRS)
+
+$(ALLDIRS):
+        cd $@; idamake.pl

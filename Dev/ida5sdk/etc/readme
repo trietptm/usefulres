@@ -1,0 +1,9 @@
+
+        You should compile mkidp.cpp with any compiler and put
+        the mkidp.exe file in bin directory.
+
+        This utility will be used for create .W32 from .DLL
+
+        The same is with LD.C
+
+	These utilities are not necessary for Linux.

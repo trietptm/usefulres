@@ -1,0 +1,70 @@
+ifdef __OPT__
+CCDEBUG=-O2
+else
+CCDEBUG=-g
+endif
+
+ifdef __EA64__
+SUFF64=64
+ADRSIZE=64
+SWITCH64=-D__EA64__
+else
+ADRSIZE=32
+endif
+
+ifndef IDA
+IDA=$(HOME)/idasrc/current/
+endif
+I=$(IDA)include/
+L=$(IDA)libgcc$(ADRSIZE).lnx/
+R=$(IDA)bin/
+C=$(R)cfg/
+H=$(R)
+RI=$(R)idc/
+RS=$(R)
+
+HH=.hhp
+HS=.hls
+O=.o$(ADRSIZE)
+A=.a
+T=.at$(ADRSIZE)
+B=$(SUFF64)
+BS=$(SUFF64)
+IDP=$(SUFF64).ilx$(SUFF64)
+LDR=$(SUFF64).llx$(SUFF64)
+PLUGIN=.plx$(SUFF64)
+
+HLIB=$(H)_ida.hlp
+DUMB=$(L)dumb$(O)
+IDALIB=$(R)libida$(SUFF64).so
+
+CP=cp
+MV=mv
+RM=rm
+MKDIR=-@mkdir 2>/dev/null
+
+CC=gcc
+CCPLUS=g++
+CFLAGS=$(CCDEBUG) -D__LINUX__ $(SWITCH64) -I$(I) $(_CFLAGS) --shared
+
+AR=$(R)qar.sh ru
+HC=$(R)ihc$(BS)
+CCL=$(CCPLUS)
+OUTSW=-o
+
+.SUFFIXES: $(HH) $(HS) .c .h .cpp .hpp $(O) $(T) $(A) .grm .cfg
+.PHONY: all includes Goal goal config cfg $(ADDITIONAL_GOALS)
+
+.cpp$(O):
+	$(CCPLUS) $(CFLAGS) -c -o$@ $<
+
+.c$(O):
+ifdef DONT_FORCE_CPP
+	$(CC) $(CFLAGS) -c -o$@ $<
+else
+	$(CCPLUS) $(CFLAGS) -c -o$@ $<
+endif
+
+.hls.hhp:
+	$(HC) -t $(HLIB) -i$@ $<
+

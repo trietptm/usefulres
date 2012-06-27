@@ -1,0 +1,6 @@
+include ../allmake.unx
+
+include dirs.mak
+
+$(ALLDIRS):
+	@cd $@; idamake.pl

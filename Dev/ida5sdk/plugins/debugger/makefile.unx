@@ -1,0 +1,140 @@
+#DONT_FORCE_CPP=1
+#__CFLAGS=-DLIBWRAP
+#LIBWRAP=-lwrap
+WRPOBJ=linux_check$(O)
+PROC=linux_user
+O1=linux_lstub
+O2=symelf
+ADDITIONAL_GOALS=linux_server win32_stub linux_stub cfg
+
+include ../plugin.unx
+
+SERVOBJS=ida_remote$(O) $(WRPOBJ) linux_user$(O) symelf$(O) $(F)tcpip$(O) $(DUMB)
+
+linux_server: $(R)linux_server$(B)
+$(R)linux_server$(B): $(SERVOBJS) $(L)pro$(A)
+	$(CCPLUS) -o$@ $(SERVOBJS) $(L)pro$(A) $(LIBWRAP)
+#------------
+WIN32_LOCAL_OBJ=$(F)win32_rstub$(O) $(F)tcpip$(O)
+WIN32CLIENT=$(R)$(SUBDIR)win32_stub$(PLUGIN)
+win32_stub: $(WIN32CLIENT)
+
+$(WIN32CLIENT): $(WIN32_LOCAL_OBJ) ../plugin.script
+	$(CCL) --shared $(OUTSW)$@ $(OVROFF) $(WIN32_LOCAL_OBJ) -L$(R) -lida$(SUFF64) --no-undefined -Wl,--version-script=../plugin.script
+#------------
+WINCE_LOCAL_OBJ=$(F)wince_rstub$(O) $(F)async$(O)
+WINCECLIENT=$(R)$(SUBDIR)wince_stub$(PLUGIN)
+winCE_stub: $(WINCECLIENT)
+
+$(WINCECLIENT): $(WINCE_LOCAL_OBJ) ../plugin.script
+	$(CCL) --shared $(OUTSW)$@ $(OVROFF) $(WINCE_LOCAL_OBJ) -L$(R) -lida$(SUFF64) --no-undefined -Wl,--version-script=../plugin.script
+#------------
+LINUX_LOCAL_OBJ=$(F)linux_rstub$(O) $(F)tcpip$(O)
+LINUXCLIENT=$(R)$(SUBDIR)linux_stub$(PLUGIN)
+linux_stub: $(LINUXCLIENT)
+$(LINUXCLIENT): $(LINUX_LOCAL_OBJ) ../plugin.script
+	$(CCL) --shared $(OUTSW)$@ $(OVROFF) $(LINUX_LOCAL_OBJ) -L$(R) -lida$(SUFF64) --no-undefined -Wl,--version-script=../plugin.script
+#------------
+cfg: $(C)exceptions.cfg
+$(C)exceptions.cfg: exceptions.cfg
+	$(CP) $? $@
+
+# MAKEDEP dependency list ------------------
+$(F)async$(O)   : $(I)area.hpp $(I)auto.hpp $(I)bytes.hpp $(I)diskio.hpp    \
+	          $(I)err.h $(I)fpro.h $(I)funcs.hpp $(I)help.h             \
+	          $(I)ida.hpp $(I)idd.hpp $(I)idp.hpp $(I)kernwin.hpp       \
+	          $(I)lines.hpp $(I)llong.hpp $(I)nalt.hpp $(I)netnode.hpp  \
+	          $(I)pro.h $(I)segment.hpp $(I)ua.hpp $(I)xref.hpp         \
+	          async.cpp idarpc.hpp rapi/ceapimap.h rapi/rapi.h
+$(F)hwtest$(O)  : $(I)llong.hpp $(I)pro.h hwtest.cpp xscale/breakpoint.h
+$(F)ida_remote$(O): $(I)area.hpp $(I)bytes.hpp $(I)diskio.hpp $(I)err.h       \
+	          $(I)fpro.h $(I)funcs.hpp $(I)help.h $(I)ida.hpp           \
+	          $(I)idd.hpp $(I)idp.hpp $(I)kernwin.hpp $(I)lines.hpp     \
+	          $(I)llong.hpp $(I)nalt.hpp $(I)name.hpp $(I)netnode.hpp   \
+	          $(I)pro.h $(I)segment.hpp $(I)ua.hpp $(I)xref.hpp         \
+	          ida_remote.cpp idarpc.cpp idarpc.hpp rapi/ceapimap.h      \
+	          rapi/rapi.h
+$(F)linux_check$(O): linux_check.c
+$(F)linux_lstub$(O): $(I)area.hpp $(I)bytes.hpp $(I)dbg.hpp $(I)diskio.hpp     \
+	          $(I)err.h $(I)fpro.h $(I)funcs.hpp $(I)help.h             \
+	          $(I)ida.hpp $(I)idd.hpp $(I)idp.hpp $(I)kernwin.hpp       \
+	          $(I)lines.hpp $(I)llong.hpp $(I)loader.hpp $(I)nalt.hpp   \
+	          $(I)name.hpp $(I)netnode.hpp $(I)pro.h $(I)segment.hpp    \
+	          $(I)ua.hpp $(I)xref.hpp common_local.cpp deb_pc.hpp       \
+	          idarpc.cpp idarpc.hpp linux_local.cpp linux_lstub.cpp     \
+	          pc_local.cpp
+$(F)linux_rstub$(O): $(I)area.hpp $(I)bytes.hpp $(I)dbg.hpp $(I)diskio.hpp     \
+	          $(I)err.h $(I)fpro.h $(I)funcs.hpp $(I)help.h             \
+	          $(I)ida.hpp $(I)idd.hpp $(I)idp.hpp $(I)kernwin.hpp       \
+	          $(I)lines.hpp $(I)llong.hpp $(I)loader.hpp $(I)nalt.hpp   \
+	          $(I)name.hpp $(I)netnode.hpp $(I)pro.h $(I)segment.hpp    \
+	          $(I)ua.hpp $(I)xref.hpp common_local.cpp deb_pc.hpp       \
+	          idarpc.cpp idarpc.hpp linux_local.cpp linux_rstub.cpp     \
+	          pc_local.cpp
+$(F)linux_user$(O): $(I)area.hpp $(I)bytes.hpp $(I)diskio.hpp $(I)err.h       \
+	          $(I)fpro.h $(I)funcs.hpp $(I)help.h $(I)ida.hpp           \
+	          $(I)idd.hpp $(I)idp.hpp $(I)kernwin.hpp $(I)lines.hpp     \
+	          $(I)llong.hpp $(I)loader.hpp $(I)nalt.hpp $(I)name.hpp    \
+	          $(I)netnode.hpp $(I)pro.h $(I)segment.hpp $(I)ua.hpp      \
+	          $(I)xref.hpp common_remote.cpp common_remote.hpp          \
+	          deb_pc.hpp idarpc.hpp linux_user.cpp pc_remote.cpp        \
+	          symelf.hpp
+$(F)symelf$(O)  : $(I)diskio.hpp $(I)fpro.h $(I)help.h $(I)ida.hpp          \
+	          $(I)kernwin.hpp $(I)llong.hpp $(I)pro.h                   \
+	          ../../ldr/elf/common.cpp ../../ldr/elf/elf.h              \
+	          ../../ldr/elf/elfbase.h symelf.cpp
+$(F)tcpip$(O)   : $(I)area.hpp $(I)bytes.hpp $(I)err.h $(I)fpro.h           \
+	          $(I)funcs.hpp $(I)help.h $(I)ida.hpp $(I)idd.hpp          \
+	          $(I)idp.hpp $(I)kernwin.hpp $(I)lines.hpp $(I)llong.hpp   \
+	          $(I)nalt.hpp $(I)netnode.hpp $(I)pro.h $(I)segment.hpp    \
+	          $(I)ua.hpp $(I)xref.hpp idarpc.hpp tcpip.cpp
+$(F)tracer$(O)  : $(I)area.hpp $(I)diskio.hpp $(I)fpro.h $(I)help.h         \
+	          $(I)ida.hpp $(I)idd.hpp $(I)kernwin.hpp $(I)llong.hpp     \
+	          $(I)pro.h common_remote.hpp deb_arm.hpp deb_pc.hpp        \
+	          idarpc.hpp tracer.cpp win32_user.hpp
+$(F)win32$(O)   : $(I)area.hpp $(I)diskio.hpp $(I)fpro.h $(I)help.h         \
+	          $(I)ida.hpp $(I)idd.hpp $(I)kernwin.hpp $(I)llong.hpp     \
+	          $(I)pro.h ../../ldr/pe/common.cpp ../../ldr/pe/pe.h       \
+	          common_remote.hpp deb_arm.hpp deb_pc.hpp idarpc.hpp       \
+	          win32.cpp win32_user.hpp
+$(F)win32_event$(O): $(I)area.hpp $(I)fpro.h $(I)help.h $(I)idd.hpp            \
+	          $(I)llong.hpp $(I)pro.h common_remote.hpp deb_arm.hpp     \
+	          deb_pc.hpp idarpc.hpp win32_event.cpp win32_user.hpp
+$(F)win32_lstub$(O): $(I)area.hpp $(I)bytes.hpp $(I)dbg.hpp $(I)diskio.hpp     \
+	          $(I)err.h $(I)fpro.h $(I)funcs.hpp $(I)help.h             \
+	          $(I)ida.hpp $(I)idd.hpp $(I)idp.hpp $(I)kernwin.hpp       \
+	          $(I)lines.hpp $(I)llong.hpp $(I)loader.hpp $(I)nalt.hpp   \
+	          $(I)name.hpp $(I)netnode.hpp $(I)pro.h $(I)segment.hpp    \
+	          $(I)ua.hpp $(I)xref.hpp ../../ldr/pe/pe.h                 \
+	          common_local.cpp deb_pc.hpp idarpc.cpp idarpc.hpp         \
+	          pc_local.cpp win32_local.cpp win32_lstub.cpp
+$(F)win32_rstub$(O): $(I)area.hpp $(I)bytes.hpp $(I)dbg.hpp $(I)diskio.hpp     \
+	          $(I)err.h $(I)fpro.h $(I)funcs.hpp $(I)help.h             \
+	          $(I)ida.hpp $(I)idd.hpp $(I)idp.hpp $(I)kernwin.hpp       \
+	          $(I)lines.hpp $(I)llong.hpp $(I)loader.hpp $(I)nalt.hpp   \
+	          $(I)name.hpp $(I)netnode.hpp $(I)pro.h $(I)segment.hpp    \
+	          $(I)ua.hpp $(I)xref.hpp ../../ldr/pe/pe.h                 \
+	          common_local.cpp deb_pc.hpp idarpc.cpp idarpc.hpp         \
+	          pc_local.cpp win32_local.cpp win32_rstub.cpp
+$(F)win32_user$(O): $(I)area.hpp $(I)bytes.hpp $(I)diskio.hpp $(I)err.h       \
+	          $(I)fpro.h $(I)funcs.hpp $(I)help.h $(I)ida.hpp           \
+	          $(I)idd.hpp $(I)idp.hpp $(I)ieee.h $(I)kernwin.hpp        \
+	          $(I)lines.hpp $(I)llong.hpp $(I)loader.hpp $(I)nalt.hpp   \
+	          $(I)name.hpp $(I)netnode.hpp $(I)pro.h $(I)segment.hpp    \
+	          $(I)ua.hpp $(I)xref.hpp ../../ldr/pe/pe.h arm_remote.cpp  \
+	          common_remote.cpp common_remote.hpp deb_arm.hpp           \
+	          deb_pc.hpp idarpc.hpp pc_remote.cpp win32_user.cpp        \
+	          win32_user.hpp win32_util.cpp wince.hpp                   \
+	          xscale/breakpoint.h
+$(F)wince$(O)   : $(I)area.hpp $(I)help.h $(I)idd.hpp $(I)llong.hpp         \
+	          $(I)pro.h ../../ldr/pe/pe.h common_remote.hpp             \
+	          deb_arm.hpp deb_pc.hpp idarpc.hpp win32_user.hpp          \
+	          wince.cpp wince.hpp
+$(F)wince_rstub$(O): $(I)area.hpp $(I)bytes.hpp $(I)dbg.hpp $(I)diskio.hpp     \
+	          $(I)err.h $(I)fpro.h $(I)funcs.hpp $(I)help.h             \
+	          $(I)ida.hpp $(I)idd.hpp $(I)idp.hpp $(I)kernwin.hpp       \
+	          $(I)lines.hpp $(I)llong.hpp $(I)loader.hpp $(I)nalt.hpp   \
+	          $(I)name.hpp $(I)netnode.hpp $(I)pro.h $(I)segment.hpp    \
+	          $(I)ua.hpp $(I)xref.hpp ../../ldr/pe/pe.h arm_local.cpp   \
+	          common_local.cpp deb_arm.hpp idarpc.cpp idarpc.hpp        \
+	          win32_local.cpp wince.hpp wince_rstub.cpp

@@ -1,0 +1,43 @@
+
+
+Please read "readme.txt" before reading this file!
+
+
+
+How to install SDK under Linux
+------------------------------
+
+All source files are the same for all platforms and are compiled using the
+same makefile. However, since IDA makefiles use Borland format,
+we have to preprocess them before passing them to UNIX make.
+It is done using the idamake.pl script in the bin subdirectory:
+
+        ~/idasrc/bin/idamake.pl
+
+This script will preprocess the makefile, create a temporary makefile
+and launch the make utility on it.
+
+For 64-bit target, define the __EA64__ symbol for make. For example:
+
+        __EA64__=1 ~/idasrc/bin/idamake.pl
+
+will compile a 64 bit linux module.
+
+Creating an alias for this commands is a good idea. I have the following in my
+.bashrc file:
+
+alias m='idamake.pl 2>&1'
+alias mm='__EA64__=1 idamake.pl 2>&1'
+
+-----------------------------------------------
+
+        Installation:
+
+0. Unzip the archive to the directory of your choice ($HOME/idasrc is ok)
+
+1. Edit the allmake.unx file to modify path to the sdk (the IDA variable)
+
+2. Add the $(IDA)/bin directory to your PATH
+
+3. Copy libida*.so files from your ida distribution to the idasdk/bin directory.
+

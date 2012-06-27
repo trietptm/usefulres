@@ -1,0 +1,72 @@
+
+
+Please read "readme.txt" before reading this file!
+
+
+
+How to install SDK for Borland compilers
+----------------------------------------
+
+All source files are the same for all platforms and are compiled using the
+same makefile. You need to specify target in the command line:
+
+        make -D__NT__                              -- for WIN32
+        idamake.pl -D__LINUX__                     -- for Linux
+
+
+WIN32 versions can be created only by Borland C++ CBuilder v4.0
+Probably the old BCC v5.2 will work too, but I haven't checked it.
+
+You can compile Windows modules under Windows.
+You can compile Linux   modules under Linux.
+
+For 64-bit target, define the __EA64__ symbol for make. For example:
+
+        make -D__NT__ -D__EA64__
+
+will compile a 64 bit windows module.
+
+-----------------------------------------------
+
+        Installation:
+
+0. Unzip the archive with -d switch:
+
+        pkunzip -d idasdk.zip
+
+1. Edit file
+        allmake.mak             modify pathes to your compilers and sdk
+
+2. Add to your path:
+        c:\idasdk\bin
+        and you compiler directory
+
+3. Compile and build utilities in ETC directory. See ETC\README file.
+
+4. Run make in the SDK directory in order to create compiler
+   configuration files (w32bor.cfg, w64bor.cfg)
+
+        That's all. Please note that you don't need the IDA
+        environment variable anymore.
+
+
+-----------------------------------------------
+
+        Directories in the SDK:
+
+
+INCLUDE         - header file
+MODULE/EXAMPLE          - a real life example of a disassembler module (intel 8051)
+MODULE/EXAMPLE/BOR.W32  - 32-bit output directory for WIN32 object files
+MODULE/EXAMPLE/BOR.W64  - 64-bit output directory for WIN32 object files
+LDR/SAMPLE              - a real life example of a loader module (w32run)
+LIBBOR.W32      - 32-bit libraries for WIN32
+LIBBOR.W64      - 64-bit libraries for WIN32
+BIN             - directory with SDK utilities
+BIN/PROCS       - directory for processor modules
+BIN/LOADERS     - directory for input file loaders
+BIN/CFG         - directory for configuration files
+ALLMAKE.MAK     - 'make' configuration file. You should edit pathes to
+                  compilers here.
+README          - this file.
+
