@@ -1,0 +1,55 @@
+
+
+Please read "readme.txt" before reading this file!
+
+
+The Visual C++ users should use the sample *.dsp and *.dsw files provided
+in the SDK. You just load a sample into the environment and
+compile it. The output files are created in bin/w32 by default.
+
+To create a new module, copy a sample project to a new directory,
+rename and edit it.
+
+The settings for the new projects are the following:
+
+        - Calling convention: __stdcall
+
+        - Predefined preprocessor macros: __NT__,__IDP__
+          For 64-bit target, define __EA64__
+
+        - Include path: ../../include
+
+        - Library path: ../../libvc.w32 (libvc.w64 for 64bit)
+
+        - Additional library: ida.lib
+
+        - The output file name: check that has the right name and extension.
+          The extensions are the following:
+
+                .W32                    (for 32bit processor modules)
+                .LDW                    (for 32bit loader modules)
+                .PLW                    (for 32bit plugin modules)
+                .W64                    (for 64bit processor modules)
+                .L64                    (for 64bit loader modules)
+                .P64                    (for 64bit plugin modules)
+
+        - the module descriptor should be exported using (add the /export
+          keyword into the project options)
+
+                /EXPORT:LPH             (for processor modules)
+                /EXPORT:LDSC            (for loader modules)
+                /EXPORT:PLUGIN          (for plugin modules)
+
+        - Only for processor modules: a post-build step should be added/edited
+          to contain
+                mkidp output-file "DLL-description"
+          where DLL-description has the following format:
+                Sample processor:procname1:procname2:...:procnameN
+          The processor description string is written into offset 0x80
+          of the resulting DLL file. The kernel uses the descriptions
+          to load the appropriate processor module when IDA starts
+
+
+
+
+

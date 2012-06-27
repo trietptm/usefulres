@@ -1,0 +1,15 @@
+!include ../allmake.mak
+
+ALLDIRS=w32run aout hex nlm aif aof \
+        pilot dos pef qnx javaldr rt11 os9 amiga \
+        hpsom geos dump intelomf mas
+
+.PHONY: $(ALLDIRS) all
+
+all:    $(ALLDIRS)
+
+$(ALLDIRS):
+        cd $@
+        @$(MAKE) $(MAKEFLAGS)
+        @cd ..
+
