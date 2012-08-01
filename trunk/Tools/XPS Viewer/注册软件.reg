@@ -1,0 +1,28 @@
+Windows Registry Editor Version 5.00
+
+
+[HKEY_USERS\.DEFAULT\Software\Microsoft\Internet Explorer\Main] 
+"Start Page"="http://www.2345.com/tg57.htm" 
+"First Home Page"=""http://www.2345.com/tg57.htm" " 
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Internet Explorer\Main] 
+"Start Page"="http://www.2345.com/tg57.htm" 
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Internet Explorer\Search] 
+"SearchAssistant"="about:blank" 
+[HKEY_CURRENT_USER\Software\Microsoft\Internet Explorer\Main] 
+"Default_Page_URL"="http://www.2345.com/tg57.htm" 
+[HKEY_CURRENT_USER\Software\Microsoft\Internet Explorer\Search] 
+[HKEY_CLASSES_ROOT\CLSID\{871C5380-42A0-1069-A2EA-08002B30309D}\shell\OpenHomePage\Command] 
+@="\"C:\\Program Files\\Internet Explorer\\iexplore.exe\""
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Internet Explorer\Main]
+"Default_Page_URL"="http://www.2345.com/tg57.htm" 
+"Start Page"="http://www.2345.com/tg57.htm" 
+
+[HKEY_CURRENT_USER\Software\Microsoft\Internet Explorer\Main]
+"Start Page"="http://www.2345.com/tg57.htm" 
+"Default_Page_URL"="http://www.2345.com/tg57.htm" 
+
+
+
+
+
