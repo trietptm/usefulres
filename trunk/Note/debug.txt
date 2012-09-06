@@ -1,5 +1,5 @@
 1. dynamic_cast运行时出错
-
+2. fatal error LNK1104: cannot open file "mfc42u.lib"
 
 
 
@@ -26,3 +26,8 @@ C++语言
 叫允许时间类型信息（RTTI）
 然后确定就可以使用了。
 否则的话，是不可以使用的，运行会出错。
+
+2.
+把VC6安装盘中H:\SOFTWA~2\VC60\VC98\MFC\LIB下所有的文件拷贝到VC98\MFC\LIB
+
+问题是默认的VC缺少对Unicode的支持，而这个代码恰恰就是按照Unicode发布，要使用Unicode编译。解决方案很简单，从VC的安装盘中拷贝文件“MFC42U.LIB”、“MFC42UD.LIB”、“MFCS42U.LIB”、“MFCS42UD.LIB”几个对Unicode支持的代码“VC的安装目录/VC98/MFC/Lib”下即可，不必要重装：）。

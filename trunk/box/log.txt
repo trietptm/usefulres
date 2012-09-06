@@ -1,3 +1,11 @@
+15:24 2012-8-20
+AutoMacro
+RegNow 41573
+http://www.auto-macro.com/auto-macro.xml
+support@auto-macro.com
+41573-1
+AutoMacroStudio@gmail.com
+
 10:49 2012-4-10
 http://www.ever-soft.com/ActionRecorder.xml
 39677-1
@@ -7,6 +15,9 @@ http://www.ever-soft.com/AutoClicker.xml
 
 http://www.ever-soft.com/AdvancedMacroRecorder.xml
 39677-4
+
+http://www.ever-soft.com/gold-price-monitor.xml
+39677-11
 
 Thank you!
 
