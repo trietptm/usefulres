@@ -6551,25 +6551,38 @@ static BOOL RotateObject(int pageNo, HPDFOBJ hObj,INT rotation, FRect* rtText)
 		return FALSE;
 
 	fz_display_node* node = (fz_display_node*)hObj;
-
-	if(!node->item.text)
-		return FALSE;
-
-	node->item.text->trm = fz_concat(node->item.text->trm, fz_rotate((float)rotation));
-	node->item.text->gstate.tm = fz_concat(node->item.text->gstate.tm, fz_rotate((float)rotation));
-
-	win->dm->textSelection->UpdateTextPos(pageNo,node,rtText);
-
-	if(node->cmd==FZ_CMD_STROKE_TEXT)
+	if(node->cmd==FZ_CMD_FILL_TEXT || node->cmd==FZ_CMD_STROKE_TEXT)
 	{
-		if(node->last && node->last->is_dup && node->last->cmd==FZ_CMD_FILL_TEXT)
-		{
-			node = node->last;
+		node->item.text->trm = fz_concat(node->item.text->trm, fz_rotate((float)rotation));
+		node->item.text->gstate.tm = fz_concat(node->item.text->gstate.tm, fz_rotate((float)rotation));
 
-			node->item.text->trm = fz_concat(node->item.text->trm, fz_rotate((float)rotation));
-			node->item.text->gstate.tm = fz_concat(node->item.text->gstate.tm, fz_rotate((float)rotation));
+		win->dm->textSelection->UpdateTextPos(pageNo,node,rtText);
+
+		if(node->cmd==FZ_CMD_STROKE_TEXT)
+		{
+			if(node->last && node->last->is_dup && node->last->cmd==FZ_CMD_FILL_TEXT)
+			{
+				node = node->last;
+
+				node->item.text->trm = fz_concat(node->item.text->trm, fz_rotate((float)rotation));
+				node->item.text->gstate.tm = fz_concat(node->item.text->gstate.tm, fz_rotate((float)rotation));
+			}
 		}
 	}
+	else if(node->cmd==FZ_CMD_FILL_IMAGE)
+	{
+		fz_matrix ctm = node->ctm;
+		ctm.e = 0;
+		ctm.f = 0;
+		ctm = fz_concat(ctm, fz_rotate((float)rotation));
+
+		node->ctm.a = ctm.a;
+		node->ctm.b = ctm.b;
+		node->ctm.c = ctm.c;
+		node->ctm.d = ctm.d;
+	}
+	else
+		return FALSE;
 
 	gRenderCache.DropAllCache();
 	win->dm->Redraw();
