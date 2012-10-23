@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sumatrapdf-vc2008", "sumatrapdf-vc2008.vcproj", "{9458F693-A9CC-4786-B79A-A2103EC71FA3}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PDFEditor", "..\..\..\biggod.app\PDFEditor\PDFEditor.vcproj", "{72922FE5-F3E3-4148-A6EA-D05F47A48BB0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug_Lib|Win32 = Debug_Lib|Win32
+		Debug|Win32 = Debug|Win32
+		Release_Lib|Win32 = Release_Lib|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9458F693-A9CC-4786-B79A-A2103EC71FA3}.Debug_Lib|Win32.ActiveCfg = Debug_Lib|Win32
+		{9458F693-A9CC-4786-B79A-A2103EC71FA3}.Debug_Lib|Win32.Build.0 = Debug_Lib|Win32
+		{9458F693-A9CC-4786-B79A-A2103EC71FA3}.Debug|Win32.ActiveCfg = Debug|Win32
+		{9458F693-A9CC-4786-B79A-A2103EC71FA3}.Debug|Win32.Build.0 = Debug|Win32
+		{9458F693-A9CC-4786-B79A-A2103EC71FA3}.Release_Lib|Win32.ActiveCfg = Release_Lib|Win32
+		{9458F693-A9CC-4786-B79A-A2103EC71FA3}.Release_Lib|Win32.Build.0 = Release_Lib|Win32
+		{9458F693-A9CC-4786-B79A-A2103EC71FA3}.Release|Win32.ActiveCfg = Release|Win32
+		{9458F693-A9CC-4786-B79A-A2103EC71FA3}.Release|Win32.Build.0 = Release|Win32
+		{72922FE5-F3E3-4148-A6EA-D05F47A48BB0}.Debug_Lib|Win32.ActiveCfg = Debug|Win32
+		{72922FE5-F3E3-4148-A6EA-D05F47A48BB0}.Debug_Lib|Win32.Build.0 = Debug|Win32
+		{72922FE5-F3E3-4148-A6EA-D05F47A48BB0}.Debug|Win32.ActiveCfg = Debug|Win32
+		{72922FE5-F3E3-4148-A6EA-D05F47A48BB0}.Debug|Win32.Build.0 = Debug|Win32
+		{72922FE5-F3E3-4148-A6EA-D05F47A48BB0}.Release_Lib|Win32.ActiveCfg = Release_Lib|Win32
+		{72922FE5-F3E3-4148-A6EA-D05F47A48BB0}.Release_Lib|Win32.Build.0 = Release_Lib|Win32
+		{72922FE5-F3E3-4148-A6EA-D05F47A48BB0}.Release|Win32.ActiveCfg = Release|Win32
+		{72922FE5-F3E3-4148-A6EA-D05F47A48BB0}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
