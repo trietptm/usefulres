@@ -304,6 +304,7 @@ EXPORTS
 	my_pdf_show_char2
 	fz_list_fill_text
 	fz_device_rgb
+	g_bNoDrawText
 	
 ; MuPDF exports
 

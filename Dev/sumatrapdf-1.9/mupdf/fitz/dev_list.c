@@ -553,6 +553,10 @@ fz_free_display_list(fz_display_list *list)
 	fz_free(list);
 }
 
+/*My Code*/
+int g_bNoDrawText;
+//////////////////////////////////////////////////////////////////////////
+
 void
 fz_execute_display_list(fz_display_list *list, fz_device *dev, fz_matrix top_ctm, fz_bbox scissor, fz_display_node *nodeOnly)
 {
@@ -656,20 +660,35 @@ visible:
 			break;
 		}
 		case FZ_CMD_FILL_TEXT:
+			if(g_bNoDrawText)
+				break;
+
 			fz_fill_text(dev, node->item.text, ctm,
 				node->colorspace, node->color, node->alpha, node);
 			break;
 		case FZ_CMD_STROKE_TEXT:
+			if(g_bNoDrawText)
+				break;
+
 			fz_stroke_text(dev, node->item.text, node->stroke, ctm,
 				node->colorspace, node->color, node->alpha, node);
 			break;
 		case FZ_CMD_CLIP_TEXT:
+			if(g_bNoDrawText)
+				break;
+
 			fz_clip_text(dev, node->item.text, ctm, node->flag);
 			break;
 		case FZ_CMD_CLIP_STROKE_TEXT:
+			if(g_bNoDrawText)
+				break;
+
 			fz_clip_stroke_text(dev, node->item.text, node->stroke, ctm);
 			break;
 		case FZ_CMD_IGNORE_TEXT:
+			if(g_bNoDrawText)
+				break;
+
 			fz_ignore_text(dev, node->item.text, ctm);
 			break;
 		case FZ_CMD_FILL_SHADE:

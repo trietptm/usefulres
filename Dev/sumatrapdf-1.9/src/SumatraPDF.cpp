@@ -5163,6 +5163,27 @@ static HBITMAP GetCacheBitmap(INT pageNo)
 	return NULL;
 }
 
+extern "C" {
+	extern "C" int g_bNoDrawText;
+};
+
+static HBITMAP GetPageBackground(INT pageNo)
+{
+	WindowInfo* win = WindowInfo::g_pWinInf;
+	if(!win)
+		return NULL;
+
+	if(!win->dm || !win->dm->engine)
+		return NULL;
+
+	gRenderCache.DropAllCache();
+
+	g_bNoDrawText = 1;
+	win->dm->Redraw();
+	g_bNoDrawText = 0;
+	return GetCacheBitmap(pageNo);
+}
+
 static void MoveNode(fz_display_node* node,float xMove,float yMove)
 {
 	node->rect.x0 += xMove;
@@ -6753,6 +6774,7 @@ int APIENTRY LaunchPdf(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmd
 	g_pIntf->GetObjEF = GetObjEF;
 	g_pIntf->GetBmpSamples = GetBmpSamples;
 	g_pIntf->GetCacheBitmap = GetCacheBitmap;
+	g_pIntf->GetPageBackground = GetPageBackground;
 	g_pIntf->MoveObject = MoveObject;
 	g_pIntf->SetFillColor = SetFillColor;
 	g_pIntf->SetStrokeColor = SetStrokeColor;
