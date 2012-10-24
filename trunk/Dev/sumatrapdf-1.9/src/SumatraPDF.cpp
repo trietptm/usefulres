@@ -5147,6 +5147,22 @@ static const UCHAR* GetBmpSamples(HPDFOBJ hObj,INT& w,INT& h,INT& n)
 	return NULL;
 }
 
+static HBITMAP GetCacheBitmap(INT pageNo)
+{
+	INT nCache = gRenderCache.CacheCount();
+	for(INT i = 0;i < nCache;i++)
+	{
+		BitmapCacheEntry* pEntry = gRenderCache.GetBitmapCacheEntry(i);
+		if(!pEntry)
+			continue;
+
+		if(pEntry->pageNo==pageNo)
+			return pEntry->bitmap->GetBitmap();
+	}
+
+	return NULL;
+}
+
 static void MoveNode(fz_display_node* node,float xMove,float yMove)
 {
 	node->rect.x0 += xMove;
@@ -6736,6 +6752,7 @@ int APIENTRY LaunchPdf(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmd
 	g_pIntf->GetObjTextMatrix = GetObjTextMatrix;
 	g_pIntf->GetObjEF = GetObjEF;
 	g_pIntf->GetBmpSamples = GetBmpSamples;
+	g_pIntf->GetCacheBitmap = GetCacheBitmap;
 	g_pIntf->MoveObject = MoveObject;
 	g_pIntf->SetFillColor = SetFillColor;
 	g_pIntf->SetStrokeColor = SetStrokeColor;

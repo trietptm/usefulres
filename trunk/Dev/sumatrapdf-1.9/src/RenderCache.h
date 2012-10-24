@@ -144,9 +144,9 @@ private:
 
 	/*MyCode*/
 	static void DoRender(RenderCache *cache);
+public:
 	INT CacheCount()const{return cacheCount;}
 	BitmapCacheEntry* GetBitmapCacheEntry(INT iCache);
-public:
 	void DropAllCache();
 	//////////////////////////////////////////////////////////////////////////
 };
