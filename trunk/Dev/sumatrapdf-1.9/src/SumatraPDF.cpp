@@ -5176,6 +5176,8 @@ static HBITMAP GetPageBackground(INT pageNo)
 	if(!win->dm || !win->dm->engine)
 		return NULL;
 
+	win->dm->GoToPage(pageNo, 0);
+
 	gRenderCache.DropAllCache();
 
 	g_bNoDrawText = 1;
