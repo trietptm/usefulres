@@ -157,6 +157,7 @@ MenuDef menuDefContext[] = {
 	/*MyCode*/
 	{ SEP_ITEM,                             0,                          MF_REQ_ALLOW_COPY },
 	{ _TRN(""),						        IDM_ADD_TEXT,				MF_REQ_ALLOW_COPY },
+	{ _TRN(""),						        IDM_SAVE_BACKGROUND,		MF_REQ_ALLOW_COPY },
 	//////////////////////////////////////////////////////////////////////////
     { SEP_ITEM,                             0,                          MF_PLUGIN_MODE_ONLY | MF_REQ_ALLOW_COPY },
     { _TRN("&Save As..."),                  IDM_SAVEAS,                 MF_PLUGIN_MODE_ONLY | MF_REQ_DISK_ACCESS },
@@ -438,6 +439,7 @@ void OnContextMenu(WindowInfo* win, int x, int y)
 
 	/*MyCode*/
 	win::menu::SetText(popup,IDM_ADD_TEXT,_T("Add Text"));
+	win::menu::SetText(popup,IDM_SAVE_BACKGROUND,_T("Save Background"));
 	//////////////////////////////////////////////////////////////////////////	
 
     if (!win->selectionOnPage)
@@ -466,6 +468,10 @@ void OnContextMenu(WindowInfo* win, int x, int y)
 	case IDM_ADD_TEXT:
 		if(g_pIntf)
 			g_pIntf->OnAddText(x,y);
+		break;
+	case IDM_SAVE_BACKGROUND:
+		if(g_pIntf)
+			g_pIntf->OnSaveBackground();
 		break;
 	//////////////////////////////////////////////////////////////////////////
     }

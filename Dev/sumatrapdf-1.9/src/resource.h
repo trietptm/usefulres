@@ -91,6 +91,7 @@
 #define IDM_DEBUG_CRASH_ME              592
 //MyCode
 #define IDM_ADD_TEXT		            593
+#define IDM_SAVE_BACKGROUND	            594
 //////////////////////////////////////////////////////////////////////////
 #define IDM_FAV_FIRST                   600
 #define IDM_FAV_LAST                    800
