@@ -424,6 +424,12 @@ void OnAboutContextMenu(WindowInfo* win, int x, int y)
 
 void OnContextMenu(WindowInfo* win, int x, int y)
 {
+	if(g_pIntf)
+	{
+		g_pIntf->m_ptContextMenu.x = x;
+		g_pIntf->m_ptContextMenu.y = y;
+	}
+
     assert(win->IsDocLoaded());
     if (!win->IsDocLoaded())
         return;
