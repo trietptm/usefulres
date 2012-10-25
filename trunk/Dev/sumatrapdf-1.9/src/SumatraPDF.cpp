@@ -5167,7 +5167,7 @@ extern "C" {
 	extern "C" int g_bNoDrawText;
 };
 
-static HBITMAP GetPageBackground(INT pageNo)
+static HBITMAP GetPageBackground(INT pageNo,float zoom)
 {
 	WindowInfo* win = WindowInfo::g_pWinInf;
 	if(!win)
@@ -5177,6 +5177,8 @@ static HBITMAP GetPageBackground(INT pageNo)
 		return NULL;
 
 	win->dm->GoToPage(pageNo, 0);
+
+	ZoomToSelection(win,zoom,false);
 
 	gRenderCache.DropAllCache();
 
