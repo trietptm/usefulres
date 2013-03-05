@@ -39,7 +39,7 @@ Tel +1.4158529786
 13:23 2012-11-5
 http://www.comodo.com/business-security/code-signing-certificates/code-signing.php
 http://www.instantssl.com/
-RobotSoft 7...
+RobotSoft hB5MzV7E
 已付款$179
 12246520
 
@@ -91,12 +91,6 @@ http://www.ever-soft.com/AdvancedMacroRecorder.xml
 
 http://www.ever-soft.com/gold-price-monitor.xml
 39677-11
-
-Thank you!
-
-Best Regards,
-EverSoft Team
-http://www.ever-soft.com
 
 support@ever-soft.com
 
@@ -196,6 +190,12 @@ READYSTATE_COMPLETE
 
 22:24 2011-6-3
 Mouse Recorder无法支持游戏：runescape
+
+Thank you!
+
+Best Regards,
+EverSoft Team
+http://www.ever-soft.com
 
 Thank you!
 
