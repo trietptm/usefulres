@@ -73,12 +73,6 @@ AutoMacroStudio@gmail.com
 
 http://www.ever-soft.com/LiveGoldPrices.xml
 
-Thank you!
-
-Best Regards,
-AutoMacro Team
-http://www.auto-macro.com
-
 10:49 2012-4-10
 http://www.ever-soft.com/ActionRecorder.xml
 39677-1
@@ -194,6 +188,12 @@ Mouse Recorder无法支持游戏：runescape
 Thank you!
 
 Best Regards,
+AutoMacro Team
+http://www.auto-macro.com
+
+Thank you!
+
+Best Regards,
 EverSoft Team
 http://www.ever-soft.com
 
@@ -202,6 +202,8 @@ Thank you!
 Best Regards,
 RobotSoft Team
 http://www.robot-soft.com
+
+https://www.youtube.com/watch?v=rLcUix2gWwE
 
 int __stdcall SDT_GetSAMID(int iPort,unsigned char* pucASMID,int iIfOpen);
 
