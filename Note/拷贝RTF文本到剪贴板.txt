@@ -1,0 +1,27 @@
+#include <afxadv.h>
+
+void RenderFormattedData(CFile &file)
+{
+	// RTF (Rich Text Format) - Don't forget to escape the / character in your C strings!
+	CString buffer = _T("{\\rtf1 {1 \\tab 2 \\tab 3 \\par 4 \\tab {\\b\\i 5} \\tab 6}}");
+	file.Write(buffer, buffer.GetLength()); 
+}
+void OnEditCopy() 
+{
+	// Create a shared memory file
+	CSharedFile sf(GMEM_MOVEABLE | GMEM_SHARE | GMEM_ZEROINIT);
+
+	// Place clipboard data in the shared memory file
+	RenderFormattedData(sf);
+
+	if (sf.GetLength() > 0) 
+	{
+		// Put the data on the clipboard
+		if(OpenClipboard(NULL))
+		{
+			EmptyClipboard();
+			SetClipboardData(::RegisterClipboardFormat(CF_RTF), sf.Detach()); 
+			CloseClipboard();
+		}
+	}
+}
