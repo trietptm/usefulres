@@ -1,6 +1,6 @@
 1. dynamic_cast运行时出错
 2. fatal error LNK1104: cannot open file "mfc42u.lib"
-
+3. VC6 Cannot open include file: 'GdiPlus.h'
 
 
 
@@ -31,3 +31,7 @@ C++语言
 把VC6安装盘中H:\SOFTWA~2\VC60\VC98\MFC\LIB下所有的文件拷贝到VC98\MFC\LIB
 
 问题是默认的VC缺少对Unicode的支持，而这个代码恰恰就是按照Unicode发布，要使用Unicode编译。解决方案很简单，从VC的安装盘中拷贝文件“MFC42U.LIB”、“MFC42UD.LIB”、“MFCS42U.LIB”、“MFCS42UD.LIB”几个对Unicode支持的代码“VC的安装目录/VC98/MFC/Lib”下即可，不必要重装：）。
+
+3.
+在C:\Program Files\Microsoft Visual Studio\VC98下建立文件夹GDIPlus
+将GDI+.rar中的Include和Lib解压到C:\Program Files\Microsoft Visual Studio\VC98\GDIPlus
