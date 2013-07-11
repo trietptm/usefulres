@@ -29,6 +29,8 @@ dota
 加钱，仅调自己的英雄
 -test
 -gold -3410
+-wtf 无CD
+-refresh
 
 先输入-test,进入测试模式，等可以选人时再输入-noherolimit〔没有英雄的人数限制〕这样就可以选几个人了
 设置英雄等级：开始游戏之前要打-test ,然后用-lvlup 升级，可以加数字
