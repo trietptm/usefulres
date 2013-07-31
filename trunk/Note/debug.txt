@@ -1,6 +1,7 @@
 1. dynamic_cast运行时出错
 2. fatal error LNK1104: cannot open file "mfc42u.lib"
 3. VC6 Cannot open include file: 'GdiPlus.h'
+4. dynamic_cast时__non_rtti_object异常
 
 
 
@@ -35,3 +36,5 @@ C++语言
 3.
 在C:\Program Files\Microsoft Visual Studio\VC98下建立文件夹GDIPlus
 将GDI+.rar中的Include和Lib解压到C:\Program Files\Microsoft Visual Studio\VC98\GDIPlus
+
+4.
