@@ -15,8 +15,9 @@ dota
 -aphehgom
 -apimoxayresc
 -apxmfr
+-xmfr
 
--apimoxay 黑龙MM
+-apimoxay	黑龙MM
 -pa 选择已方英雄
 -pe 选择敌方英雄
 -DU,同一个英雄可以选择多次
