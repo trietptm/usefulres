@@ -17,6 +17,7 @@ dota
 -apxmfr
 -xmfr
 
+-ca小心你的盟友
 -ar/ne(全阵营随机选择+普通经验AI)
 如果英雄不爽就跟AI换 
 -swap 2 3 4 5
